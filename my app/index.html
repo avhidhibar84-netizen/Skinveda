@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="manifest" href="manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -901,7 +900,7 @@
 <!-- SPLASH — Pure White -->
 <div class="splash" id="splash">
   <div class="splash-brand">Skinveda</div>
-  <div class="splash-from">from AV</div>
+  <div class="splash-from">from <span style="color:#0095F6">AV</span></div>
 </div>
 
 <div class="app" id="app">
@@ -1027,11 +1026,8 @@
 
   // ============================================================
   // PWA: Manifest + Service Worker (single-file, Blob-based)
-  // Keeps app fully self-contained for PWABuilder / store packaging
   // ============================================================
   (function registerPWA() {
-    // Minimal solid-color PNG icons as data URIs (192 & 512)
-    // Teal brand color squares — valid for installability checks
     var ICON_192 = 'data:image/svg+xml,' + encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#2A7A7B"/><text x="96" y="118" text-anchor="middle" font-size="72" font-family="system-ui,sans-serif" font-weight="700" fill="#fff">S</text></svg>'
     );
@@ -1039,7 +1035,6 @@
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#2A7A7B"/><text x="256" y="320" text-anchor="middle" font-size="200" font-family="system-ui,sans-serif" font-weight="700" fill="#fff">S</text></svg>'
     );
 
-    // Web App Manifest
     var manifest = {
       name: 'Skinveda — Virtual Dermatologist',
       short_name: 'Skinveda',
@@ -1068,13 +1063,11 @@
     link.href = manifestURL;
     document.head.appendChild(link);
 
-    // Apple touch icon
     var appleIcon = document.createElement('link');
     appleIcon.rel = 'apple-touch-icon';
     appleIcon.href = ICON_192;
     document.head.appendChild(appleIcon);
 
-    // Service Worker source (basic offline + app-shell cache)
     var swCode = [
       "const CACHE_NAME = 'skinveda-v1';",
       "const SHELL = ['./'];",
@@ -1110,9 +1103,7 @@
       var swBlob = new Blob([swCode], { type: 'application/javascript' });
       var swURL = URL.createObjectURL(swBlob);
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register(swURL, { scope: './' }).catch(function () {
-          // Silent fail — app still works without SW
-        });
+        navigator.serviceWorker.register(swURL, { scope: './' }).catch(function () {});
       });
     }
   })();
