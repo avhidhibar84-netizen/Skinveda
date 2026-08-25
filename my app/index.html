@@ -160,35 +160,59 @@
     50% { transform: translateY(-3px) rotate(2deg); }
   }
 
-  /* ========== LANDING — Thumb-friendly lower buttons ========== */
+  /* ========== LANDING — Refined homepage layout ========== */
   .landing {
     justify-content: space-between;
     align-items: center;
     text-align: center;
-    background: linear-gradient(180deg, #F4F9F9 0%, var(--warm-white) 45%, #F0F6F6 100%);
-    padding-top: 48px;
+    /* Soft clinical skincare gradient + subtle radial glow */
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -10%, rgba(122, 158, 159, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse 90% 60% at 100% 100%, rgba(94, 234, 212, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 70% 50% at 0% 80%, rgba(74, 124, 125, 0.07) 0%, transparent 45%),
+      linear-gradient(165deg, #F7FBFC 0%, #F0F7F7 35%, #FAF9F7 70%, #F2F8F8 100%);
+    padding-top: 28px;
     padding-bottom: calc(28px + var(--safe-bottom));
     overflow: hidden;
+    position: relative;
+  }
+
+  /* Subtle decorative medical-aesthetic pattern (clean cross dots) */
+  .landing::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 18% 22%, rgba(122, 158, 159, 0.07) 0%, transparent 2px),
+      radial-gradient(circle at 82% 18%, rgba(74, 124, 125, 0.06) 0%, transparent 2px),
+      radial-gradient(circle at 12% 68%, rgba(122, 158, 159, 0.05) 0%, transparent 2px),
+      radial-gradient(circle at 88% 72%, rgba(74, 124, 125, 0.05) 0%, transparent 2px),
+      radial-gradient(circle at 50% 40%, rgba(122, 158, 159, 0.04) 0%, transparent 1.5px);
+    background-size: 100% 100%;
+    pointer-events: none;
+    z-index: 0;
   }
 
   .landing-top {
-    flex: 1;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
     width: 100%;
     max-width: 360px;
+    padding-top: 36px;
+    z-index: 1;
   }
 
   .landing-mascot-bg {
     position: absolute;
-    top: 50%;
+    top: 8%;
     left: 50%;
-    transform: translate(-50%, -55%);
-    width: 220px;
-    opacity: 0.11;
+    transform: translateX(-50%);
+    width: 200px;
+    opacity: 0.1;
     pointer-events: none;
     z-index: 0;
   }
@@ -199,10 +223,15 @@
   }
 
   .landing-title {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 750;
     letter-spacing: -0.8px;
-    color: var(--slate);
+    /* App primary theme color */
+    color: #2A7A7B;
+    background: linear-gradient(135deg, #3B9B9C 0%, #2A7A7B 55%, #4A7C7D 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 12px;
     position: relative;
     z-index: 1;
@@ -226,6 +255,7 @@
     gap: 12px;
     padding-top: 20px;
     z-index: 2;
+    position: relative;
   }
 
   .btn {
