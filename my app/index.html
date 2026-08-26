@@ -13,27 +13,12 @@
 <title>Skinveda — Virtual Dermatologist</title>
 <style>
   :root {
-    --sage: #7A9E9F;
-    --sage-dark: #5C7A7B;
-    --sage-light: #E8F0F0;
-    --teal: #4A7C7D;
-    --teal-deep: #2A6A6B;
-    --warm-white: #FAF9F7;
-    --cream: #F5F3EF;
-    --slate: #2C3333;
-    --slate-soft: #4A5555;
-    --muted: #8A9595;
-    --border: #E2E8E8;
-    --glass: rgba(255, 255, 255, 0.85);
-    --shadow: 0 4px 24px rgba(44, 51, 51, 0.07);
-    --shadow-lg: 0 12px 40px rgba(44, 51, 51, 0.11);
-    --radius: 20px;
-    --radius-sm: 14px;
-    --nav-h: 72px;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-left: env(safe-area-inset-left, 0px);
-    --safe-right: env(safe-area-inset-right, 0px);
+    --sage: #7A9E9F; --sage-dark: #5C7A7B; --sage-light: #E8F0F0; --teal: #4A7C7D; --teal-deep: #2A6A6B;
+    --warm-white: #FAF9F7; --cream: #F5F3EF; --slate: #2C3333; --slate-soft: #4A5555; --muted: #8A9595;
+    --border: #E2E8E8; --glass: rgba(255, 255, 255, 0.85); --shadow: 0 4px 24px rgba(44, 51, 51, 0.07);
+    --shadow-lg: 0 12px 40px rgba(44, 51, 51, 0.11); --radius: 20px; --radius-sm: 14px; --nav-h: 72px;
+    --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px); --safe-right: env(safe-area-inset-right, 0px);
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -299,7 +284,7 @@
     opacity: 0; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; max-width: 90vw;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  #report-canvas { display: none; }
+  #report-canvas { position: fixed; left: -9999px; top: 0; width: 794px; height: 1123px; pointer-events: none; opacity: 0; }
 </style>
 </head>
 <body>
@@ -373,8 +358,8 @@
     </div>
     <div class="results-scroll" id="rx-content"></div>
     <div class="results-actions">
-      <button class="btn btn-download" id="btn-download-report">Download Report</button>
-      <button class="btn btn-secondary" id="btn-results-home">Back to Home</button>
+      <button class="btn btn-download" id="btn-download-report" type="button">Download Report</button>
+      <button class="btn btn-secondary" id="btn-results-home" type="button">Back to Home</button>
     </div>
   </div>
   <div class="screen" id="screen-history">
@@ -405,11 +390,11 @@
 </nav>
 <div class="overlay" id="overlay">
   <div class="sheet">
-    <h3 id="sheet-title">Delete prescription?</h3>
-    <p id="sheet-message">This action cannot be undone. The saved assessment will be permanently removed.</p>
+    <h3>Delete prescription?</h3>
+    <p>This action cannot be undone. The saved assessment will be permanently removed.</p>
     <div class="sheet-actions">
-      <button class="btn btn-secondary" id="btn-cancel-delete">Cancel</button>
-      <button class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+      <button class="btn btn-secondary" id="btn-cancel-delete" type="button">Cancel</button>
+      <button class="btn btn-danger" id="btn-confirm-delete" type="button">Delete</button>
     </div>
   </div>
 </div>
@@ -426,7 +411,7 @@
     var manifest = { name: 'Skinveda — Virtual Dermatologist', short_name: 'Skinveda', description: 'AI-powered virtual dermatologist assessment.', start_url: './', scope: './', display: 'standalone', orientation: 'portrait', background_color: '#FFFFFF', theme_color: '#FFFFFF', lang: 'en', icons: [{ src: ICON_192, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' }, { src: ICON_512, sizes: '512x512', type: 'image/svg+xml', purpose: 'any' }, { src: ICON_192, sizes: '192x192', type: 'image/svg+xml', purpose: 'maskable' }, { src: ICON_512, sizes: '512x512', type: 'image/svg+xml', purpose: 'maskable' }] };
     var link = document.createElement('link'); link.rel = 'manifest'; link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' })); document.head.appendChild(link);
     var appleIcon = document.createElement('link'); appleIcon.rel = 'apple-touch-icon'; appleIcon.href = ICON_192; document.head.appendChild(appleIcon);
-    var swCode = "const CACHE_NAME='skinveda-v5';const SHELL=['./'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(!r||r.status!==200||r.type==='opaque')return r;const cl=r.clone();caches.open(CACHE_NAME).then(cache=>cache.put(e.request,cl));return r;}).catch(()=>caches.match('./'));}));});";
+    var swCode = "const CACHE_NAME='skinveda-v6';const SHELL=['./'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(!r||r.status!==200||r.type==='opaque')return r;const cl=r.clone();caches.open(CACHE_NAME).then(cache=>cache.put(e.request,cl));return r;}).catch(()=>caches.match('./'));}));});";
     if ('serviceWorker' in navigator) {
       var swURL = URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }));
       window.addEventListener('load', function () { navigator.serviceWorker.register(swURL, { scope: './' }).catch(function () {}); });
@@ -446,7 +431,7 @@
     sunscreen: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#FFF3C4" stroke="#E8C84A" stroke-width="1.2"/><circle cx="12" cy="12" r="4" fill="#F5D76E"/></svg>'
   };
 
-  var state = { screen: 'landing', userName: '', currentQ: 0, answers: {}, deleteId: null, lastRx: null, sheetMode: 'delete' };
+  var state = { screen: 'landing', userName: '', currentQ: 0, answers: {}, deleteId: null, lastRx: null };
   var questions = [
     { id: 'skinType', label: 'Skin Fundamentals', text: 'How would you describe your skin type most days?', options: [{ value: 'dry', label: 'Dry — tight, flaky, or rough' }, { value: 'oily', label: 'Oily — shiny, especially T-zone' }, { value: 'combination', label: 'Combination — oily T-zone, dry cheeks' }, { value: 'sensitive', label: 'Sensitive — easily reactive or red' }, { value: 'normal', label: 'Normal — balanced, rarely troubled' }] },
     { id: 'primaryConcern', label: 'Primary Concern', text: 'What is your main skin concern right now?', options: [{ value: 'acne', label: 'Acne / breakouts' }, { value: 'hyperpigmentation', label: 'Hyperpigmentation / dark spots' }, { value: 'aging', label: 'Aging / fine lines / loss of firmness' }, { value: 'rosacea', label: 'Rosacea / persistent redness' }, { value: 'dehydration', label: 'Dehydration / dullness' }] },
@@ -529,7 +514,7 @@
   }
   function showToast(msg) {
     var t = $('#toast'); t.textContent = msg; t.classList.add('show');
-    setTimeout(function () { t.classList.remove('show'); }, 2800);
+    setTimeout(function () { t.classList.remove('show'); }, 2600);
   }
 
   function todayKey() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -634,22 +619,10 @@
       return '<div class="product-section"><div class="product-label-row"><div class="product-icon">' + catIcons[iconKey] + '</div><div class="product-label">' + label + '</div></div><div class="product-item"><div class="product-brand">' + escapeHtml(p.brand) + '</div><div class="product-name">' + escapeHtml(p.name) + '</div><div class="product-actives">Key actives: ' + escapeHtml(p.actives) + '</div><div class="product-usage">Use: ' + escapeHtml(p.usage) + '</div></div></div>';
     }
     $('#rx-content').innerHTML =
-      '<div class="rx-card">' +
-        '<div class="rx-header">' +
-          '<div class="rx-badge">Personalized Routine</div>' +
-          '<div class="rx-name">' + escapeHtml(rx.userName) + '</div>' +
-          '<div class="rx-date">' + dateStr + '</div>' +
-        '</div>' +
-        '<div class="rx-body">' +
-          '<div class="profile-summary"><h3>Skin Analysis</h3><p>' + escapeHtml(rx.profileSummary) + '</p></div>' +
-          prodBlock('1. Cleanser', 'cleanser', rx.cleanser) +
-          prodBlock('2. Active Serum', 'serum', rx.serum) +
-          prodBlock('3. Moisturizer', 'moisturizer', rx.moisturizer) +
-          prodBlock('4. Sunscreen', 'sunscreen', rx.sunscreen) +
-          tipsHtml +
-          '<div class="rx-footer">Tap Download Report for your A4 certificate · Patch-test new products</div>' +
-        '</div>' +
-      '</div>';
+      '<div class="rx-card"><div class="rx-header"><div class="rx-badge">Personalized Routine</div><div class="rx-name">' + escapeHtml(rx.userName) + '</div><div class="rx-date">' + dateStr + '</div></div><div class="rx-body"><div class="profile-summary"><h3>Skin Analysis</h3><p>' + escapeHtml(rx.profileSummary) + '</p></div>' +
+      prodBlock('1. Cleanser', 'cleanser', rx.cleanser) + prodBlock('2. Active Serum', 'serum', rx.serum) +
+      prodBlock('3. Moisturizer', 'moisturizer', rx.moisturizer) + prodBlock('4. Sunscreen', 'sunscreen', rx.sunscreen) +
+      tipsHtml + '<div class="rx-footer">Tap Download Report for your certificate · Patch-test new products</div></div></div>';
   }
 
   function roundRect(ctx, x, y, w, h, r) {
@@ -683,13 +656,11 @@
     ctx.fillStyle = '#F5B8A0';
     ctx.beginPath(); ctx.ellipse(-14, -28, 3, 10, -0.2, 0, Math.PI * 2); ctx.fill();
     ctx.beginPath(); ctx.ellipse(14, -28, 3, 10, 0.2, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#F8DCC8';
-    ctx.beginPath(); ctx.ellipse(0, 0, 22, 20, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#F8DCC8'; ctx.beginPath(); ctx.ellipse(0, 0, 22, 20, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#2C3333';
     ctx.beginPath(); ctx.ellipse(-8, -2, 3, 3.5, 0, 0, Math.PI * 2); ctx.fill();
     ctx.beginPath(); ctx.ellipse(8, -2, 3, 3.5, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#E8A090';
-    ctx.beginPath(); ctx.ellipse(0, 6, 3, 2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#E8A090'; ctx.beginPath(); ctx.ellipse(0, 6, 3, 2, 0, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
 
@@ -708,10 +679,8 @@
     drawMiniBunny(ctx, 90, 180, 0.9, 0.06);
     drawMiniBunny(ctx, W - 90, 420, 0.7, 0.05);
     drawMiniBunny(ctx, 110, H - 160, 0.65, 0.05);
-    drawMiniBunny(ctx, W - 100, H - 280, 0.55, 0.04);
     drawSparkle(ctx, 70, 70, 10, 'rgba(59,155,156,0.2)');
     drawSparkle(ctx, W - 70, 90, 8, 'rgba(45,212,191,0.25)');
-    drawSparkle(ctx, W - 80, H - 80, 9, 'rgba(59,155,156,0.18)');
     var grd = ctx.createLinearGradient(48, 48, W - 48, 48);
     grd.addColorStop(0, '#3B9B9C'); grd.addColorStop(1, '#1E5A5C');
     ctx.fillStyle = grd; roundRect(ctx, 48, 52, W - 96, 130, 16); ctx.fill();
@@ -758,113 +727,37 @@
     ctx.fillStyle = '#A0A0A0'; ctx.font = '400 11px system-ui,sans-serif';
     ctx.fillText('Virtual Dermatologist · Skinveda', W - 68, y + 94); ctx.textAlign = 'left';
     ctx.fillStyle = '#A0A0A0'; ctx.font = '400 11px system-ui,sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('Personalized routine based on your assessment · Patch-test new products · Not a medical diagnosis', W / 2, H - 44);
+    ctx.fillText('Personalized routine · Patch-test new products · Not a medical diagnosis', W / 2, H - 44);
     ctx.textAlign = 'left';
     return canvas;
   }
 
-  /* ========== DIRECT ONE-CLICK DOWNLOAD (no share, no long-press) ========== */
-  function triggerBlobDownload(blob, fileName) {
-    // IE / legacy Edge
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, fileName);
-      return true;
-    }
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.style.display = 'none';
-    a.setAttribute('download', fileName);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-    return true;
-  }
-
-  function triggerDataUrlDownload(dataUrl, fileName) {
-    var a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = fileName;
-    a.style.display = 'none';
-    a.setAttribute('download', fileName);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
-  function showDownloadHelp() {
-    state.sheetMode = 'download-help';
-    $('#sheet-title').textContent = 'Allow downloads';
-    $('#sheet-message').textContent = 'Your browser may be blocking file downloads. Please allow Downloads for this site in your browser or app settings, then tap Download Report again.';
-    $('#btn-confirm-delete').textContent = 'Got it';
-    $('#btn-confirm-delete').className = 'btn btn-primary';
-    $('#btn-cancel-delete').style.display = 'none';
-    $('#overlay').classList.add('show');
-  }
-
-  function resetSheetToDelete() {
-    state.sheetMode = 'delete';
-    $('#sheet-title').textContent = 'Delete prescription?';
-    $('#sheet-message').textContent = 'This action cannot be undone. The saved assessment will be permanently removed.';
-    $('#btn-confirm-delete').textContent = 'Delete';
-    $('#btn-confirm-delete').className = 'btn btn-danger';
-    $('#btn-cancel-delete').style.display = '';
-  }
-
+  /**
+   * CRASH-FREE DOWNLOAD
+   * - Only canvas.toDataURL (Base64) — no Blob URLs, no File(), no share, no File System API
+   * - Hidden <a download> click only
+   */
   function downloadReportCard(rx) {
     if (!rx) return;
-    var fileName = 'Skinveda_Report_' + String(rx.userName || 'Card').replace(/[^\w\-]+/g, '_') + '.png';
-    showToast('Downloading report…');
+    var fileName = 'SkinVeda-Report.png';
+    try {
+      showToast('Preparing report…');
+      var canvas = buildReportCanvas(rx);
+      // Synchronous Base64 PNG — stays fully in memory
+      var dataUrl = canvas.toDataURL('image/png');
 
-    var canvas = buildReportCanvas(rx);
+      var link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = fileName;
+      link.style.display = 'none';
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    // Prefer blob download (standard, one-click)
-    if (canvas.toBlob) {
-      canvas.toBlob(function (blob) {
-        if (!blob) {
-          // Fallback to data URL
-          try {
-            triggerDataUrlDownload(canvas.toDataURL('image/png'), fileName);
-            showToast('Download started');
-          } catch (err) {
-            showDownloadHelp();
-          }
-          return;
-        }
-        try {
-          triggerBlobDownload(blob, fileName);
-          showToast('Download started');
-          // Gentle reminder only if browser typically blocks (cannot detect reliably)
-          setTimeout(function () {
-            // No extra UI unless user reports — keep clean
-          }, 500);
-        } catch (err) {
-          try {
-            var reader = new FileReader();
-            reader.onloadend = function () {
-              try {
-                triggerDataUrlDownload(reader.result, fileName);
-                showToast('Download started');
-              } catch (e2) {
-                showDownloadHelp();
-              }
-            };
-            reader.onerror = function () { showDownloadHelp(); };
-            reader.readAsDataURL(blob);
-          } catch (e3) {
-            showDownloadHelp();
-          }
-        }
-      }, 'image/png', 0.95);
-    } else {
-      try {
-        triggerDataUrlDownload(canvas.toDataURL('image/png'), fileName);
-        showToast('Download started');
-      } catch (err) {
-        showDownloadHelp();
-      }
+      showToast('Download started');
+    } catch (err) {
+      showToast('Download failed. Please try again.');
     }
   }
 
@@ -900,14 +793,10 @@
     }
     container.innerHTML = list.map(function (item) {
       var dateStr = new Date(item.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-      return '<div class="history-item" data-id="' + item.id + '"><div class="history-name">' + escapeHtml(item.userName) + '</div><div class="history-date">' + dateStr + '</div><div class="history-summary">' + escapeHtml(item.profileSummary) + '</div><div class="history-products"><strong>Cleanser:</strong> ' + escapeHtml(item.cleanser.brand) + ' ' + escapeHtml(item.cleanser.name) + '<br><strong>Serum:</strong> ' + escapeHtml(item.serum.brand) + ' ' + escapeHtml(item.serum.name) + '<br><strong>Moisturizer:</strong> ' + escapeHtml(item.moisturizer.brand) + ' ' + escapeHtml(item.moisturizer.name) + '<br><strong>SPF:</strong> ' + escapeHtml(item.sunscreen.brand) + ' ' + escapeHtml(item.sunscreen.name) + '</div><div class="history-actions"><button class="btn btn-primary btn-redownload" data-id="' + item.id + '">Download Report</button><button class="btn btn-danger btn-delete" data-id="' + item.id + '">Delete</button></div></div>';
+      return '<div class="history-item" data-id="' + item.id + '"><div class="history-name">' + escapeHtml(item.userName) + '</div><div class="history-date">' + dateStr + '</div><div class="history-summary">' + escapeHtml(item.profileSummary) + '</div><div class="history-products"><strong>Cleanser:</strong> ' + escapeHtml(item.cleanser.brand) + ' ' + escapeHtml(item.cleanser.name) + '<br><strong>Serum:</strong> ' + escapeHtml(item.serum.brand) + ' ' + escapeHtml(item.serum.name) + '<br><strong>Moisturizer:</strong> ' + escapeHtml(item.moisturizer.brand) + ' ' + escapeHtml(item.moisturizer.name) + '<br><strong>SPF:</strong> ' + escapeHtml(item.sunscreen.brand) + ' ' + escapeHtml(item.sunscreen.name) + '</div><div class="history-actions"><button class="btn btn-primary btn-redownload" type="button" data-id="' + item.id + '">Download</button><button class="btn btn-danger btn-delete" type="button" data-id="' + item.id + '">Delete</button></div></div>';
     }).join('');
     container.querySelectorAll('.btn-delete').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        state.deleteId = btn.getAttribute('data-id');
-        resetSheetToDelete();
-        $('#overlay').classList.add('show');
-      });
+      btn.addEventListener('click', function () { state.deleteId = btn.getAttribute('data-id'); $('#overlay').classList.add('show'); });
     });
     container.querySelectorAll('.btn-redownload').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -951,18 +840,8 @@
       addPrescription(rx); renderResults(rx); showScreen('results'); showToast('Routine saved to history');
     }
   });
-
-  $('#btn-cancel-delete').addEventListener('click', function () {
-    state.deleteId = null;
-    resetSheetToDelete();
-    $('#overlay').classList.remove('show');
-  });
+  $('#btn-cancel-delete').addEventListener('click', function () { state.deleteId = null; $('#overlay').classList.remove('show'); });
   $('#btn-confirm-delete').addEventListener('click', function () {
-    if (state.sheetMode === 'download-help') {
-      resetSheetToDelete();
-      $('#overlay').classList.remove('show');
-      return;
-    }
     if (!state.deleteId) return;
     var item = document.querySelector('.history-item[data-id="' + state.deleteId + '"]');
     if (item) {
@@ -970,14 +849,7 @@
       setTimeout(function () { deletePrescription(state.deleteId); state.deleteId = null; $('#overlay').classList.remove('show'); renderHistory(); showToast('Prescription deleted'); }, 280);
     } else { deletePrescription(state.deleteId); state.deleteId = null; $('#overlay').classList.remove('show'); renderHistory(); showToast('Prescription deleted'); }
   });
-  $('#overlay').addEventListener('click', function (e) {
-    if (e.target === $('#overlay')) {
-      state.deleteId = null;
-      resetSheetToDelete();
-      $('#overlay').classList.remove('show');
-    }
-  });
-
+  $('#overlay').addEventListener('click', function (e) { if (e.target === $('#overlay')) { state.deleteId = null; $('#overlay').classList.remove('show'); } });
   var lastTouch = 0;
   document.addEventListener('touchend', function (e) { var now = Date.now(); if (now - lastTouch <= 300) e.preventDefault(); lastTouch = now; }, { passive: false });
   renderStreak();
