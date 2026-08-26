@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Skinveda">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="screen-orientation" content="portrait">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="description" content="Skinveda — AI-powered virtual dermatologist assessment and personalized skincare routines.">
 <title>Skinveda — Virtual Dermatologist</title>
@@ -30,6 +31,7 @@
     --shadow-lg: 0 12px 40px rgba(44, 51, 51, 0.11);
     --radius: 20px;
     --radius-sm: 14px;
+    --nav-h: 72px;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
@@ -37,12 +39,7 @@
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   html {
     height: 100%;
@@ -59,9 +56,27 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     padding-top: var(--safe-top);
-    padding-bottom: var(--safe-bottom);
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
+  }
+
+  /* Portrait lock helper */
+  @media screen and (orientation: landscape) and (max-height: 500px) {
+    body::after {
+      content: "Please rotate your device to portrait mode";
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #fff;
+      color: var(--slate);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      font-size: 16px;
+      font-weight: 600;
+    }
   }
 
   .app {
@@ -71,9 +86,10 @@
     position: relative;
     background: var(--warm-white);
     box-shadow: 0 0 60px rgba(0,0,0,0.05);
+    padding-bottom: calc(var(--nav-h) + var(--safe-bottom));
   }
 
-  /* ========== SPLASH — Pure White Instagram Style ========== */
+  /* ========== SPLASH ========== */
   .splash {
     position: fixed;
     inset: 0;
@@ -85,13 +101,7 @@
     justify-content: center;
     transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.65s;
   }
-
-  .splash.hide {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
+  .splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
   .splash-brand {
     font-size: 44px;
     font-weight: 750;
@@ -102,7 +112,6 @@
     -webkit-text-fill-color: transparent;
     animation: breathe 2.4s ease-in-out infinite;
   }
-
   .splash-from {
     position: absolute;
     bottom: calc(48px + var(--safe-bottom));
@@ -111,7 +120,6 @@
     letter-spacing: 0.3px;
     color: #A0A0A0;
   }
-
   @keyframes breathe {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.04); opacity: 0.92; }
@@ -120,64 +128,48 @@
   /* ========== SCREENS ========== */
   .screen {
     display: none;
-    min-height: 100dvh;
+    min-height: calc(100dvh - var(--nav-h) - var(--safe-bottom));
     flex-direction: column;
-    padding: 20px 20px 28px;
+    padding: 16px 20px 16px;
     animation: screenIn 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     position: relative;
   }
-
-  .screen.active {
-    display: flex;
-  }
-
+  .screen.active { display: flex; }
   @keyframes screenIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
   @keyframes slideUp {
     from { opacity: 0; transform: translateY(18px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  @keyframes fadeOut {
-    to { opacity: 0; transform: scale(0.96); }
-  }
-
+  @keyframes fadeOut { to { opacity: 0; transform: scale(0.96); } }
   @keyframes qIn {
     from { opacity: 0; transform: translateX(14px); }
     to { opacity: 1; transform: translateX(0); }
   }
-
   @keyframes floatBunny {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-7px); }
   }
-
   @keyframes miniBob {
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(-3px) rotate(2deg); }
   }
 
-  /* ========== LANDING — Refined homepage layout ========== */
+  /* ========== LANDING ========== */
   .landing {
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
-    /* Soft clinical skincare gradient + subtle radial glow */
     background:
       radial-gradient(ellipse 120% 80% at 50% -10%, rgba(122, 158, 159, 0.18) 0%, transparent 55%),
       radial-gradient(ellipse 90% 60% at 100% 100%, rgba(94, 234, 212, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse 70% 50% at 0% 80%, rgba(74, 124, 125, 0.07) 0%, transparent 45%),
       linear-gradient(165deg, #F7FBFC 0%, #F0F7F7 35%, #FAF9F7 70%, #F2F8F8 100%);
-    padding-top: 28px;
-    padding-bottom: calc(28px + var(--safe-bottom));
+    padding-top: 20px;
     overflow: hidden;
     position: relative;
   }
-
-  /* Subtle decorative medical-aesthetic pattern (clean cross dots) */
   .landing::before {
     content: "";
     position: absolute;
@@ -185,77 +177,153 @@
     background-image:
       radial-gradient(circle at 18% 22%, rgba(122, 158, 159, 0.07) 0%, transparent 2px),
       radial-gradient(circle at 82% 18%, rgba(74, 124, 125, 0.06) 0%, transparent 2px),
-      radial-gradient(circle at 12% 68%, rgba(122, 158, 159, 0.05) 0%, transparent 2px),
-      radial-gradient(circle at 88% 72%, rgba(74, 124, 125, 0.05) 0%, transparent 2px),
       radial-gradient(circle at 50% 40%, rgba(122, 158, 159, 0.04) 0%, transparent 1.5px);
-    background-size: 100% 100%;
     pointer-events: none;
     z-index: 0;
   }
-
   .landing-top {
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    position: relative;
     width: 100%;
     max-width: 360px;
-    padding-top: 36px;
+    padding-top: 12px;
     z-index: 1;
+    position: relative;
   }
-
   .landing-mascot-bg {
     position: absolute;
-    top: 8%;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 200px;
+    width: 140px;
     opacity: 0.1;
     pointer-events: none;
     z-index: 0;
   }
-
-  .landing-mascot-bg svg {
-    width: 100%;
-    height: auto;
-  }
-
+  .landing-mascot-bg svg { width: 100%; height: auto; }
   .landing-title {
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 750;
     letter-spacing: -0.8px;
-    /* App primary theme color */
-    color: #2A7A7B;
     background: linear-gradient(135deg, #3B9B9C 0%, #2A7A7B 55%, #4A7C7D 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
     position: relative;
     z-index: 1;
   }
-
-  .landing-sub {
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--slate-soft);
-    max-width: 300px;
-    margin: 0 auto;
-    position: relative;
+  .landing-tag {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 18px;
     z-index: 1;
   }
 
-  .landing-actions {
+  /* Streak Tracker Widget */
+  .streak-card {
     width: 100%;
-    max-width: 340px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-top: 20px;
-    z-index: 2;
+    max-width: 360px;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    padding: 18px 18px 16px;
+    text-align: left;
+    z-index: 1;
     position: relative;
+    margin-bottom: 8px;
+  }
+  .streak-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .streak-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--slate);
+  }
+  .streak-count {
+    font-size: 22px;
+    font-weight: 800;
+    color: #2A7A7B;
+    letter-spacing: -0.5px;
+  }
+  .streak-count span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .streak-days {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .streak-day {
+    flex: 1;
+    text-align: center;
+  }
+  .streak-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 auto 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--sage-light);
+    color: var(--muted);
+    border: 1.5px solid transparent;
+  }
+  .streak-dot.done {
+    background: linear-gradient(145deg, #3B9B9C, #2A7A7B);
+    color: #fff;
+  }
+  .streak-dot.today {
+    border-color: #2A7A7B;
+    box-shadow: 0 0 0 3px rgba(42,122,123,0.15);
+  }
+  .streak-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .streak-btn {
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 650;
+    font-family: var(--font);
+    cursor: pointer;
+    background: linear-gradient(145deg, #3B9B9C, #2A7A7B);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(42,122,123,0.25);
+    transition: transform 0.15s;
+  }
+  .streak-btn:active { transform: scale(0.97); }
+  .streak-btn:disabled {
+    background: var(--sage-light);
+    color: var(--sage-dark);
+    box-shadow: none;
+    cursor: default;
+  }
+  .streak-msg {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 500;
   }
 
   .btn {
@@ -276,24 +344,18 @@
     position: relative;
     z-index: 5;
   }
-
-  .btn:active {
-    transform: scale(0.96);
-  }
-
+  .btn:active { transform: scale(0.96); }
   .btn-primary {
     background: linear-gradient(145deg, #3B9B9C, #2A7A7B);
     color: white;
     box-shadow: 0 8px 24px rgba(42, 122, 123, 0.3);
   }
-
   .btn-secondary {
     background: rgba(255,255,255,0.95);
     color: var(--teal);
     border: 1.5px solid var(--border);
     box-shadow: var(--shadow);
   }
-
   .btn-danger {
     background: #FEECEC;
     color: #C45C5C;
@@ -303,59 +365,103 @@
     padding: 0 16px;
     border-radius: 12px;
   }
+  .btn-download {
+    background: linear-gradient(145deg, #3B9B9C, #2A7A7B);
+    color: white;
+    margin-top: 8px;
+  }
+
+  /* ========== BOTTOM NAV ========== */
+  .bottom-nav {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 100%;
+    max-width: 430px;
+    height: calc(var(--nav-h) + var(--safe-bottom));
+    padding-bottom: var(--safe-bottom);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 500;
+    box-shadow: 0 -4px 24px rgba(44,51,51,0.06);
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 4px;
+    transition: color 0.2s;
+    touch-action: manipulation;
+  }
+  .nav-item svg { width: 24px; height: 24px; }
+  .nav-item.active { color: #2A7A7B; }
+  .nav-center {
+    flex: 0 0 auto;
+    width: 62px;
+    height: 62px;
+    margin-top: -22px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #3B9B9C, #2A7A7B);
+    color: #fff;
+    border: 4px solid var(--warm-white);
+    box-shadow: 0 8px 22px rgba(42,122,123,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .nav-center:active { transform: scale(0.94); }
+  .nav-center svg { width: 26px; height: 26px; }
+  .nav-center-label {
+    display: none;
+  }
 
   /* ========== HEADER ========== */
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     padding-top: 4px;
     flex-shrink: 0;
   }
-
-  .header-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--slate);
-  }
-
+  .header-title { font-size: 17px; font-weight: 600; color: var(--slate); }
   .back-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
-    border: none;
+    width: 42px; height: 42px; border-radius: 14px; border: none;
     background: var(--glass);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--slate);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--slate);
     transition: transform 0.15s;
     touch-action: manipulation;
     z-index: 10;
   }
-
-  .back-btn:active {
-    transform: scale(0.94);
-  }
-
-  .back-btn svg {
-    width: 20px;
-    height: 20px;
-  }
+  .back-btn:active { transform: scale(0.94); }
+  .back-btn svg { width: 20px; height: 20px; }
 
   /* ========== NAME ========== */
-  .name-input-wrap {
-    margin-top: 8px;
-  }
-
+  .name-input-wrap { margin-top: 8px; }
   .name-input {
-    width: 100%;
-    height: 56px;
+    width: 100%; height: 56px;
     border: 1.5px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 0 18px;
@@ -367,15 +473,11 @@
     transition: border-color 0.2s, box-shadow 0.2s;
     -webkit-appearance: none;
   }
-
   .name-input:focus {
     border-color: var(--teal);
     box-shadow: 0 0 0 4px rgba(74, 124, 125, 0.12);
   }
-
-  .name-input::placeholder {
-    color: var(--muted);
-  }
+  .name-input::placeholder { color: var(--muted); }
 
   /* ========== MASCOT DIALOG ========== */
   .mascot-dialog {
@@ -383,33 +485,29 @@
     align-items: center;
     text-align: center;
     background: linear-gradient(180deg, #F4F9F9 0%, var(--warm-white) 50%, #F0F6F6 100%);
-    padding: 24px 20px 40px;
+    padding: 20px 20px 24px;
   }
-
   .mascot-center {
-    width: 150px;
-    margin: 0 auto 18px;
+    width: 140px;
+    margin: 0 auto 16px;
     animation: floatBunny 3s ease-in-out infinite;
   }
-
   .mascot-center svg {
     width: 100%;
     height: auto;
     filter: drop-shadow(0 10px 22px rgba(74, 124, 125, 0.18));
   }
-
   .speech-bubble {
     position: relative;
     background: white;
     border-radius: 22px;
-    padding: 20px 22px;
+    padding: 18px 20px;
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border);
     max-width: 340px;
-    margin: 0 auto 28px;
+    margin: 0 auto 22px;
     animation: slideUp 0.4s ease;
   }
-
   .speech-bubble::after {
     content: "";
     position: absolute;
@@ -420,44 +518,31 @@
     border-right: 12px solid transparent;
     border-bottom: 12px solid white;
   }
-
   .speech-bubble p {
-    font-size: 15.5px;
+    font-size: 15px;
     line-height: 1.55;
     color: var(--slate);
     font-weight: 500;
   }
-
   .speech-bubble .user-highlight {
     color: var(--teal);
     font-weight: 700;
   }
 
-  /* ========== PROGRESS + MINI MASCOT ========== */
-  .progress-wrap {
-    margin-bottom: 16px;
-    flex-shrink: 0;
-  }
-
+  /* ========== PROGRESS ========== */
+  .progress-wrap { margin-bottom: 14px; flex-shrink: 0; }
   .progress-row {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 10px;
   }
-
   .mini-mascot {
-    width: 38px;
-    height: 38px;
+    width: 36px; height: 36px;
     flex-shrink: 0;
     animation: miniBob 2.5s ease-in-out infinite;
   }
-
-  .mini-mascot svg {
-    width: 100%;
-    height: 100%;
-  }
-
+  .mini-mascot svg { width: 100%; height: 100%; }
   .progress-meta {
     flex: 1;
     display: flex;
@@ -466,14 +551,12 @@
     color: var(--muted);
     font-weight: 500;
   }
-
   .progress-bar {
     height: 6px;
     background: var(--border);
     border-radius: 3px;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #3B9B9C, #2A7A7B);
@@ -489,7 +572,6 @@
     animation: qIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     min-height: 0;
   }
-
   .q-label {
     font-size: 12px;
     font-weight: 600;
@@ -498,30 +580,27 @@
     letter-spacing: 0.7px;
     margin-bottom: 8px;
   }
-
   .q-text {
-    font-size: 19.5px;
+    font-size: 18.5px;
     font-weight: 650;
     line-height: 1.35;
     letter-spacing: -0.3px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     color: var(--slate);
   }
-
   .options {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 9px;
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 4px;
   }
-
   .option {
     display: flex;
     align-items: center;
-    padding: 14px 16px;
+    padding: 13px 15px;
     background: var(--glass);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -533,20 +612,14 @@
     touch-action: manipulation;
     flex-shrink: 0;
   }
-
-  .option:active {
-    transform: scale(0.985);
-  }
-
+  .option:active { transform: scale(0.985); }
   .option.selected {
     border-color: var(--teal);
     background: linear-gradient(135deg, #E8F4F4, #F0F7F7);
     box-shadow: 0 4px 16px rgba(74, 124, 125, 0.13);
   }
-
   .option-radio {
-    width: 22px;
-    height: 22px;
+    width: 22px; height: 22px;
     border-radius: 50%;
     border: 2px solid var(--border);
     margin-right: 14px;
@@ -556,65 +629,51 @@
     justify-content: center;
     transition: all 0.2s;
   }
-
   .option.selected .option-radio {
     border-color: var(--teal);
     background: var(--teal);
   }
-
   .option.selected .option-radio::after {
     content: "";
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     background: white;
     border-radius: 50%;
   }
-
   .option-text {
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 500;
     color: var(--slate);
     line-height: 1.4;
   }
-
   .nav-row {
     display: flex;
     gap: 12px;
-    margin-top: 18px;
+    margin-top: 14px;
     flex-shrink: 0;
   }
+  .nav-row .btn { flex: 1; height: 48px; font-size: 15px; }
 
-  .nav-row .btn {
-    flex: 1;
-  }
-
-  /* ========== RESULTS ========== */
-  .results {
-    padding-bottom: calc(24px + var(--safe-bottom));
-  }
-
+  /* ========== RESULTS / REPORT CARD ========== */
+  .results { padding-bottom: 8px; }
   .results-scroll {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 12px;
+    padding-bottom: 8px;
   }
-
   .rx-card {
     background: white;
     border-radius: 22px;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     animation: slideUp 0.4s ease;
   }
-
   .rx-header {
     background: linear-gradient(145deg, #3B9B9C, #1E5A5C);
     color: white;
-    padding: 22px 20px;
+    padding: 20px 18px;
   }
-
   .rx-badge {
     display: inline-block;
     font-size: 11px;
@@ -626,30 +685,15 @@
     border-radius: 20px;
     margin-bottom: 10px;
   }
-
-  .rx-name {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    margin-bottom: 4px;
-  }
-
-  .rx-date {
-    font-size: 13px;
-    opacity: 0.88;
-  }
-
-  .rx-body {
-    padding: 20px;
-  }
-
+  .rx-name { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 4px; }
+  .rx-date { font-size: 13px; opacity: 0.88; }
+  .rx-body { padding: 18px; }
   .profile-summary {
     background: var(--sage-light);
     border-radius: 14px;
     padding: 14px 16px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
-
   .profile-summary h3 {
     font-size: 11px;
     font-weight: 600;
@@ -658,31 +702,17 @@
     letter-spacing: 0.5px;
     margin-bottom: 6px;
   }
-
-  .profile-summary p {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: var(--slate);
-  }
-
-  .product-section {
-    margin-bottom: 16px;
-  }
-
-  .product-section:last-child {
-    margin-bottom: 0;
-  }
-
+  .profile-summary p { font-size: 14px; line-height: 1.5; color: var(--slate); }
+  .product-section { margin-bottom: 14px; }
+  .product-section:last-child { margin-bottom: 0; }
   .product-label-row {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
   }
-
   .product-icon {
-    width: 36px;
-    height: 36px;
+    width: 34px; height: 34px;
     border-radius: 10px;
     background: var(--sage-light);
     display: flex;
@@ -690,12 +720,7 @@
     justify-content: center;
     flex-shrink: 0;
   }
-
-  .product-icon svg {
-    width: 22px;
-    height: 22px;
-  }
-
+  .product-icon svg { width: 20px; height: 20px; }
   .product-label {
     font-size: 11px;
     font-weight: 600;
@@ -703,118 +728,84 @@
     text-transform: uppercase;
     letter-spacing: 0.6px;
   }
-
   .product-item {
     background: var(--cream);
     border-radius: 14px;
-    padding: 13px 15px;
+    padding: 12px 14px;
     border-left: 3px solid var(--sage);
   }
-
-  .product-brand {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--teal);
+  .product-brand { font-size: 12px; font-weight: 600; color: var(--teal); margin-bottom: 2px; }
+  .product-name { font-size: 14.5px; font-weight: 600; color: var(--slate); margin-bottom: 4px; }
+  .product-actives { font-size: 12.5px; color: var(--slate-soft); margin-bottom: 4px; }
+  .product-usage { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .rx-signature {
+    margin-top: 18px;
+    text-align: right;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+  }
+  .rx-signature .sig-label {
+    font-size: 11px;
+    color: var(--muted);
     margin-bottom: 2px;
   }
-
-  .product-name {
-    font-size: 15px;
+  .rx-signature .sig-name {
+    font-family: "Segoe Script", "Brush Script MT", "Comic Sans MS", cursive;
+    font-size: 26px;
+    color: #2A7A7B;
     font-weight: 600;
-    color: var(--slate);
-    margin-bottom: 4px;
+    letter-spacing: 0.5px;
   }
-
-  .product-actives {
-    font-size: 13px;
-    color: var(--slate-soft);
-    margin-bottom: 4px;
-  }
-
-  .product-usage {
-    font-size: 12.5px;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
   .rx-footer {
     text-align: center;
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--muted);
-    margin-top: 16px;
+    margin-top: 12px;
     line-height: 1.5;
   }
-
-  .results-home-btn {
+  .results-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     flex-shrink: 0;
-    margin-top: 8px;
-    z-index: 20;
-    position: relative;
   }
 
   /* ========== HISTORY ========== */
   .history-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 12px;
+    padding-bottom: 8px;
   }
-
   .history-item {
     background: white;
     border-radius: var(--radius);
-    padding: 16px 18px;
+    padding: 14px 16px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
     animation: slideUp 0.3s ease;
     transition: opacity 0.3s, transform 0.3s;
   }
-
-  .history-item.removing {
-    animation: fadeOut 0.3s ease forwards;
-  }
-
-  .history-name {
-    font-size: 16.5px;
-    font-weight: 650;
-    color: var(--slate);
-  }
-
-  .history-date {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
+  .history-item.removing { animation: fadeOut 0.3s ease forwards; }
+  .history-name { font-size: 16px; font-weight: 650; color: var(--slate); }
+  .history-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .history-summary {
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--slate-soft);
     line-height: 1.45;
-    margin: 10px 0 12px;
+    margin: 8px 0 10px;
   }
-
-  .history-products {
-    font-size: 12.5px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
+  .history-products { font-size: 12px; color: var(--muted); line-height: 1.5; }
   .history-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 12px;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
   }
-
-  .history-home-btn {
-    flex-shrink: 0;
-    margin-top: 12px;
-    z-index: 20;
-    position: relative;
-  }
-
+  .history-actions .btn { width: auto; flex: 1; min-width: 100px; height: 40px; font-size: 13px; }
   .empty-state {
     flex: 1;
     display: flex;
@@ -824,10 +815,8 @@
     text-align: center;
     padding: 40px 20px;
   }
-
   .empty-icon {
-    width: 64px;
-    height: 64px;
+    width: 64px; height: 64px;
     background: var(--sage-light);
     border-radius: 18px;
     display: flex;
@@ -835,24 +824,9 @@
     justify-content: center;
     margin-bottom: 16px;
   }
-
-  .empty-icon svg {
-    width: 28px;
-    height: 28px;
-    fill: var(--sage);
-  }
-
-  .empty-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-
-  .empty-text {
-    font-size: 14px;
-    color: var(--muted);
-    max-width: 260px;
-  }
+  .empty-icon svg { width: 28px; height: 28px; fill: var(--sage); }
+  .empty-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .empty-text { font-size: 14px; color: var(--muted); max-width: 260px; }
 
   /* ========== OVERLAY ========== */
   .overlay {
@@ -862,15 +836,11 @@
     display: none;
     align-items: flex-end;
     justify-content: center;
-    z-index: 100;
+    z-index: 600;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
   }
-
-  .overlay.show {
-    display: flex;
-  }
-
+  .overlay.show { display: flex; }
   .sheet {
     background: white;
     border-radius: 22px 22px 0 0;
@@ -879,31 +849,14 @@
     max-width: 430px;
     animation: slideUp 0.3s ease;
   }
-
-  .sheet h3 {
-    font-size: 18px;
-    font-weight: 650;
-    margin-bottom: 8px;
-  }
-
-  .sheet p {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
-
-  .sheet-actions {
-    display: flex;
-    gap: 10px;
-  }
-
-  .sheet-actions .btn {
-    flex: 1;
-  }
+  .sheet h3 { font-size: 18px; font-weight: 650; margin-bottom: 8px; }
+  .sheet p { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+  .sheet-actions { display: flex; gap: 10px; }
+  .sheet-actions .btn { flex: 1; }
 
   .toast {
     position: fixed;
-    bottom: calc(24px + var(--safe-bottom));
+    bottom: calc(var(--nav-h) + 16px + var(--safe-bottom));
     left: 50%;
     transform: translateX(-50%) translateY(80px);
     background: var(--slate);
@@ -912,22 +865,23 @@
     border-radius: 14px;
     font-size: 14px;
     font-weight: 500;
-    z-index: 200;
+    z-index: 700;
     opacity: 0;
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     max-width: 90vw;
   }
-
   .toast.show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+
+  /* Hidden canvas for report download */
+  #report-canvas { display: none; }
 </style>
 </head>
 <body>
 
-<!-- SPLASH — Pure White -->
 <div class="splash" id="splash">
   <div class="splash-brand">Skinveda</div>
   <div class="splash-from">from <span style="color:#0095F6">AV</span></div>
@@ -940,11 +894,18 @@
     <div class="landing-top">
       <div class="landing-mascot-bg" aria-hidden="true" id="landing-mascot"></div>
       <h1 class="landing-title">Skinveda</h1>
-      <p class="landing-sub">Clinical-grade virtual skin assessment. Answer precise questions and receive a personalized routine with dermatologist-trusted products matched to your budget.</p>
-    </div>
-    <div class="landing-actions">
-      <button class="btn btn-primary" id="btn-start">Start Assessment</button>
-      <button class="btn btn-secondary" id="btn-history">Prescription History</button>
+      <p class="landing-tag">Your daily skin wellness companion</p>
+
+      <!-- Daily Skincare Streak Tracker -->
+      <div class="streak-card">
+        <div class="streak-header">
+          <div class="streak-title">🔥 Daily Skincare Streak</div>
+          <div class="streak-count" id="streak-count">0<span>days</span></div>
+        </div>
+        <div class="streak-days" id="streak-days"></div>
+        <button class="streak-btn" id="btn-streak-checkin">Check in today</button>
+        <p class="streak-msg" id="streak-msg">Build a healthy routine — check in after your skincare!</p>
+      </div>
     </div>
   </div>
 
@@ -1016,11 +977,14 @@
       <button class="back-btn" id="btn-results-back" aria-label="Home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <span class="header-title">Your Prescription</span>
+      <span class="header-title">Your Report Card</span>
       <div style="width:42px"></div>
     </div>
     <div class="results-scroll" id="rx-content"></div>
-    <button class="btn btn-primary results-home-btn" id="btn-results-home">Back to Home</button>
+    <div class="results-actions">
+      <button class="btn btn-download" id="btn-download-report">Download Report Card</button>
+      <button class="btn btn-secondary" id="btn-results-home">Back to Home</button>
+    </div>
   </div>
 
   <!-- HISTORY -->
@@ -1033,9 +997,23 @@
       <div style="width:42px"></div>
     </div>
     <div class="history-list" id="history-list"></div>
-    <button class="btn btn-primary history-home-btn" id="btn-history-home">Back to Home</button>
   </div>
 </div>
+
+<!-- Fixed Bottom Navigation -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-item active" id="nav-home" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z"/></svg>
+    Home
+  </button>
+  <button class="nav-center" id="nav-start" type="button" aria-label="Start Assessment">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+  <button class="nav-item" id="nav-history" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+    History
+  </button>
+</nav>
 
 <div class="overlay" id="overlay">
   <div class="sheet">
@@ -1049,14 +1027,20 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<canvas id="report-canvas" width="720" height="1280"></canvas>
 
 <script>
 (function () {
   'use strict';
 
-  // ============================================================
-  // PWA: Manifest + Service Worker (single-file, Blob-based)
-  // ============================================================
+  // Portrait orientation lock (best-effort)
+  try {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('portrait').catch(function () {});
+    }
+  } catch (e) {}
+
+  // ========== PWA ==========
   (function registerPWA() {
     var ICON_192 = 'data:image/svg+xml,' + encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#2A7A7B"/><text x="96" y="118" text-anchor="middle" font-size="72" font-family="system-ui,sans-serif" font-weight="700" fill="#fff">S</text></svg>'
@@ -1064,7 +1048,6 @@
     var ICON_512 = 'data:image/svg+xml,' + encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#2A7A7B"/><text x="256" y="320" text-anchor="middle" font-size="200" font-family="system-ui,sans-serif" font-weight="700" fill="#fff">S</text></svg>'
     );
-
     var manifest = {
       name: 'Skinveda — Virtual Dermatologist',
       short_name: 'Skinveda',
@@ -1076,8 +1059,6 @@
       background_color: '#FFFFFF',
       theme_color: '#FFFFFF',
       lang: 'en',
-      dir: 'ltr',
-      categories: ['health', 'lifestyle', 'medical'],
       icons: [
         { src: ICON_192, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
         { src: ICON_512, sizes: '512x512', type: 'image/svg+xml', purpose: 'any' },
@@ -1085,60 +1066,29 @@
         { src: ICON_512, sizes: '512x512', type: 'image/svg+xml', purpose: 'maskable' }
       ]
     };
-
     var manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-    var manifestURL = URL.createObjectURL(manifestBlob);
     var link = document.createElement('link');
     link.rel = 'manifest';
-    link.href = manifestURL;
+    link.href = URL.createObjectURL(manifestBlob);
     document.head.appendChild(link);
-
     var appleIcon = document.createElement('link');
     appleIcon.rel = 'apple-touch-icon';
     appleIcon.href = ICON_192;
     document.head.appendChild(appleIcon);
-
     var swCode = [
-      "const CACHE_NAME = 'skinveda-v1';",
-      "const SHELL = ['./'];",
-      "self.addEventListener('install', (event) => {",
-      "  event.waitUntil(",
-      "    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting())",
-      "  );",
-      "});",
-      "self.addEventListener('activate', (event) => {",
-      "  event.waitUntil(",
-      "    caches.keys().then((keys) =>",
-      "      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))",
-      "    ).then(() => self.clients.claim())",
-      "  );",
-      "});",
-      "self.addEventListener('fetch', (event) => {",
-      "  if (event.request.method !== 'GET') return;",
-      "  event.respondWith(",
-      "    caches.match(event.request).then((cached) => {",
-      "      if (cached) return cached;",
-      "      return fetch(event.request).then((response) => {",
-      "        if (!response || response.status !== 200 || response.type === 'opaque') return response;",
-      "        const clone = response.clone();",
-      "        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));",
-      "        return response;",
-      "      }).catch(() => caches.match('./'));",
-      "    })",
-      "  );",
-      "});"
-    ].join('\n');
-
+      "const CACHE_NAME='skinveda-v2';const SHELL=['./'];",
+      "self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));});",
+      "self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});",
+      "self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(!r||r.status!==200||r.type==='opaque')return r;const cl=r.clone();caches.open(CACHE_NAME).then(cache=>cache.put(e.request,cl));return r;}).catch(()=>caches.match('./'));}));});"
+    ].join('');
     if ('serviceWorker' in navigator) {
-      var swBlob = new Blob([swCode], { type: 'application/javascript' });
-      var swURL = URL.createObjectURL(swBlob);
+      var swURL = URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }));
       window.addEventListener('load', function () {
         navigator.serviceWorker.register(swURL, { scope: './' }).catch(function () {});
       });
     }
   })();
 
-  // ========== SPLASH ==========
   window.addEventListener('load', function () {
     setTimeout(function () {
       var s = document.getElementById('splash');
@@ -1146,31 +1096,22 @@
     }, 2500);
   });
 
-  // ========== BUNNY SVG ==========
   function bunnySVG(size) {
     if (size === 'mini') {
-      return '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="48" rx="18" ry="10" fill="#FFFFFF"/><path d="M16 40 Q16 28 24 24 L32 22 L40 24 Q48 28 48 40 L48 54 Q48 58 44 58 L20 58 Q16 58 16 54 Z" fill="#FFFFFF" stroke="#E0E8E8" stroke-width="1"/><rect x="28" y="26" width="8" height="6" rx="2" fill="#F5D0B5"/><ellipse cx="32" cy="18" rx="12" ry="11" fill="#F8DCC8"/><ellipse cx="24" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(-14 24 6)"/><ellipse cx="24" cy="7" rx="2" ry="6" fill="#F5B8A0" transform="rotate(-14 24 7)"/><ellipse cx="40" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(14 40 6)"/><ellipse cx="40" cy="7" rx="2" ry="6" fill="#F5B8A0" transform="rotate(14 40 7)"/><ellipse cx="28" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><ellipse cx="36" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><circle cx="28.6" cy="16.3" r="0.8" fill="white"/><circle cx="36.6" cy="16.3" r="0.8" fill="white"/><ellipse cx="32" cy="21" rx="1.8" ry="1.3" fill="#E8A090"/><path d="M28.5 24 Q32 27 35.5 24" stroke="#C47A6A" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>';
+      return '<svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="48" rx="18" ry="10" fill="#FFFFFF"/><path d="M16 40 Q16 28 24 24 L32 22 L40 24 Q48 28 48 40 L48 54 Q48 58 44 58 L20 58 Q16 58 16 54 Z" fill="#FFFFFF" stroke="#E0E8E8" stroke-width="1"/><rect x="28" y="26" width="8" height="6" rx="2" fill="#F5D0B5"/><ellipse cx="32" cy="18" rx="12" ry="11" fill="#F8DCC8"/><ellipse cx="24" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(-14 24 6)"/><ellipse cx="24" cy="7" rx="2" ry="6" fill="#F5B8A0" transform="rotate(-14 24 7)"/><ellipse cx="40" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(14 40 6)"/><ellipse cx="40" cy="7" rx="2" ry="6" fill="#F5B8A0" transform="rotate(14 40 7)"/><ellipse cx="28" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><ellipse cx="36" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><circle cx="28.6" cy="16.3" r="0.8" fill="white"/><circle cx="36.6" cy="16.3" r="0.8" fill="white"/><ellipse cx="32" cy="21" rx="1.8" ry="1.3" fill="#E8A090"/><path d="M28.5 24 Q32 27 35.5 24" stroke="#C47A6A" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>';
     }
-    return '<svg viewBox="0 0 200 210" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="175" rx="58" ry="28" fill="#FFFFFF"/><path d="M52 140 Q52 105 75 92 L100 86 L125 92 Q148 105 148 140 L148 185 Q148 198 135 198 L65 198 Q52 198 52 185 Z" fill="#FFFFFF" stroke="#E4EAEA" stroke-width="1.5"/><path d="M82 95 L100 130 L100 198" stroke="#D0DADA" stroke-width="1.1" fill="none"/><path d="M118 95 L100 130 L100 198" stroke="#D0DADA" stroke-width="1.1" fill="none"/><circle cx="100" cy="142" r="3" fill="#7A9E9F"/><circle cx="100" cy="158" r="3" fill="#7A9E9F"/><circle cx="100" cy="174" r="3" fill="#7A9E9F"/><path d="M68 125 Q60 138 68 150 Q80 162 92 150" stroke="#4A7C7D" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="68" cy="125" r="5" fill="#4A7C7D"/><circle cx="92" cy="150" r="4" fill="#5C7A7B"/><rect x="90" y="92" width="20" height="12" rx="4" fill="#F5D0B5"/><ellipse cx="100" cy="68" rx="32" ry="30" fill="#F8DCC8"/><ellipse cx="78" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(-12 78 28)"/><ellipse cx="78" cy="30" rx="5.5" ry="18" fill="#F5B8A0" transform="rotate(-12 78 30)"/><ellipse cx="122" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(12 122 28)"/><ellipse cx="122" cy="30" rx="5.5" ry="18" fill="#F5B8A0" transform="rotate(12 122 30)"/><ellipse cx="100" cy="74" rx="24" ry="20" fill="#FAE6D6" opacity="0.45"/><ellipse cx="88" cy="65" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="112" cy="65" rx="5" ry="5.5" fill="#2C3333"/><circle cx="89.5" cy="63.5" r="1.8" fill="white"/><circle cx="113.5" cy="63.5" r="1.8" fill="white"/><ellipse cx="100" cy="78" rx="4.5" ry="3.2" fill="#E8A090"/><path d="M90 86 Q100 94 110 86" stroke="#C47A6A" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="78" cy="78" r="5.5" fill="#F5B8A0" opacity="0.5"/><circle cx="122" cy="78" r="5.5" fill="#F5B8A0" opacity="0.5"/></svg>';
+    return '<svg viewBox="0 0 200 210" fill="none"><ellipse cx="100" cy="175" rx="58" ry="28" fill="#FFFFFF"/><path d="M52 140 Q52 105 75 92 L100 86 L125 92 Q148 105 148 140 L148 185 Q148 198 135 198 L65 198 Q52 198 52 185 Z" fill="#FFFFFF" stroke="#E4EAEA" stroke-width="1.5"/><circle cx="100" cy="142" r="3" fill="#7A9E9F"/><circle cx="100" cy="158" r="3" fill="#7A9E9F"/><circle cx="100" cy="174" r="3" fill="#7A9E9F"/><rect x="90" y="92" width="20" height="12" rx="4" fill="#F5D0B5"/><ellipse cx="100" cy="68" rx="32" ry="30" fill="#F8DCC8"/><ellipse cx="78" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(-12 78 28)"/><ellipse cx="78" cy="30" rx="5.5" ry="18" fill="#F5B8A0" transform="rotate(-12 78 30)"/><ellipse cx="122" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(12 122 28)"/><ellipse cx="122" cy="30" rx="5.5" ry="18" fill="#F5B8A0" transform="rotate(12 122 30)"/><ellipse cx="88" cy="65" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="112" cy="65" rx="5" ry="5.5" fill="#2C3333"/><circle cx="89.5" cy="63.5" r="1.8" fill="white"/><circle cx="113.5" cy="63.5" r="1.8" fill="white"/><ellipse cx="100" cy="78" rx="4.5" ry="3.2" fill="#E8A090"/><path d="M90 86 Q100 94 110 86" stroke="#C47A6A" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="78" cy="78" r="5.5" fill="#F5B8A0" opacity="0.5"/><circle cx="122" cy="78" r="5.5" fill="#F5B8A0" opacity="0.5"/></svg>';
   }
 
   var catIcons = {
-    cleanser: '<svg viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="10" height="4" rx="1.5" fill="#7A9E9F"/><path d="M6 7h12v12a3 3 0 01-3 3H9a3 3 0 01-3-3V7z" fill="#A8C5C6"/><rect x="9" y="10" width="6" height="2" rx="1" fill="#4A7C7D"/><rect x="9" y="14" width="4" height="2" rx="1" fill="#4A7C7D" opacity="0.5"/></svg>',
-    serum: '<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="5" rx="1" fill="#7A9E9F"/><path d="M8 7h8l1 3v9a2 2 0 01-2 2H9a2 2 0 01-2-2V10l1-3z" fill="#B8D4D5"/><circle cx="12" cy="14" r="3" fill="#4A7C7D" opacity="0.35"/><path d="M12 11v6" stroke="#4A7C7D" stroke-width="1.5" stroke-linecap="round"/><path d="M10 13h4" stroke="#4A7C7D" stroke-width="1.5" stroke-linecap="round"/></svg>',
-    moisturizer: '<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="18" rx="8" ry="4" fill="#A8C5C6"/><path d="M4 14c0-2 1.5-4 4-5.5C9.5 7.5 11 6 12 6s2.5 1.5 4 2.5c2.5 1.5 4 3.5 4 5.5v4H4v-4z" fill="#C5DCDD"/><ellipse cx="12" cy="10" rx="5" ry="2" fill="#7A9E9F"/><circle cx="12" cy="14" r="2" fill="#4A7C7D" opacity="0.4"/></svg>',
-    sunscreen: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#FFF3C4" stroke="#E8C84A" stroke-width="1.2"/><circle cx="12" cy="12" r="4" fill="#F5D76E"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4" stroke="#E8C84A" stroke-width="1.3" stroke-linecap="round"/></svg>'
+    cleanser: '<svg viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="10" height="4" rx="1.5" fill="#7A9E9F"/><path d="M6 7h12v12a3 3 0 01-3 3H9a3 3 0 01-3-3V7z" fill="#A8C5C6"/></svg>',
+    serum: '<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="5" rx="1" fill="#7A9E9F"/><path d="M8 7h8l1 3v9a2 2 0 01-2 2H9a2 2 0 01-2-2V10l1-3z" fill="#B8D4D5"/></svg>',
+    moisturizer: '<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="18" rx="8" ry="4" fill="#A8C5C6"/><path d="M4 14c0-2 1.5-4 4-5.5C9.5 7.5 11 6 12 6s2.5 1.5 4 2.5c2.5 1.5 4 3.5 4 5.5v4H4v-4z" fill="#C5DCDD"/></svg>',
+    sunscreen: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#FFF3C4" stroke="#E8C84A" stroke-width="1.2"/><circle cx="12" cy="12" r="4" fill="#F5D76E"/></svg>'
   };
 
-  // ========== STATE ==========
-  var state = {
-    screen: 'landing',
-    userName: '',
-    currentQ: 0,
-    answers: {},
-    deleteId: null
-  };
+  var state = { screen: 'landing', userName: '', currentQ: 0, answers: {}, deleteId: null, lastRx: null };
 
-  // ========== 21 QUESTIONS ==========
   var questions = [
     { id: 'skinType', label: 'Skin Fundamentals', text: 'How would you describe your skin type most days?', options: [
       { value: 'dry', label: 'Dry — tight, flaky, or rough' },
@@ -1304,7 +1245,6 @@
     ]}
   ];
 
-  // ========== PRODUCTS ==========
   var products = {
     cleansers: [
       { id: 'c1', brand: 'CeraVe', name: 'Hydrating Facial Cleanser', actives: 'Ceramides, Hyaluronic Acid', usage: 'AM & PM', budget: 'value', tags: ['dry', 'sensitive', 'normal', 'dehydration', 'rosacea'] },
@@ -1328,22 +1268,20 @@
       { id: 's7', brand: 'Paula\'s Choice', name: '10% Azelaic Acid Booster', actives: 'Azelaic Acid, Salicylic Acid', usage: 'AM and/or PM', budget: 'mid', tags: ['hyperpigmentation', 'acne', 'rosacea', 'pih'] },
       { id: 's8', brand: 'La Roche-Posay', name: 'Cicaplast B5 Serum', actives: 'Panthenol, Madecassoside, Hyaluronic Acid', usage: 'AM & PM as needed', budget: 'mid', tags: ['rosacea', 'sensitive', 'barrier', 'reactive'] },
       { id: 's9', brand: 'SkinCeuticals', name: 'C E Ferulic', actives: '15% L-Ascorbic Acid, Vitamin E, Ferulic Acid', usage: 'AM only, under sunscreen', budget: 'high', tags: ['hyperpigmentation', 'aging', 'dullness'] },
-      { id: 's10', brand: 'SkinCeuticals', name: 'Phloretin CF', actives: 'Vitamin C, Phloretin, Ferulic Acid', usage: 'AM only', budget: 'high', tags: ['hyperpigmentation', 'aging', 'dullness'] },
-      { id: 's11', brand: 'Vichy', name: 'LiftActiv Vitamin C Serum', actives: '15% Pure Vitamin C, Hyaluronic Acid', usage: 'AM', budget: 'mid', tags: ['aging', 'dullness', 'hyperpigmentation'] },
-      { id: 's12', brand: 'Neutrogena', name: 'Rapid Wrinkle Repair Retinol Serum', actives: 'Accelerated Retinol SA', usage: 'PM', budget: 'value', tags: ['aging', 'texture'] },
-      { id: 's13', brand: 'The Ordinary', name: 'Azelaic Acid Suspension 10%', actives: 'Azelaic Acid', usage: 'AM and/or PM', budget: 'ultra', tags: ['acne', 'rosacea', 'hyperpigmentation', 'pih'] }
+      { id: 's10', brand: 'Vichy', name: 'LiftActiv Vitamin C Serum', actives: '15% Pure Vitamin C, Hyaluronic Acid', usage: 'AM', budget: 'mid', tags: ['aging', 'dullness', 'hyperpigmentation'] },
+      { id: 's11', brand: 'Neutrogena', name: 'Rapid Wrinkle Repair Retinol Serum', actives: 'Accelerated Retinol SA', usage: 'PM', budget: 'value', tags: ['aging', 'texture'] },
+      { id: 's12', brand: 'The Ordinary', name: 'Azelaic Acid Suspension 10%', actives: 'Azelaic Acid', usage: 'AM and/or PM', budget: 'ultra', tags: ['acne', 'rosacea', 'hyperpigmentation', 'pih'] }
     ],
     moisturizers: [
       { id: 'm1', brand: 'CeraVe', name: 'PM Facial Moisturizing Lotion', actives: 'Ceramides, Niacinamide, Hyaluronic Acid', usage: 'PM (can use AM)', budget: 'value', tags: ['normal', 'combination', 'oily', 'acne'] },
       { id: 'm2', brand: 'CeraVe', name: 'Moisturizing Cream', actives: 'Ceramides, Hyaluronic Acid', usage: 'AM & PM', budget: 'value', tags: ['dry', 'flakiness', 'arid', 'cold'] },
-      { id: 'm3', brand: 'CeraVe', name: 'AM Facial Moisturizing Lotion SPF 30', actives: 'Ceramides, Niacinamide, SPF 30', usage: 'AM', budget: 'value', tags: ['normal', 'combination'] },
-      { id: 'm4', brand: 'La Roche-Posay', name: 'Toleriane Double Repair Face Moisturizer', actives: 'Ceramides, Niacinamide, Prebiotic Thermal Water', usage: 'AM & PM', budget: 'mid', tags: ['normal', 'sensitive', 'combination', 'rosacea'] },
-      { id: 'm5', brand: 'La Roche-Posay', name: 'Toleriane Sensitive Fluide', actives: 'Neurosensine, Glycerin, Thermal Water', usage: 'AM & PM', budget: 'mid', tags: ['oily', 'sensitive', 'rosacea'] },
-      { id: 'm6', brand: 'La Roche-Posay', name: 'Cicaplast Baume B5', actives: 'Panthenol, Madecassoside, Shea Butter', usage: 'PM as occlusive or on dry patches', budget: 'mid', tags: ['dry', 'barrier', 'reactive', 'flakiness'] },
-      { id: 'm7', brand: 'Cetaphil', name: 'Moisturizing Cream', actives: 'Glycerin, sweet almond oil', usage: 'AM & PM', budget: 'ultra', tags: ['dry', 'sensitive', 'normal'] },
-      { id: 'm8', brand: 'Neutrogena', name: 'Hydro Boost Water Gel', actives: 'Hyaluronic Acid', usage: 'AM & PM', budget: 'ultra', tags: ['dehydration', 'oily', 'combination', 'normal'] },
-      { id: 'm9', brand: 'Avène', name: 'Tolerance Control Soothing Skin Recovery Cream', actives: 'Avène Thermal Spring Water, D-Sensinose', usage: 'AM & PM', budget: 'mid', tags: ['sensitive', 'veryReactive', 'rosacea'] },
-      { id: 'm10', brand: 'Vichy', name: 'Minéral 89 Hyaluronic Acid Face Moisturizer', actives: 'Hyaluronic Acid, Vichy Volcanic Water', usage: 'AM & PM', budget: 'mid', tags: ['dehydration', 'normal', 'combination'] }
+      { id: 'm3', brand: 'La Roche-Posay', name: 'Toleriane Double Repair Face Moisturizer', actives: 'Ceramides, Niacinamide, Prebiotic Thermal Water', usage: 'AM & PM', budget: 'mid', tags: ['normal', 'sensitive', 'combination', 'rosacea'] },
+      { id: 'm4', brand: 'La Roche-Posay', name: 'Toleriane Sensitive Fluide', actives: 'Neurosensine, Glycerin, Thermal Water', usage: 'AM & PM', budget: 'mid', tags: ['oily', 'sensitive', 'rosacea'] },
+      { id: 'm5', brand: 'La Roche-Posay', name: 'Cicaplast Baume B5', actives: 'Panthenol, Madecassoside, Shea Butter', usage: 'PM as occlusive or on dry patches', budget: 'mid', tags: ['dry', 'barrier', 'reactive', 'flakiness'] },
+      { id: 'm6', brand: 'Cetaphil', name: 'Moisturizing Cream', actives: 'Glycerin, sweet almond oil', usage: 'AM & PM', budget: 'ultra', tags: ['dry', 'sensitive', 'normal'] },
+      { id: 'm7', brand: 'Neutrogena', name: 'Hydro Boost Water Gel', actives: 'Hyaluronic Acid', usage: 'AM & PM', budget: 'ultra', tags: ['dehydration', 'oily', 'combination', 'normal'] },
+      { id: 'm8', brand: 'Avène', name: 'Tolerance Control Soothing Skin Recovery Cream', actives: 'Avène Thermal Spring Water', usage: 'AM & PM', budget: 'mid', tags: ['sensitive', 'veryReactive', 'rosacea'] },
+      { id: 'm9', brand: 'Vichy', name: 'Minéral 89 Hyaluronic Acid Face Moisturizer', actives: 'Hyaluronic Acid, Vichy Volcanic Water', usage: 'AM & PM', budget: 'mid', tags: ['dehydration', 'normal', 'combination'] }
     ],
     sunscreens: [
       { id: 'sp1', brand: 'La Roche-Posay', name: 'Anthelios UVMune 400 Invisible Fluid SPF 50+', actives: 'Mexoryl 400, broad-spectrum filters', usage: 'AM, reapply every 2 hrs outdoors', budget: 'mid', tags: ['all', 'normal', 'combination', 'oily'] },
@@ -1353,14 +1291,12 @@
       { id: 'sp5', brand: 'CeraVe', name: 'Ultra-Light Moisturizing Lotion SPF 30', actives: 'Chemical filters, ceramides', usage: 'AM', budget: 'value', tags: ['normal', 'combination', 'oily'] },
       { id: 'sp6', brand: 'Neutrogena', name: 'Ultra Sheer Dry-Touch SPF 55', actives: 'Broad-spectrum filters', usage: 'AM, reapply', budget: 'ultra', tags: ['oily', 'combination', 'normal'] },
       { id: 'sp7', brand: 'Bioderma', name: 'Photoderm Aquafluide SPF 50+', actives: 'Broad-spectrum, cellular bioprotection', usage: 'AM', budget: 'mid', tags: ['all', 'sensitive'] },
-      { id: 'sp8', brand: 'Avène', name: 'Very High Protection Fluid SPF 50+', actives: 'Mineral & chemical filters, Thermal Water', usage: 'AM', budget: 'mid', tags: ['sensitive', 'rosacea'] },
-      { id: 'sp9', brand: 'La Roche-Posay', name: 'Anthelios Mineral Tinted SPF 50', actives: 'Zinc Oxide, Titanium Dioxide', usage: 'AM', budget: 'mid', tags: ['sensitive', 'rosacea', 'hyperpigmentation'] }
+      { id: 'sp8', brand: 'Avène', name: 'Very High Protection Fluid SPF 50+', actives: 'Mineral & chemical filters, Thermal Water', usage: 'AM', budget: 'mid', tags: ['sensitive', 'rosacea'] }
     ]
   };
 
   var BUDGET_ORDER = { ultra: 0, value: 1, mid: 2, high: 3 };
 
-  // ========== DOM ==========
   function $(sel) { return document.querySelector(sel); }
   function $$(sel) { return document.querySelectorAll(sel); }
 
@@ -1384,6 +1320,12 @@
     if (screens[name]) screens[name].classList.add('active');
     state.screen = name;
     window.scrollTo(0, 0);
+    updateNavActive(name);
+  }
+
+  function updateNavActive(name) {
+    $('#nav-home').classList.toggle('active', name === 'landing');
+    $('#nav-history').classList.toggle('active', name === 'history');
   }
 
   function showToast(msg) {
@@ -1392,6 +1334,74 @@
     t.classList.add('show');
     setTimeout(function () { t.classList.remove('show'); }, 2400);
   }
+
+  // ========== STREAK TRACKER ==========
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function getStreakData() {
+    try {
+      return JSON.parse(localStorage.getItem('skinveda_streak') || '{"count":0,"last":"","days":[]}');
+    } catch (e) {
+      return { count: 0, last: '', days: [] };
+    }
+  }
+
+  function saveStreakData(data) {
+    localStorage.setItem('skinveda_streak', JSON.stringify(data));
+  }
+
+  function renderStreak() {
+    var data = getStreakData();
+    var today = todayKey();
+    var checkedToday = data.last === today;
+    $('#streak-count').innerHTML = (data.count || 0) + '<span>days</span>';
+    var btn = $('#btn-streak-checkin');
+    var msg = $('#streak-msg');
+    if (checkedToday) {
+      btn.disabled = true;
+      btn.textContent = 'Checked in today ✓';
+      msg.textContent = 'Great job! Come back tomorrow to keep your streak.';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Check in today';
+      msg.textContent = 'Build a healthy routine — check in after your skincare!';
+    }
+    // Last 7 days dots
+    var daysEl = $('#streak-days');
+    var labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    var html = '';
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      var key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      var done = (data.days || []).indexOf(key) !== -1;
+      var isToday = key === today;
+      html += '<div class="streak-day"><div class="streak-dot' + (done ? ' done' : '') + (isToday ? ' today' : '') + '">' + (done ? '✓' : labels[d.getDay()]) + '</div><div class="streak-label">' + labels[d.getDay()] + '</div></div>';
+    }
+    daysEl.innerHTML = html;
+  }
+
+  $('#btn-streak-checkin').addEventListener('click', function () {
+    var data = getStreakData();
+    var today = todayKey();
+    if (data.last === today) return;
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    var yKey = yesterday.getFullYear() + '-' + String(yesterday.getMonth() + 1).padStart(2, '0') + '-' + String(yesterday.getDate()).padStart(2, '0');
+    if (data.last === yKey) data.count = (data.count || 0) + 1;
+    else data.count = 1;
+    data.last = today;
+    if (!data.days) data.days = [];
+    if (data.days.indexOf(today) === -1) data.days.push(today);
+    // keep last 30 days only
+    data.days = data.days.slice(-30);
+    saveStreakData(data);
+    renderStreak();
+    showToast('Streak updated! 🔥 ' + data.count + ' day' + (data.count > 1 ? 's' : ''));
+  });
 
   // ========== STORAGE ==========
   function getHistory() {
@@ -1415,7 +1425,6 @@
     var max = BUDGET_ORDER[userBudget] != null ? BUDGET_ORDER[userBudget] : 1;
     return list.filter(function (p) { return BUDGET_ORDER[p.budget] <= max; });
   }
-
   function pickBest(candidates, preferredTags, fallbackTags) {
     if (!candidates.length) return null;
     var best = null, bestScore = -1;
@@ -1445,13 +1454,10 @@
     var cleanser = pickBest(filterByBudget(products.cleansers, budget), cleanserTags, [a.skinType, 'normal']);
 
     var serumTags = [a.primaryConcern];
-    if (a.primaryConcern === 'acne') {
-      serumTags = (a.sensitivity === 'veryReactive' || a.skinType === 'sensitive') ? ['acne', 'sensitive'] : ['acne', 'pores'];
-    } else if (a.primaryConcern === 'hyperpigmentation') {
-      serumTags = (a.sensitivity === 'reactive' || a.sensitivity === 'veryReactive') ? ['hyperpigmentation', 'pih'] : (a.pih === 'severe' || a.pih === 'moderate') ? ['hyperpigmentation', 'pih'] : ['hyperpigmentation', 'aging'];
-    } else if (a.primaryConcern === 'aging') {
-      serumTags = (a.sensitivity === 'veryReactive' || a.ageRange === 'under25') ? ['aging', 'dullness'] : ['aging', 'texture'];
-    } else if (a.primaryConcern === 'rosacea') serumTags = ['rosacea', 'sensitive', 'barrier'];
+    if (a.primaryConcern === 'acne') serumTags = (a.sensitivity === 'veryReactive' || a.skinType === 'sensitive') ? ['acne', 'sensitive'] : ['acne', 'pores'];
+    else if (a.primaryConcern === 'hyperpigmentation') serumTags = (a.sensitivity === 'reactive' || a.sensitivity === 'veryReactive') ? ['hyperpigmentation', 'pih'] : ['hyperpigmentation', 'aging'];
+    else if (a.primaryConcern === 'aging') serumTags = (a.sensitivity === 'veryReactive' || a.ageRange === 'under25') ? ['aging', 'dullness'] : ['aging', 'texture'];
+    else if (a.primaryConcern === 'rosacea') serumTags = ['rosacea', 'sensitive', 'barrier'];
     else serumTags = ['dehydration', 'dullness'];
     if (a.postAcneScars === 'moderate' || a.postAcneScars === 'significant') serumTags.push('postAcneScars', 'texture');
     var serum = pickBest(filterByBudget(products.serums, budget), serumTags, [a.primaryConcern, 'normal']);
@@ -1471,12 +1477,12 @@
 
     var tips = [];
     if (a.waterIntake === 'low') tips.push('Increase daily water intake toward 2+ liters.');
-    if (a.sunscreenHabit === 'never' || a.sunscreenHabit === 'sometimes') tips.push('Daily broad-spectrum SPF is non-negotiable for results and prevention.');
-    if (a.sleepHygiene === 'poor' || a.sleepHygiene === 'chronic') tips.push('Prioritize consistent sleep — it strongly influences barrier repair and inflammation.');
+    if (a.sunscreenHabit === 'never' || a.sunscreenHabit === 'sometimes') tips.push('Daily broad-spectrum SPF is non-negotiable.');
+    if (a.sleepHygiene === 'poor' || a.sleepHygiene === 'chronic') tips.push('Prioritize consistent sleep for barrier repair.');
     if (a.stressLevel === 'high' || a.stressLevel === 'chronic') tips.push('Stress management supports clearer, calmer skin.');
-    if (a.diet === 'high' || a.diet === 'veryHigh') tips.push('Consider moderating dairy and high-glycemic foods if breakouts persist.');
-    if (a.sensitivity === 'reactive' || a.sensitivity === 'veryReactive') tips.push('Introduce actives slowly (1–2×/week) and buffer with moisturizer.');
-    if (a.fragranceAlcohol === 'avoid' || a.fragranceAlcohol === 'reactive') tips.push('Prefer fragrance-free and alcohol-free formulations.');
+    if (a.diet === 'high' || a.diet === 'veryHigh') tips.push('Consider moderating dairy and high-glycemic foods.');
+    if (a.sensitivity === 'reactive' || a.sensitivity === 'veryReactive') tips.push('Introduce actives slowly and buffer with moisturizer.');
+    if (a.fragranceAlcohol === 'avoid' || a.fragranceAlcohol === 'reactive') tips.push('Prefer fragrance-free and alcohol-free formulas.');
 
     return {
       profileSummary: profileParts.join(' · ') + '.',
@@ -1488,7 +1494,6 @@
     };
   }
 
-  // ========== RENDER ==========
   function escapeHtml(str) {
     var d = document.createElement('div');
     d.textContent = str || '';
@@ -1496,43 +1501,187 @@
   }
 
   function renderResults(rx) {
+    state.lastRx = rx;
     var dateStr = new Date(rx.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     var tipsHtml = '';
     if (rx.tips && rx.tips.length) {
-      tipsHtml = '<div class="product-section"><div class="product-label-row"><div class="product-icon" style="background:#E8F4F4"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 00-7 7c0 3.5 2.5 6 5 8l2 2 2-2c2.5-2 5-4.5 5-8a7 7 0 00-7-7z" fill="#4A7C7D" opacity="0.3"/><circle cx="12" cy="10" r="2.5" fill="#4A7C7D"/></svg></div><div class="product-label">Dermatologist Notes</div></div>' +
-        '<div class="product-item" style="border-left-color:var(--teal)"><ul style="margin:0;padding-left:18px;font-size:13.5px;color:var(--slate-soft);line-height:1.55">' +
+      tipsHtml = '<div class="product-section"><div class="product-label-row"><div class="product-icon" style="background:#E8F4F4"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="2.5" fill="#4A7C7D"/></svg></div><div class="product-label">Dermatologist Tips</div></div>' +
+        '<div class="product-item" style="border-left-color:var(--teal)"><ul style="margin:0;padding-left:18px;font-size:13px;color:var(--slate-soft);line-height:1.55">' +
         rx.tips.map(function (t) { return '<li style="margin-bottom:4px">' + escapeHtml(t) + '</li>'; }).join('') +
         '</ul></div></div>';
     }
-
     function prodBlock(label, iconKey, p) {
-      return '<div class="product-section">' +
-        '<div class="product-label-row"><div class="product-icon">' + catIcons[iconKey] + '</div><div class="product-label">' + label + '</div></div>' +
-        '<div class="product-item">' +
-        '<div class="product-brand">' + escapeHtml(p.brand) + '</div>' +
-        '<div class="product-name">' + escapeHtml(p.name) + '</div>' +
-        '<div class="product-actives">Key actives: ' + escapeHtml(p.actives) + '</div>' +
-        '<div class="product-usage">Use: ' + escapeHtml(p.usage) + '</div>' +
+      return '<div class="product-section"><div class="product-label-row"><div class="product-icon">' + catIcons[iconKey] + '</div><div class="product-label">' + label + '</div></div>' +
+        '<div class="product-item"><div class="product-brand">' + escapeHtml(p.brand) + '</div><div class="product-name">' + escapeHtml(p.name) + '</div>' +
+        '<div class="product-actives">Key actives: ' + escapeHtml(p.actives) + '</div><div class="product-usage">Use: ' + escapeHtml(p.usage) + '</div></div></div>';
+    }
+    $('#rx-content').innerHTML =
+      '<div class="rx-card" id="report-card-el">' +
+        '<div class="rx-header"><div class="rx-badge">Skin Report Card</div><div class="rx-name">' + escapeHtml(rx.userName) + '</div><div class="rx-date">' + dateStr + '</div></div>' +
+        '<div class="rx-body">' +
+          '<div class="profile-summary"><h3>Skin Analysis</h3><p>' + escapeHtml(rx.profileSummary) + '</p></div>' +
+          prodBlock('1. Cleanser', 'cleanser', rx.cleanser) +
+          prodBlock('2. Active Serum', 'serum', rx.serum) +
+          prodBlock('3. Moisturizer', 'moisturizer', rx.moisturizer) +
+          prodBlock('4. Sunscreen', 'sunscreen', rx.sunscreen) +
+          tipsHtml +
+          '<div class="rx-signature"><div class="sig-label">Signed by</div><div class="sig-name">Dr. Bunny</div></div>' +
+          '<div class="rx-footer">Personalized routine · Patch-test new products · Consult a dermatologist for severe concerns</div>' +
         '</div></div>';
+  }
+
+  // Download report card as PNG via canvas
+  function downloadReportCard(rx) {
+    if (!rx) return;
+    var canvas = document.getElementById('report-canvas');
+    var ctx = canvas.getContext('2d');
+    var W = 720, H = 1280;
+    canvas.width = W;
+    canvas.height = H;
+
+    // Background
+    ctx.fillStyle = '#FAF9F7';
+    ctx.fillRect(0, 0, W, H);
+
+    // Header bar
+    var grd = ctx.createLinearGradient(0, 0, W, 0);
+    grd.addColorStop(0, '#3B9B9C');
+    grd.addColorStop(1, '#1E5A5C');
+    ctx.fillStyle = grd;
+    roundRect(ctx, 32, 32, W - 64, 160, 24);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    roundRect(ctx, 52, 52, 160, 28, 14);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '600 14px system-ui,sans-serif';
+    ctx.fillText('SKIN REPORT CARD', 68, 71);
+
+    ctx.font = '700 36px system-ui,sans-serif';
+    ctx.fillText(rx.userName || 'Patient', 52, 120);
+    ctx.font = '400 16px system-ui,sans-serif';
+    ctx.globalAlpha = 0.9;
+    ctx.fillText(new Date(rx.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), 52, 148);
+    ctx.globalAlpha = 1;
+
+    var y = 220;
+    // Profile
+    ctx.fillStyle = '#E8F0F0';
+    roundRect(ctx, 32, y, W - 64, 90, 16);
+    ctx.fill();
+    ctx.fillStyle = '#5C7A7B';
+    ctx.font = '600 12px system-ui,sans-serif';
+    ctx.fillText('SKIN ANALYSIS', 52, y + 28);
+    ctx.fillStyle = '#2C3333';
+    ctx.font = '500 16px system-ui,sans-serif';
+    wrapText(ctx, rx.profileSummary || '', 52, y + 52, W - 104, 22);
+
+    y += 110;
+    var items = [
+      { label: 'CLEANSER', p: rx.cleanser },
+      { label: 'SERUM', p: rx.serum },
+      { label: 'MOISTURIZER', p: rx.moisturizer },
+      { label: 'SUNSCREEN', p: rx.sunscreen }
+    ];
+    items.forEach(function (it) {
+      ctx.fillStyle = '#8A9595';
+      ctx.font = '600 11px system-ui,sans-serif';
+      ctx.fillText(it.label, 52, y);
+      y += 8;
+      ctx.fillStyle = '#F5F3EF';
+      roundRect(ctx, 32, y, W - 64, 78, 14);
+      ctx.fill();
+      ctx.fillStyle = '#4A7C7D';
+      ctx.font = '600 13px system-ui,sans-serif';
+      ctx.fillText(it.p.brand, 52, y + 24);
+      ctx.fillStyle = '#2C3333';
+      ctx.font = '600 16px system-ui,sans-serif';
+      ctx.fillText(it.p.name, 52, y + 46);
+      ctx.fillStyle = '#4A5555';
+      ctx.font = '400 13px system-ui,sans-serif';
+      ctx.fillText(it.p.usage + '  ·  ' + it.p.actives, 52, y + 66);
+      y += 96;
+    });
+
+    // Tips
+    if (rx.tips && rx.tips.length) {
+      ctx.fillStyle = '#8A9595';
+      ctx.font = '600 11px system-ui,sans-serif';
+      ctx.fillText('DERMATOLOGIST TIPS', 52, y);
+      y += 10;
+      ctx.fillStyle = '#F5F3EF';
+      var tipH = 24 + rx.tips.length * 22;
+      roundRect(ctx, 32, y, W - 64, tipH, 14);
+      ctx.fill();
+      ctx.fillStyle = '#4A5555';
+      ctx.font = '400 14px system-ui,sans-serif';
+      rx.tips.slice(0, 4).forEach(function (t, i) {
+        ctx.fillText('• ' + t, 52, y + 24 + i * 22);
+      });
+      y += tipH + 16;
     }
 
-    $('#rx-content').innerHTML =
-      '<div class="rx-card">' +
-        '<div class="rx-header">' +
-          '<div class="rx-badge">Digital Dermatologist Prescription</div>' +
-          '<div class="rx-name">' + escapeHtml(rx.userName) + '</div>' +
-          '<div class="rx-date">' + dateStr + '</div>' +
-        '</div>' +
-        '<div class="rx-body">' +
-          '<div class="profile-summary"><h3>Identified Skin Profile</h3><p>' + escapeHtml(rx.profileSummary) + '</p></div>' +
-          prodBlock('1. Cleanser / Face Wash', 'cleanser', rx.cleanser) +
-          prodBlock('2. Active Serum / Treatment', 'serum', rx.serum) +
-          prodBlock('3. Moisturizer', 'moisturizer', rx.moisturizer) +
-          prodBlock('4. Sunscreen (SPF)', 'sunscreen', rx.sunscreen) +
-          tipsHtml +
-          '<div class="rx-footer">Recommendations based on dermatological principles and globally recognized brands, filtered to your budget.<br>Patch-test new products. Consult a board-certified dermatologist for persistent or severe conditions.</div>' +
-        '</div>' +
-      '</div>';
+    // Signature
+    y = Math.max(y + 10, H - 140);
+    ctx.strokeStyle = '#E2E8E8';
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(32, y);
+    ctx.lineTo(W - 32, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#8A9595';
+    ctx.font = '400 12px system-ui,sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Signed by', W - 52, y + 28);
+    ctx.fillStyle = '#2A7A7B';
+    ctx.font = 'italic 600 32px "Segoe Script", "Brush Script MT", cursive';
+    ctx.fillText('Dr. Bunny', W - 52, y + 68);
+    ctx.textAlign = 'left';
+
+    ctx.fillStyle = '#8A9595';
+    ctx.font = '400 11px system-ui,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Skinveda · Personalized routine · Patch-test new products', W / 2, H - 28);
+    ctx.textAlign = 'left';
+
+    canvas.toBlob(function (blob) {
+      if (!blob) return;
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Skinveda_Report_' + (rx.userName || 'Card').replace(/\s+/g, '_') + '.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      showToast('Report card downloaded');
+    }, 'image/png');
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    var words = text.split(' ');
+    var line = '';
+    for (var n = 0; n < words.length; n++) {
+      var test = line + words[n] + ' ';
+      if (ctx.measureText(test).width > maxWidth && n > 0) {
+        ctx.fillText(line, x, y);
+        line = words[n] + ' ';
+        y += lineHeight;
+      } else line = test;
+    }
+    ctx.fillText(line, x, y);
   }
 
   function renderQuestion() {
@@ -1544,12 +1693,10 @@
     $('#progress-fill').style.width = pct + '%';
     $('#q-label').textContent = q.label;
     $('#q-text').textContent = q.text;
-
     var card = $('#question-card');
     card.style.animation = 'none';
     void card.offsetHeight;
     card.style.animation = 'qIn 0.35s cubic-bezier(0.22, 1, 0.36, 1)';
-
     var opts = $('#q-options');
     opts.innerHTML = '';
     q.options.forEach(function (opt) {
@@ -1574,10 +1721,7 @@
     var list = getHistory();
     var container = $('#history-list');
     if (!list.length) {
-      container.innerHTML = '<div class="empty-state">' +
-        '<div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>' +
-        '<div class="empty-title">No prescriptions yet</div>' +
-        '<div class="empty-text">Complete an assessment to generate your first digital prescription card.</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No prescriptions yet</div><div class="empty-text">Complete an assessment to generate your first report card.</div></div>';
       return;
     }
     container.innerHTML = list.map(function (item) {
@@ -1592,8 +1736,10 @@
         '<strong>Moisturizer:</strong> ' + escapeHtml(item.moisturizer.brand) + ' ' + escapeHtml(item.moisturizer.name) + '<br>' +
         '<strong>SPF:</strong> ' + escapeHtml(item.sunscreen.brand) + ' ' + escapeHtml(item.sunscreen.name) +
         '</div>' +
-        '<div class="history-actions"><button class="btn btn-danger btn-delete" data-id="' + item.id + '">Delete</button></div>' +
-        '</div>';
+        '<div class="history-actions">' +
+        '<button class="btn btn-primary btn-redownload" data-id="' + item.id + '">Download</button>' +
+        '<button class="btn btn-danger btn-delete" data-id="' + item.id + '">Delete</button>' +
+        '</div></div>';
     }).join('');
     container.querySelectorAll('.btn-delete').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -1601,36 +1747,50 @@
         $('#overlay').classList.add('show');
       });
     });
+    container.querySelectorAll('.btn-redownload').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        var item = getHistory().find(function (h) { return h.id === id; });
+        if (item) downloadReportCard(item);
+      });
+    });
   }
 
-  // ========== EVENTS ==========
-  function goHome() {
-    showScreen('landing');
-  }
-
-  $('#btn-start').addEventListener('click', function () {
+  function startAssessment() {
     state.userName = '';
     state.currentQ = 0;
     state.answers = {};
     $('#user-name').value = '';
     $('#btn-name-next').disabled = true;
     showScreen('name');
-  });
+  }
 
-  $('#btn-history').addEventListener('click', function () {
+  function goHome() {
+    renderStreak();
+    showScreen('landing');
+  }
+
+  // Bottom nav
+  $('#nav-home').addEventListener('click', goHome);
+  $('#nav-start').addEventListener('click', startAssessment);
+  $('#nav-history').addEventListener('click', function () {
     renderHistory();
     showScreen('history');
   });
 
-  $('#btn-results-home').addEventListener('click', goHome);
-  $('#btn-results-back').addEventListener('click', goHome);
-  $('#btn-history-home').addEventListener('click', goHome);
-  $('#btn-history-back').addEventListener('click', goHome);
-
   $$('[data-goto]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      showScreen(btn.getAttribute('data-goto'));
+      var g = btn.getAttribute('data-goto');
+      if (g === 'landing') goHome();
+      else showScreen(g);
     });
+  });
+
+  $('#btn-results-home').addEventListener('click', goHome);
+  $('#btn-results-back').addEventListener('click', goHome);
+  $('#btn-history-back').addEventListener('click', goHome);
+  $('#btn-download-report').addEventListener('click', function () {
+    if (state.lastRx) downloadReportCard(state.lastRx);
   });
 
   $('#user-name').addEventListener('input', function (e) {
@@ -1654,11 +1814,9 @@
     if (state.currentQ === 0) showScreen('mascot');
     else { state.currentQ--; renderQuestion(); }
   });
-
   $('#btn-q-prev').addEventListener('click', function () {
     if (state.currentQ > 0) { state.currentQ--; renderQuestion(); }
   });
-
   $('#btn-q-next').addEventListener('click', function () {
     if (!state.answers[questions[state.currentQ].id]) return;
     if (state.currentQ < questions.length - 1) {
@@ -1681,7 +1839,7 @@
       addPrescription(rx);
       renderResults(rx);
       showScreen('results');
-      showToast('Prescription saved to history');
+      showToast('Report card saved to history');
     }
   });
 
@@ -1689,7 +1847,6 @@
     state.deleteId = null;
     $('#overlay').classList.remove('show');
   });
-
   $('#btn-confirm-delete').addEventListener('click', function () {
     if (state.deleteId) {
       var item = document.querySelector('.history-item[data-id="' + state.deleteId + '"]');
@@ -1711,7 +1868,6 @@
       }
     }
   });
-
   $('#overlay').addEventListener('click', function (e) {
     if (e.target === $('#overlay')) {
       state.deleteId = null;
@@ -1725,6 +1881,9 @@
     if (now - lastTouch <= 300) e.preventDefault();
     lastTouch = now;
   }, { passive: false });
+
+  // Init streak on load
+  renderStreak();
 
 })();
 </script>
