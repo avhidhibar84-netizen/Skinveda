@@ -160,7 +160,7 @@ body{min-height:100%;min-height:100dvh;font-family:var(--font);background:#E8EEF
       <p class="landing-tag">Your daily skin wellness companion</p>
       <div class="streak-card">
         <div class="streak-header">
-          <div class="streak-title">🔥 Daily Skincare Streak</div>
+          <div class="streak-title">Daily Skincare Streak</div>
           <div class="streak-count" id="streak-count">0<span>days</span></div>
         </div>
         <div class="streak-days" id="streak-days"></div>
@@ -253,334 +253,865 @@ body{min-height:100%;min-height:100dvh;font-family:var(--font);background:#E8EEF
 <div class="toast" id="toast"></div>
 <canvas id="report-canvas" width="794" height="1123"></canvas>
 <script>
-(function(){
-'use strict';
-try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('portrait').catch(function(){})}catch(e){}
+(function () {
+  "use strict";
 
-window.addEventListener('load',function(){setTimeout(function(){var s=document.getElementById('splash');if(s)s.classList.add('hide')},2500)});
+  try {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock("portrait").catch(function () {});
+    }
+  } catch (e) {}
 
-function bunnySVG(size){
-  if(size==='mini')return '<svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="48" rx="18" ry="10" fill="#FFFFFF"/><path d="M16 40 Q16 28 24 24 L32 22 L40 24 Q48 28 48 40 L48 54 Q48 58 44 58 L20 58 Q16 58 16 54 Z" fill="#FFFFFF" stroke="#E0E8E8" stroke-width="1"/><rect x="28" y="26" width="8" height="6" rx="2" fill="#F5D0B5"/><ellipse cx="32" cy="18" rx="12" ry="11" fill="#F8DCC8"/><ellipse cx="24" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(-14 24 6)"/><ellipse cx="40" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(14 40 6)"/><ellipse cx="28" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><ellipse cx="36" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><ellipse cx="32" cy="21" rx="1.8" ry="1.3" fill="#E8A090"/></svg>';
-  return '<svg viewBox="0 0 200 210" fill="none"><ellipse cx="100" cy="175" rx="58" ry="28" fill="#FFFFFF"/><path d="M52 140 Q52 105 75 92 L100 86 L125 92 Q148 105 148 140 L148 185 Q148 198 135 198 L65 198 Q52 198 52 185 Z" fill="#FFFFFF" stroke="#E4EAEA" stroke-width="1.5"/><rect x="90" y="92" width="20" height="12" rx="4" fill="#F5D0B5"/><ellipse cx="100" cy="68" rx="32" ry="30" fill="#F8DCC8"/><ellipse cx="78" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(-12 78 28)"/><ellipse cx="122" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(12 122 28)"/><ellipse cx="88" cy="65" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="112" cy="65" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="100" cy="78" rx="4.5" ry="3.2" fill="#E8A090"/><path d="M90 86 Q100 94 110 86" stroke="#C47A6A" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
-}
-var catIcons={
-  cleanser:'<svg viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="10" height="4" rx="1.5" fill="#7A9E9F"/><path d="M6 7h12v12a3 3 0 01-3 3H9a3 3 0 01-3-3V7z" fill="#A8C5C6"/></svg>',
-  serum:'<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="5" rx="1" fill="#7A9E9F"/><path d="M8 7h8l1 3v9a2 2 0 01-2 2H9a2 2 0 01-2-2V10l1-3z" fill="#B8D4D5"/></svg>',
-  moisturizer:'<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="18" rx="8" ry="4" fill="#A8C5C6"/><path d="M4 14c0-2 1.5-4 4-5.5C9.5 7.5 11 6 12 6s2.5 1.5 4 2.5c2.5 1.5 4 3.5 4 5.5v4H4v-4z" fill="#C5DCDD"/></svg>',
-  sunscreen:'<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#FFF3C4" stroke="#E8C84A" stroke-width="1.2"/><circle cx="12" cy="12" r="4" fill="#F5D76E"/></svg>'
-};
-var state={screen:'landing',userName:'',currentQ:0,answers:{},deleteId:null,lastRx:null};
-var questions=[
-  {id:'skinType',label:'Skin Fundamentals',text:'How would you describe your skin type most days?',options:[{value:'dry',label:'Dry — tight, flaky, or rough'},{value:'oily',label:'Oily — shiny, especially T-zone'},{value:'combination',label:'Combination — oily T-zone, dry cheeks'},{value:'sensitive',label:'Sensitive — easily reactive or red'},{value:'normal',label:'Normal — balanced, rarely troubled'}]},
-  {id:'primaryConcern',label:'Primary Concern',text:'What is your main skin concern right now?',options:[{value:'acne',label:'Acne / breakouts'},{value:'hyperpigmentation',label:'Hyperpigmentation / dark spots'},{value:'aging',label:'Aging / fine lines / loss of firmness'},{value:'rosacea',label:'Rosacea / persistent redness'},{value:'dehydration',label:'Dehydration / dullness'}]},
-  {id:'secondaryConcern',label:'Secondary Concern',text:'What is your secondary skin concern?',options:[{value:'pores',label:'Visible pores'},{value:'texture',label:'Uneven texture'},{value:'darkCircles',label:'Dark circles under eyes'},{value:'dullness',label:'Dullness / lack of glow'},{value:'none',label:'No major secondary concern'}]},
-  {id:'acneSeverity',label:'Acne Profile',text:'If you experience acne, how would you describe its severity and type?',options:[{value:'none',label:'No significant acne'},{value:'mildComedonal',label:'Mild — blackheads / whiteheads'},{value:'moderateInflammatory',label:'Moderate — inflammatory papules / pustules'},{value:'severeCystic',label:'Severe — cystic or nodular'}]},
-  {id:'pih',label:'Pigmentation Tendency',text:'Do you tend to develop dark marks after breakouts or injury (PIH)?',options:[{value:'no',label:'No, marks fade quickly'},{value:'mild',label:'Mild — temporary marks'},{value:'moderate',label:'Moderate — marks linger weeks/months'},{value:'severe',label:'Significant long-lasting PIH'}]},
-  {id:'waterIntake',label:'Lifestyle',text:'How much water do you typically drink per day?',options:[{value:'low',label:'Less than 1 liter'},{value:'moderate',label:'1–2 liters'},{value:'good',label:'2–3 liters'},{value:'high',label:'More than 3 liters'}]},
-  {id:'sunExposure',label:'Sun Exposure',text:'How much time do you spend outdoors on a typical day?',options:[{value:'minimal',label:'Mostly indoors (<30 min)'},{value:'moderate',label:'30–90 minutes'},{value:'significant',label:'1.5–3 hours'},{value:'high',label:'More than 3 hours'}]},
-  {id:'sunscreenHabit',label:'Sun Protection',text:'How consistently do you use sunscreen?',options:[{value:'never',label:'Never or almost never'},{value:'sometimes',label:'Sometimes (sunny days only)'},{value:'mostDays',label:'Most days'},{value:'daily',label:'Every single day, reapplied'}]},
-  {id:'sensitivity',label:'Sensitivity',text:'How does your skin react to active ingredients (retinoids, acids, vitamin C)?',options:[{value:'tolerant',label:'Generally tolerant'},{value:'mild',label:'Mild tingling or dryness sometimes'},{value:'reactive',label:'Often stings, burns, or turns red'},{value:'veryReactive',label:'Very reactive — I avoid most actives'}]},
-  {id:'poreSize',label:'Texture & Pores',text:'How would you describe your pore visibility and T-zone oiliness?',options:[{value:'fine',label:'Fine pores, low oil'},{value:'moderate',label:'Moderately visible pores'},{value:'enlarged',label:'Enlarged pores, oily T-zone'},{value:'clogged',label:'Often clogged / blackheads present'}]},
-  {id:'climate',label:'Environment',text:'What best describes your living climate / environment?',options:[{value:'humid',label:'Humid / tropical'},{value:'arid',label:'Arid / dry'},{value:'polluted',label:'Urban / polluted'},{value:'cold',label:'Cold / temperate with dry winters'}]},
-  {id:'sleepHygiene',label:'Recovery',text:'How is your sleep quality overall?',options:[{value:'excellent',label:'Excellent — consistent 7–9 hours'},{value:'fair',label:'Fair — some nights disrupted'},{value:'poor',label:'Often poor or irregular'},{value:'chronic',label:'Chronic sleep deprivation'}]},
-  {id:'stressLevel',label:'Stress',text:'How would you rate your typical stress level?',options:[{value:'low',label:'Low and well managed'},{value:'moderate',label:'Moderate'},{value:'high',label:'High most days'},{value:'chronic',label:'Chronic / overwhelming'}]},
-  {id:'diet',label:'Diet Influence',text:'How would you rate your dairy and high-sugar food intake?',options:[{value:'low',label:'Low — I limit both'},{value:'moderate',label:'Moderate'},{value:'high',label:'High — frequent dairy or sweets'},{value:'veryHigh',label:'Very high daily consumption'}]},
-  {id:'ageRange',label:'Demographics',text:'What is your age range?',options:[{value:'under25',label:'Under 25'},{value:'25to35',label:'25–35'},{value:'36to45',label:'36–45'},{value:'46plus',label:'46 and above'}]},
-  {id:'routineComplexity',label:'Current Routine',text:'How complex is your current skincare routine?',options:[{value:'none',label:'None / just water or soap'},{value:'basic',label:'Basic (cleanser + moisturizer)'},{value:'moderate',label:'Moderate (3–5 products)'},{value:'advanced',label:'Advanced (multiple actives & layers)'}]},
-  {id:'textureIssues',label:'Texture Details',text:'Which texture issue bothers you most?',options:[{value:'flakiness',label:'Flakiness / dry patches'},{value:'roughness',label:'Roughness / uneven texture'},{value:'excessSebum',label:'Excess sebum / greasiness'},{value:'none',label:'No major texture complaints'}]},
-  {id:'fragranceAlcohol',label:'Ingredient Sensitivity',text:'How does your skin react to fragrance or alcohol in products?',options:[{value:'tolerant',label:'No issues'},{value:'mild',label:'Mild irritation sometimes'},{value:'reactive',label:'Often stings or reddens'},{value:'avoid',label:'I strictly avoid both'}]},
-  {id:'eyeArea',label:'Eye Area',text:'Do you have specific concerns around the eye area?',options:[{value:'none',label:'No specific concerns'},{value:'darkCircles',label:'Dark circles'},{value:'puffiness',label:'Puffiness / bags'},{value:'fineLines',label:'Fine lines / crepiness'},{value:'multiple',label:'Multiple eye-area concerns'}]},
-  {id:'postAcneScars',label:'Scarring',text:'Do you have post-acne scars (textural or atrophic)?',options:[{value:'none',label:'None'},{value:'mild',label:'Mild textural irregularity'},{value:'moderate',label:'Moderate atrophic or rolling scars'},{value:'significant',label:'Significant scarring'}]},
-  {id:'budget',label:'Budget',text:'What is your overall routine budget (cleanser + serum + moisturizer + SPF)?',options:[{value:'ultra',label:'Ultra-Budget (< $25 / ₹1500 total)'},{value:'value',label:'Value-Conscious ($25–$60 / ₹1500–₹4500)'},{value:'mid',label:'Mid-Tier Dermatologist ($60–$120 / ₹4500–₹9000)'},{value:'high',label:'High-End Medical Grade ($120+ / ₹9000+)'}]}
-];
-var products={
-  cleansers:[
-    {brand:'CeraVe',name:'Hydrating Facial Cleanser',actives:'Ceramides, Hyaluronic Acid',usage:'AM & PM',budget:'value',tags:['dry','sensitive','normal','dehydration','rosacea']},
-    {brand:'CeraVe',name:'Foaming Facial Cleanser',actives:'Ceramides, Niacinamide',usage:'AM & PM',budget:'value',tags:['oily','combination','acne','pores']},
-    {brand:'CeraVe',name:'Acne Foaming Cream Cleanser',actives:'2% Salicylic Acid, Ceramides',usage:'AM & PM',budget:'value',tags:['acne','oily','combination']},
-    {brand:'La Roche-Posay',name:'Toleriane Hydrating Gentle Cleanser',actives:'Ceramides, Niacinamide',usage:'AM & PM',budget:'mid',tags:['dry','sensitive','rosacea','normal']},
-    {brand:'Cetaphil',name:'Gentle Skin Cleanser',actives:'Mild surfactants, glycerin',usage:'AM & PM',budget:'ultra',tags:['dry','sensitive','normal','rosacea']},
-    {brand:'Neutrogena',name:'Hydro Boost Water Gel Cleanser',actives:'Hyaluronic Acid',usage:'AM & PM',budget:'ultra',tags:['dehydration','normal','combination']},
-    {brand:'Bioderma',name:'Sensibio Gel Moussant',actives:'Soothing agents',usage:'AM & PM',budget:'mid',tags:['sensitive','rosacea','reactive']},
-    {brand:'La Roche-Posay',name:'Effaclar Purifying Foaming Gel',actives:'Zinc, mild surfactants',usage:'AM & PM',budget:'mid',tags:['oily','acne','pores']}
-  ],
-  serums:[
-    {brand:'The Ordinary',name:'Niacinamide 10% + Zinc 1%',actives:'Niacinamide, Zinc',usage:'AM and/or PM',budget:'ultra',tags:['acne','pores','oily','combination','dullness']},
-    {brand:'The Ordinary',name:'Hyaluronic Acid 2% + B5',actives:'Hyaluronic Acid, Vitamin B5',usage:'AM & PM on damp skin',budget:'ultra',tags:['dehydration','dry','dullness']},
-    {brand:'The Ordinary',name:'Alpha Arbutin 2% + HA',actives:'Alpha Arbutin, HA',usage:'AM & PM',budget:'ultra',tags:['hyperpigmentation','pih']},
-    {brand:'The Ordinary',name:'Retinol 0.5% in Squalane',actives:'Retinol, Squalane',usage:'PM only, start slow',budget:'ultra',tags:['aging','texture','postAcneScars']},
-    {brand:'CeraVe',name:'Resurfacing Retinol Serum',actives:'Encapsulated Retinol, Niacinamide',usage:'PM only',budget:'value',tags:['aging','texture','postAcneScars']},
-    {brand:"Paula's Choice",name:'2% BHA Liquid Exfoliant',actives:'Salicylic Acid (BHA)',usage:'PM',budget:'mid',tags:['acne','pores','texture','oily']},
-    {brand:"Paula's Choice",name:'10% Azelaic Acid Booster',actives:'Azelaic Acid',usage:'AM and/or PM',budget:'mid',tags:['hyperpigmentation','acne','rosacea','pih']},
-    {brand:'La Roche-Posay',name:'Cicaplast B5 Serum',actives:'Panthenol, Madecassoside',usage:'AM & PM',budget:'mid',tags:['rosacea','sensitive','barrier','reactive']},
-    {brand:'SkinCeuticals',name:'C E Ferulic',actives:'15% L-Ascorbic Acid, Vit E, Ferulic',usage:'AM only',budget:'high',tags:['hyperpigmentation','aging','dullness']},
-    {brand:'The Ordinary',name:'Azelaic Acid Suspension 10%',actives:'Azelaic Acid',usage:'AM and/or PM',budget:'ultra',tags:['acne','rosacea','hyperpigmentation','pih']}
-  ],
-  moisturizers:[
-    {brand:'CeraVe',name:'PM Facial Moisturizing Lotion',actives:'Ceramides, Niacinamide',usage:'PM',budget:'value',tags:['normal','combination','oily','acne']},
-    {brand:'CeraVe',name:'Moisturizing Cream',actives:'Ceramides, HA',usage:'AM & PM',budget:'value',tags:['dry','flakiness','arid','cold']},
-    {brand:'La Roche-Posay',name:'Toleriane Double Repair',actives:'Ceramides, Niacinamide',usage:'AM & PM',budget:'mid',tags:['normal','sensitive','combination','rosacea']},
-    {brand:'La Roche-Posay',name:'Toleriane Sensitive Fluide',actives:'Neurosensine, Glycerin',usage:'AM & PM',budget:'mid',tags:['oily','sensitive','rosacea']},
-    {brand:'Cetaphil',name:'Moisturizing Cream',actives:'Glycerin',usage:'AM & PM',budget:'ultra',tags:['dry','sensitive','normal']},
-    {brand:'Neutrogena',name:'Hydro Boost Water Gel',actives:'Hyaluronic Acid',usage:'AM & PM',budget:'ultra',tags:['dehydration','oily','combination','normal']},
-    {brand:'La Roche-Posay',name:'Cicaplast Baume B5',actives:'Panthenol, Madecassoside',usage:'PM on dry patches',budget:'mid',tags:['dry','barrier','reactive','flakiness']}
-  ],
-  sunscreens:[
-    {brand:'La Roche-Posay',name:'Anthelios UVMune 400 Invisible Fluid SPF 50+',actives:'Mexoryl 400',usage:'AM, reapply outdoors',budget:'mid',tags:['all','normal','combination','oily']},
-    {brand:'EltaMD',name:'UV Clear Broad-Spectrum SPF 46',actives:'Zinc Oxide, Niacinamide',usage:'AM',budget:'high',tags:['acne','oily','sensitive','rosacea']},
-    {brand:'EltaMD',name:'UV Physical SPF 41',actives:'Zinc Oxide, Titanium Dioxide',usage:'AM',budget:'high',tags:['sensitive','veryReactive','rosacea']},
-    {brand:'CeraVe',name:'Hydrating Mineral Sunscreen SPF 30',actives:'Zinc Oxide, Ceramides',usage:'AM',budget:'value',tags:['dry','sensitive','normal']},
-    {brand:'Neutrogena',name:'Ultra Sheer Dry-Touch SPF 55',actives:'Broad-spectrum filters',usage:'AM',budget:'ultra',tags:['oily','combination','normal']},
-    {brand:'Bioderma',name:'Photoderm Aquafluide SPF 50+',actives:'Broad-spectrum',usage:'AM',budget:'mid',tags:['all','sensitive']}
-  ]
-};
-var BUDGET_ORDER={ultra:0,value:1,mid:2,high:3};
-function $(s){return document.querySelector(s)}
-function $$(s){return document.querySelectorAll(s)}
-var screens={landing:$('#screen-landing'),name:$('#screen-name'),mascot:$('#screen-mascot'),questions:$('#screen-questions'),results:$('#screen-results'),history:$('#screen-history')};
-$('#landing-mascot').innerHTML=bunnySVG('full');
-$('#mascot-dialog-svg').innerHTML=bunnySVG('full');
-$('#mini-mascot').innerHTML=bunnySVG('mini');
-
-function showScreen(name){
-  Object.keys(screens).forEach(function(k){if(screens[k])screens[k].classList.remove('active')});
-  if(screens[name])screens[name].classList.add('active');
-  state.screen=name;window.scrollTo(0,0);
-  $('#nav-home').classList.toggle('active',name==='landing');
-  $('#nav-history').classList.toggle('active',name==='history');
-}
-function showToast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2400)}
-
-function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function getStreakData(){try{return JSON.parse(localStorage.getItem('skinveda_streak')||'{"count":0,"last":"","days":[]}')}catch(e){return{count:0,last:'',days:[]}}}
-function saveStreakData(d){localStorage.setItem('skinveda_streak',JSON.stringify(d))}
-function renderStreak(){
-  var data=getStreakData(),today=todayKey(),checked=data.last===today;
-  $('#streak-count').innerHTML=(data.count||0)+'<span>days</span>';
-  var btn=$('#btn-streak-checkin'),msg=$('#streak-msg');
-  if(checked){btn.disabled=true;btn.textContent='Checked in today ✓';msg.textContent='Great job! Come back tomorrow to keep your streak.'}
-  else{btn.disabled=false;btn.textContent='Check in today';msg.textContent='Build a healthy routine — check in after your skincare!'}
-  var labels=['S','M','T','W','T','F','S'],html='';
-  for(var i=6;i>=0;i--){
-    var d=new Date();d.setDate(d.getDate()-i);
-    var key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    var done=(data.days||[]).indexOf(key)!==-1,isToday=key===today;
-    html+='<div class="streak-day"><div class="streak-dot'+(done?' done':'')+(isToday?' today':'')+'">'+(done?'✓':labels[d.getDay()])+'</div><div class="streak-label">'+labels[d.getDay()]+'</div></div>';
-  }
-  $('#streak-days').innerHTML=html;
-}
-$('#btn-streak-checkin').addEventListener('click',function(){
-  var data=getStreakData(),today=todayKey();if(data.last===today)return;
-  var y=new Date();y.setDate(y.getDate()-1);
-  var yKey=y.getFullYear()+'-'+String(y.getMonth()+1).padStart(2,'0')+'-'+String(y.getDate()).padStart(2,'0');
-  data.count=(data.last===yKey)?(data.count||0)+1:1;
-  data.last=today;if(!data.days)data.days=[];
-  if(data.days.indexOf(today)===-1)data.days.push(today);
-  data.days=data.days.slice(-30);saveStreakData(data);renderStreak();
-  showToast('Streak updated! 🔥 '+data.count+' day'+(data.count>1?'s':''));
-});
-
-function getHistory(){try{return JSON.parse(localStorage.getItem('skinveda_history')||'[]')}catch(e){return[]}}
-function saveHistory(list){localStorage.setItem('skinveda_history',JSON.stringify(list))}
-function addPrescription(rx){var list=getHistory();list.unshift(rx);saveHistory(list)}
-function deletePrescription(id){saveHistory(getHistory().filter(function(i){return i.id!==id}))}
-
-function filterByBudget(list,b){var max=BUDGET_ORDER[b]!=null?BUDGET_ORDER[b]:1;return list.filter(function(p){return BUDGET_ORDER[p.budget]<=max})}
-function pickBest(cands,pref,fall){
-  if(!cands.length)return null;var best=null,bs=-1;
-  cands.forEach(function(p){var s=0;(pref||[]).forEach(function(t){if(p.tags.indexOf(t)!==-1)s+=3});(fall||[]).forEach(function(t){if(p.tags.indexOf(t)!==-1)s+=1});if(p.tags.indexOf('all')!==-1)s+=.5;if(s>bs){bs=s;best=p}});
-  return best||cands[0];
-}
-function generateRecommendations(a){
-  var budget=a.budget||'value';
-  var typeLabels={dry:'Dry',oily:'Oily',combination:'Combination',sensitive:'Sensitive',normal:'Normal'};
-  var concernLabels={acne:'acne-prone',hyperpigmentation:'hyperpigmentation focus',aging:'aging / firmness focus',rosacea:'rosacea / redness-prone',dehydration:'dehydrated'};
-  var parts=[typeLabels[a.skinType]+' skin',concernLabels[a.primaryConcern]];
-  if(a.secondaryConcern&&a.secondaryConcern!=='none')parts.push(a.secondaryConcern.replace(/([A-Z])/g,' $1').toLowerCase());
-  if(a.pih==='severe'||a.pih==='moderate')parts.push('notable PIH tendency');
-  if(a.sunscreenHabit==='never'||a.sunscreenHabit==='sometimes')parts.push('sunscreen habit needs improvement');
-  var cTags=[a.skinType,a.primaryConcern];
-  if(a.primaryConcern==='acne'&&(a.acneSeverity==='moderateInflammatory'||a.acneSeverity==='severeCystic')&&a.skinType!=='dry'&&a.sensitivity!=='veryReactive')cTags.push('acne');
-  if(a.sensitivity==='reactive'||a.sensitivity==='veryReactive'||a.fragranceAlcohol==='avoid')cTags.push('sensitive','reactive');
-  var cleanser=pickBest(filterByBudget(products.cleansers,budget),cTags,[a.skinType,'normal']);
-  var sTags=[a.primaryConcern];
-  if(a.primaryConcern==='acne')sTags=(a.sensitivity==='veryReactive'||a.skinType==='sensitive')?['acne','sensitive']:['acne','pores'];
-  else if(a.primaryConcern==='hyperpigmentation')sTags=['hyperpigmentation','pih'];
-  else if(a.primaryConcern==='aging')sTags=(a.sensitivity==='veryReactive'||a.ageRange==='under25')?['aging','dullness']:['aging','texture'];
-  else if(a.primaryConcern==='rosacea')sTags=['rosacea','sensitive','barrier'];
-  else sTags=['dehydration','dullness'];
-  if(a.postAcneScars==='moderate'||a.postAcneScars==='significant')sTags.push('postAcneScars','texture');
-  var serum=pickBest(filterByBudget(products.serums,budget),sTags,[a.primaryConcern,'normal']);
-  var mTags=[a.skinType];
-  if(a.skinType==='dry'||a.textureIssues==='flakiness'||a.climate==='arid'||a.climate==='cold')mTags=['dry','flakiness','barrier'];
-  else if(a.skinType==='oily'||a.textureIssues==='excessSebum')mTags=['oily','combination'];
-  else if(a.primaryConcern==='rosacea'||a.sensitivity==='veryReactive')mTags=['sensitive','rosacea','reactive'];
-  else if(a.primaryConcern==='dehydration')mTags=['dehydration','normal'];
-  var moisturizer=pickBest(filterByBudget(products.moisturizers,budget),mTags,[a.skinType,'normal']);
-  var spfTags=['all'];
-  if(a.sensitivity==='veryReactive'||a.primaryConcern==='rosacea'||a.skinType==='sensitive'||a.fragranceAlcohol==='avoid')spfTags=['sensitive','rosacea','veryReactive'];
-  else if(a.primaryConcern==='acne'||a.skinType==='oily')spfTags=['acne','oily','sensitive'];
-  else if(a.skinType==='dry')spfTags=['dry','sensitive','normal'];
-  var sunscreen=pickBest(filterByBudget(products.sunscreens,budget),spfTags,['all','normal']);
-  var tips=[];
-  if(a.waterIntake==='low')tips.push('Increase daily water intake toward 2+ liters.');
-  if(a.sunscreenHabit==='never'||a.sunscreenHabit==='sometimes')tips.push('Daily broad-spectrum SPF is non-negotiable.');
-  if(a.sleepHygiene==='poor'||a.sleepHygiene==='chronic')tips.push('Prioritize consistent sleep for barrier repair.');
-  if(a.stressLevel==='high'||a.stressLevel==='chronic')tips.push('Stress management supports clearer skin.');
-  if(a.diet==='high'||a.diet==='veryHigh')tips.push('Consider moderating dairy and high-glycemic foods.');
-  if(a.sensitivity==='reactive'||a.sensitivity==='veryReactive')tips.push('Introduce actives slowly and buffer with moisturizer.');
-  return{profileSummary:parts.join(' · ')+'.',cleanser:cleanser||products.cleansers[0],serum:serum||products.serums[0],moisturizer:moisturizer||products.moisturizers[0],sunscreen:sunscreen||products.sunscreens[0],tips:tips};
-}
-function escapeHtml(str){var d=document.createElement('div');d.textContent=str||'';return d.innerHTML}
-
-function renderResults(rx){
-  state.lastRx=rx;
-  var dateStr=new Date(rx.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  var tipsHtml='';
-  if(rx.tips&&rx.tips.length){
-    tipsHtml='<div class="product-section"><div class="product-label-row"><div class="product-icon" style="background:#E8F4F4"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="2.5" fill="#4A7C7D"/></svg></div><div class="product-label">Tips</div></div><div class="product-item" style="border-left-color:var(--teal)"><ul style="margin:0;padding-left:18px;font-size:13px;color:var(--slate-soft);line-height:1.55">'+rx.tips.map(function(t){return '<li style="margin-bottom:4px">'+escapeHtml(t)+'</li>'}).join('')+'</ul></div></div>';
-  }
-  function pb(label,key,p){return '<div class="product-section"><div class="product-label-row"><div class="product-icon">'+catIcons[key]+'</div><div class="product-label">'+label+'</div></div><div class="product-item"><div class="product-brand">'+escapeHtml(p.brand)+'</div><div class="product-name">'+escapeHtml(p.name)+'</div><div class="product-actives">Key actives: '+escapeHtml(p.actives)+'</div><div class="product-usage">Use: '+escapeHtml(p.usage)+'</div></div></div>'}
-  $('#rx-content').innerHTML='<div class="rx-card"><div class="rx-header"><div class="rx-badge">Personalized Routine</div><div class="rx-name">'+escapeHtml(rx.userName)+'</div><div class="rx-date">'+dateStr+'</div></div><div class="rx-body"><div class="profile-summary"><h3>Skin Analysis</h3><p>'+escapeHtml(rx.profileSummary)+'</p></div>'+pb('1. Cleanser','cleanser',rx.cleanser)+pb('2. Active Serum','serum',rx.serum)+pb('3. Moisturizer','moisturizer',rx.moisturizer)+pb('4. Sunscreen','sunscreen',rx.sunscreen)+tipsHtml+'<div class="rx-footer">Tap Download Report for your certificate · Patch-test new products</div></div></div>';
-}
-
-function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
-function wrapText(ctx,text,x,y,maxW,lh){var words=(text||'').split(' '),line='';for(var n=0;n<words.length;n++){var test=line+words[n]+' ';if(ctx.measureText(test).width>maxW&&n>0){ctx.fillText(line,x,y);line=words[n]+' ';y+=lh}else line=test}ctx.fillText(line,x,y)}
-function drawSparkle(ctx,x,y,size,color){ctx.save();ctx.fillStyle=color;ctx.translate(x,y);ctx.beginPath();ctx.moveTo(0,-size);ctx.quadraticCurveTo(size*.15,-size*.15,size,0);ctx.quadraticCurveTo(size*.15,size*.15,0,size);ctx.quadraticCurveTo(-size*.15,size*.15,-size,0);ctx.quadraticCurveTo(-size*.15,-size*.15,0,-size);ctx.fill();ctx.restore()}
-function drawMiniBunny(ctx,x,y,scale,alpha){ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.scale(scale,scale);ctx.fillStyle='#F8DCC8';ctx.beginPath();ctx.ellipse(-14,-28,7,18,-.2,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(14,-28,7,18,.2,0,Math.PI*2);ctx.fill();ctx.fillStyle='#F5B8A0';ctx.beginPath();ctx.ellipse(-14,-28,3,10,-.2,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(14,-28,3,10,.2,0,Math.PI*2);ctx.fill();ctx.fillStyle='#F8DCC8';ctx.beginPath();ctx.ellipse(0,0,22,20,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#2C3333';ctx.beginPath();ctx.ellipse(-8,-2,3,3.5,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(8,-2,3,3.5,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#E8A090';ctx.beginPath();ctx.ellipse(0,6,3,2,0,0,Math.PI*2);ctx.fill();ctx.restore()}
-
-function buildReportCanvas(rx){
-  var canvas=document.getElementById('report-canvas');
-  var ctx=canvas.getContext('2d');
-  var W=794,H=1123;canvas.width=W;canvas.height=H;
-  var bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#FFFEFB');bg.addColorStop(.5,'#FAF9F6');bg.addColorStop(1,'#F5F3EF');
-  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(74,124,125,.25)';ctx.lineWidth=2;roundRect(ctx,28,28,W-56,H-56,18);ctx.stroke();
-  ctx.strokeStyle='rgba(74,124,125,.12)';ctx.lineWidth=1;roundRect(ctx,36,36,W-72,H-72,14);ctx.stroke();
-  drawMiniBunny(ctx,90,180,.9,.06);drawMiniBunny(ctx,W-90,420,.7,.05);drawMiniBunny(ctx,110,H-160,.65,.05);
-  drawSparkle(ctx,70,70,10,'rgba(59,155,156,.2)');drawSparkle(ctx,W-70,90,8,'rgba(45,212,191,.25)');
-  var grd=ctx.createLinearGradient(48,48,W-48,48);grd.addColorStop(0,'#3B9B9C');grd.addColorStop(1,'#1E5A5C');
-  ctx.fillStyle=grd;roundRect(ctx,48,52,W-96,130,16);ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.22)';roundRect(ctx,68,68,150,26,13);ctx.fill();
-  ctx.fillStyle='#fff';ctx.font='600 13px system-ui,sans-serif';ctx.fillText('SKIN REPORT CARD',82,86);
-  ctx.font='700 34px system-ui,sans-serif';ctx.fillText(rx.userName||'Patient',68,128);
-  ctx.font='400 15px system-ui,sans-serif';ctx.globalAlpha=.9;
-  ctx.fillText(new Date(rx.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),68,154);ctx.globalAlpha=1;
-  ctx.font='600 14px system-ui,sans-serif';ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText('Skinveda',W-68,100);ctx.textAlign='left';
-  var y=210;
-  ctx.fillStyle='#E8F0F0';roundRect(ctx,48,y,W-96,88,14);ctx.fill();
-  ctx.fillStyle='#5C7A7B';ctx.font='600 11px system-ui,sans-serif';ctx.fillText('SKIN ANALYSIS',68,y+26);
-  ctx.fillStyle='#2C3333';ctx.font='500 15px system-ui,sans-serif';wrapText(ctx,rx.profileSummary||'',68,y+50,W-140,20);y+=110;
-  [{label:'CLEANSER',p:rx.cleanser},{label:'ACTIVE SERUM',p:rx.serum},{label:'MOISTURIZER',p:rx.moisturizer},{label:'SUNSCREEN (SPF)',p:rx.sunscreen}].forEach(function(it,idx){
-    ctx.fillStyle='#8A9595';ctx.font='600 11px system-ui,sans-serif';ctx.fillText((idx+1)+'. '+it.label,68,y);y+=10;
-    ctx.fillStyle='#fff';ctx.strokeStyle='rgba(122,158,159,.25)';ctx.lineWidth=1;roundRect(ctx,48,y,W-96,72,12);ctx.fill();ctx.stroke();
-    ctx.fillStyle='#7A9E9F';ctx.fillRect(48,y+12,4,48);
-    ctx.fillStyle='#4A7C7D';ctx.font='600 13px system-ui,sans-serif';ctx.fillText(it.p.brand,68,y+24);
-    ctx.fillStyle='#2C3333';ctx.font='600 15px system-ui,sans-serif';ctx.fillText(it.p.name,68,y+44);
-    ctx.fillStyle='#4A5555';ctx.font='400 12px system-ui,sans-serif';ctx.fillText(it.p.usage+'  ·  '+it.p.actives,68,y+62);y+=90;
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      var s = document.getElementById("splash");
+      if (s) s.classList.add("hide");
+    }, 2500);
   });
-  if(rx.tips&&rx.tips.length){
-    ctx.fillStyle='#8A9595';ctx.font='600 11px system-ui,sans-serif';ctx.fillText('DERMATOLOGIST TIPS',68,y);y+=10;
-    var tips=rx.tips.slice(0,4),tipH=20+tips.length*22;
-    ctx.fillStyle='#F0F7F7';roundRect(ctx,48,y,W-96,tipH,12);ctx.fill();
-    ctx.fillStyle='#4A5555';ctx.font='400 13px system-ui,sans-serif';
-    tips.forEach(function(t,i){ctx.fillText('•  '+t,68,y+22+i*22)});y+=tipH+20;
+
+  function bunnySVG(size) {
+    if (size === "mini") {
+      return '<svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="48" rx="18" ry="10" fill="#FFFFFF"/><path d="M16 40 Q16 28 24 24 L32 22 L40 24 Q48 28 48 40 L48 54 Q48 58 44 58 L20 58 Q16 58 16 54 Z" fill="#FFFFFF" stroke="#E0E8E8" stroke-width="1"/><rect x="28" y="26" width="8" height="6" rx="2" fill="#F5D0B5"/><ellipse cx="32" cy="18" rx="12" ry="11" fill="#F8DCC8"/><ellipse cx="24" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(-14 24 6)"/><ellipse cx="40" cy="6" rx="4" ry="10" fill="#F8DCC8" transform="rotate(14 40 6)"/><ellipse cx="28" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><ellipse cx="36" cy="17" rx="2.2" ry="2.5" fill="#2C3333"/><ellipse cx="32" cy="21" rx="1.8" ry="1.3" fill="#E8A090"/></svg>';
+    }
+    return '<svg viewBox="0 0 200 210" fill="none"><ellipse cx="100" cy="175" rx="58" ry="28" fill="#FFFFFF"/><path d="M52 140 Q52 105 75 92 L100 86 L125 92 Q148 105 148 140 L148 185 Q148 198 135 198 L65 198 Q52 198 52 185 Z" fill="#FFFFFF" stroke="#E4EAEA" stroke-width="1.5"/><rect x="90" y="92" width="20" height="12" rx="4" fill="#F5D0B5"/><ellipse cx="100" cy="68" rx="32" ry="30" fill="#F8DCC8"/><ellipse cx="78" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(-12 78 28)"/><ellipse cx="122" cy="28" rx="11" ry="28" fill="#F8DCC8" transform="rotate(12 122 28)"/><ellipse cx="88" cy="65" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="112" cy="65" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="100" cy="78" rx="4.5" ry="3.2" fill="#E8A090"/><path d="M90 86 Q100 94 110 86" stroke="#C47A6A" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
   }
-  y=Math.max(y+8,H-150);
-  ctx.strokeStyle='rgba(122,158,159,.3)';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(48,y);ctx.lineTo(W-48,y);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle='#8A9595';ctx.font='400 12px system-ui,sans-serif';ctx.textAlign='right';ctx.fillText('With care,',W-68,y+28);
-  ctx.fillStyle='#2A7A7B';ctx.font='italic 600 36px "Segoe Script","Brush Script MT",cursive';ctx.fillText('Dr. Bunny',W-68,y+72);
-  ctx.fillStyle='#A0A0A0';ctx.font='400 11px system-ui,sans-serif';ctx.fillText('Virtual Dermatologist · Skinveda',W-68,y+94);ctx.textAlign='left';
-  ctx.fillStyle='#A0A0A0';ctx.font='400 11px system-ui,sans-serif';ctx.textAlign='center';
-  ctx.fillText('Personalized routine · Patch-test new products · Not a medical diagnosis',W/2,H-44);ctx.textAlign='left';
-  return canvas;
-}
 
-/* ========== ONLY THIS DOWNLOAD LOGIC — no blob, no File API, no share, no pickers ========== */
-function downloadReportCard(rx){
-  if(!rx)return;
-  var canvas=buildReportCanvas(rx);
-  var link=document.createElement('a');
-  link.href=canvas.toDataURL('image/png');
-  link.download='SkinVeda-Report.png';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
+  var catIcons = {
+    cleanser: '<svg viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="10" height="4" rx="1.5" fill="#7A9E9F"/><path d="M6 7h12v12a3 3 0 01-3 3H9a3 3 0 01-3-3V7z" fill="#A8C5C6"/></svg>',
+    serum: '<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="5" rx="1" fill="#7A9E9F"/><path d="M8 7h8l1 3v9a2 2 0 01-2 2H9a2 2 0 01-2-2V10l1-3z" fill="#B8D4D5"/></svg>',
+    moisturizer: '<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="18" rx="8" ry="4" fill="#A8C5C6"/><path d="M4 14c0-2 1.5-4 4-5.5C9.5 7.5 11 6 12 6s2.5 1.5 4 2.5c2.5 1.5 4 3.5 4 5.5v4H4v-4z" fill="#C5DCDD"/></svg>',
+    sunscreen: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#FFF3C4" stroke="#E8C84A" stroke-width="1.2"/><circle cx="12" cy="12" r="4" fill="#F5D76E"/></svg>'
+  };
 
-function renderQuestion(){
-  var q=questions[state.currentQ],total=questions.length,pct=((state.currentQ+1)/total*100).toFixed(0);
-  $('#progress-text').textContent='Question '+(state.currentQ+1)+' of '+total;
-  $('#progress-pct').textContent=pct+'%';
-  $('#progress-fill').style.width=pct+'%';
-  $('#q-label').textContent=q.label;$('#q-text').textContent=q.text;
-  var card=$('#question-card');card.style.animation='none';void card.offsetHeight;card.style.animation='qIn .35s cubic-bezier(.22,1,.36,1)';
-  var opts=$('#q-options');opts.innerHTML='';
-  q.options.forEach(function(opt){
-    var div=document.createElement('div');
-    div.className='option'+(state.answers[q.id]===opt.value?' selected':'');
-    div.innerHTML='<div class="option-radio"></div><div class="option-text">'+opt.label+'</div>';
-    div.addEventListener('click',function(){
-      state.answers[q.id]=opt.value;
-      var all=opts.querySelectorAll('.option');for(var i=0;i<all.length;i++)all[i].classList.remove('selected');
-      div.classList.add('selected');$('#btn-q-next').disabled=false;
+  var state = {
+    screen: "landing",
+    userName: "",
+    currentQ: 0,
+    answers: {},
+    deleteId: null,
+    lastRx: null
+  };
+
+  var questions = [
+    { id: "skinType", label: "Skin Fundamentals", text: "How would you describe your skin type most days?", options: [{ value: "dry", label: "Dry — tight, flaky, or rough" }, { value: "oily", label: "Oily — shiny, especially T-zone" }, { value: "combination", label: "Combination — oily T-zone, dry cheeks" }, { value: "sensitive", label: "Sensitive — easily reactive or red" }, { value: "normal", label: "Normal — balanced, rarely troubled" }] },
+    { id: "primaryConcern", label: "Primary Concern", text: "What is your main skin concern right now?", options: [{ value: "acne", label: "Acne / breakouts" }, { value: "hyperpigmentation", label: "Hyperpigmentation / dark spots" }, { value: "aging", label: "Aging / fine lines / loss of firmness" }, { value: "rosacea", label: "Rosacea / persistent redness" }, { value: "dehydration", label: "Dehydration / dullness" }] },
+    { id: "secondaryConcern", label: "Secondary Concern", text: "What is your secondary skin concern?", options: [{ value: "pores", label: "Visible pores" }, { value: "texture", label: "Uneven texture" }, { value: "darkCircles", label: "Dark circles under eyes" }, { value: "dullness", label: "Dullness / lack of glow" }, { value: "none", label: "No major secondary concern" }] },
+    { id: "acneSeverity", label: "Acne Profile", text: "If you experience acne, how would you describe its severity and type?", options: [{ value: "none", label: "No significant acne" }, { value: "mildComedonal", label: "Mild — blackheads / whiteheads" }, { value: "moderateInflammatory", label: "Moderate — inflammatory papules / pustules" }, { value: "severeCystic", label: "Severe — cystic or nodular" }] },
+    { id: "pih", label: "Pigmentation Tendency", text: "Do you tend to develop dark marks after breakouts or injury (PIH)?", options: [{ value: "no", label: "No, marks fade quickly" }, { value: "mild", label: "Mild — temporary marks" }, { value: "moderate", label: "Moderate — marks linger weeks/months" }, { value: "severe", label: "Significant long-lasting PIH" }] },
+    { id: "waterIntake", label: "Lifestyle", text: "How much water do you typically drink per day?", options: [{ value: "low", label: "Less than 1 liter" }, { value: "moderate", label: "1–2 liters" }, { value: "good", label: "2–3 liters" }, { value: "high", label: "More than 3 liters" }] },
+    { id: "sunExposure", label: "Sun Exposure", text: "How much time do you spend outdoors on a typical day?", options: [{ value: "minimal", label: "Mostly indoors (<30 min)" }, { value: "moderate", label: "30–90 minutes" }, { value: "significant", label: "1.5–3 hours" }, { value: "high", label: "More than 3 hours" }] },
+    { id: "sunscreenHabit", label: "Sun Protection", text: "How consistently do you use sunscreen?", options: [{ value: "never", label: "Never or almost never" }, { value: "sometimes", label: "Sometimes (sunny days only)" }, { value: "mostDays", label: "Most days" }, { value: "daily", label: "Every single day, reapplied" }] },
+    { id: "sensitivity", label: "Sensitivity", text: "How does your skin react to active ingredients (retinoids, acids, vitamin C)?", options: [{ value: "tolerant", label: "Generally tolerant" }, { value: "mild", label: "Mild tingling or dryness sometimes" }, { value: "reactive", label: "Often stings, burns, or turns red" }, { value: "veryReactive", label: "Very reactive — I avoid most actives" }] },
+    { id: "poreSize", label: "Texture & Pores", text: "How would you describe your pore visibility and T-zone oiliness?", options: [{ value: "fine", label: "Fine pores, low oil" }, { value: "moderate", label: "Moderately visible pores" }, { value: "enlarged", label: "Enlarged pores, oily T-zone" }, { value: "clogged", label: "Often clogged / blackheads present" }] },
+    { id: "climate", label: "Environment", text: "What best describes your living climate / environment?", options: [{ value: "humid", label: "Humid / tropical" }, { value: "arid", label: "Arid / dry" }, { value: "polluted", label: "Urban / polluted" }, { value: "cold", label: "Cold / temperate with dry winters" }] },
+    { id: "sleepHygiene", label: "Recovery", text: "How is your sleep quality overall?", options: [{ value: "excellent", label: "Excellent — consistent 7–9 hours" }, { value: "fair", label: "Fair — some nights disrupted" }, { value: "poor", label: "Often poor or irregular" }, { value: "chronic", label: "Chronic sleep deprivation" }] },
+    { id: "stressLevel", label: "Stress", text: "How would you rate your typical stress level?", options: [{ value: "low", label: "Low and well managed" }, { value: "moderate", label: "Moderate" }, { value: "high", label: "High most days" }, { value: "chronic", label: "Chronic / overwhelming" }] },
+    { id: "diet", label: "Diet Influence", text: "How would you rate your dairy and high-sugar food intake?", options: [{ value: "low", label: "Low — I limit both" }, { value: "moderate", label: "Moderate" }, { value: "high", label: "High — frequent dairy or sweets" }, { value: "veryHigh", label: "Very high daily consumption" }] },
+    { id: "ageRange", label: "Demographics", text: "What is your age range?", options: [{ value: "under25", label: "Under 25" }, { value: "25to35", label: "25–35" }, { value: "36to45", label: "36–45" }, { value: "46plus", label: "46 and above" }] },
+    { id: "routineComplexity", label: "Current Routine", text: "How complex is your current skincare routine?", options: [{ value: "none", label: "None / just water or soap" }, { value: "basic", label: "Basic (cleanser + moisturizer)" }, { value: "moderate", label: "Moderate (3–5 products)" }, { value: "advanced", label: "Advanced (multiple actives & layers)" }] },
+    { id: "textureIssues", label: "Texture Details", text: "Which texture issue bothers you most?", options: [{ value: "flakiness", label: "Flakiness / dry patches" }, { value: "roughness", label: "Roughness / uneven texture" }, { value: "excessSebum", label: "Excess sebum / greasiness" }, { value: "none", label: "No major texture complaints" }] },
+    { id: "fragranceAlcohol", label: "Ingredient Sensitivity", text: "How does your skin react to fragrance or alcohol in products?", options: [{ value: "tolerant", label: "No issues" }, { value: "mild", label: "Mild irritation sometimes" }, { value: "reactive", label: "Often stings or reddens" }, { value: "avoid", label: "I strictly avoid both" }] },
+    { id: "eyeArea", label: "Eye Area", text: "Do you have specific concerns around the eye area?", options: [{ value: "none", label: "No specific concerns" }, { value: "darkCircles", label: "Dark circles" }, { value: "puffiness", label: "Puffiness / bags" }, { value: "fineLines", label: "Fine lines / crepiness" }, { value: "multiple", label: "Multiple eye-area concerns" }] },
+    { id: "postAcneScars", label: "Scarring", text: "Do you have post-acne scars (textural or atrophic)?", options: [{ value: "none", label: "None" }, { value: "mild", label: "Mild textural irregularity" }, { value: "moderate", label: "Moderate atrophic or rolling scars" }, { value: "significant", label: "Significant scarring" }] },
+    { id: "budget", label: "Budget", text: "What is your overall routine budget (cleanser + serum + moisturizer + SPF)?", options: [{ value: "ultra", label: "Ultra-Budget (< $25 / ₹1500 total)" }, { value: "value", label: "Value-Conscious ($25–$60 / ₹1500–₹4500)" }, { value: "mid", label: "Mid-Tier Dermatologist ($60–$120 / ₹4500–₹9000)" }, { value: "high", label: "High-End Medical Grade ($120+ / ₹9000+)" }] }
+  ];
+
+  var products = {
+    cleansers: [
+      { brand: "CeraVe", name: "Hydrating Facial Cleanser", actives: "Ceramides, Hyaluronic Acid", usage: "AM & PM", budget: "value", tags: ["dry", "sensitive", "normal", "dehydration", "rosacea"] },
+      { brand: "CeraVe", name: "Foaming Facial Cleanser", actives: "Ceramides, Niacinamide", usage: "AM & PM", budget: "value", tags: ["oily", "combination", "acne", "pores"] },
+      { brand: "CeraVe", name: "Acne Foaming Cream Cleanser", actives: "2% Salicylic Acid, Ceramides", usage: "AM & PM", budget: "value", tags: ["acne", "oily", "combination"] },
+      { brand: "La Roche-Posay", name: "Toleriane Hydrating Gentle Cleanser", actives: "Ceramides, Niacinamide", usage: "AM & PM", budget: "mid", tags: ["dry", "sensitive", "rosacea", "normal"] },
+      { brand: "Cetaphil", name: "Gentle Skin Cleanser", actives: "Mild surfactants, glycerin", usage: "AM & PM", budget: "ultra", tags: ["dry", "sensitive", "normal", "rosacea"] },
+      { brand: "Neutrogena", name: "Hydro Boost Water Gel Cleanser", actives: "Hyaluronic Acid", usage: "AM & PM", budget: "ultra", tags: ["dehydration", "normal", "combination"] },
+      { brand: "Bioderma", name: "Sensibio Gel Moussant", actives: "Soothing agents", usage: "AM & PM", budget: "mid", tags: ["sensitive", "rosacea", "reactive"] },
+      { brand: "La Roche-Posay", name: "Effaclar Purifying Foaming Gel", actives: "Zinc, mild surfactants", usage: "AM & PM", budget: "mid", tags: ["oily", "acne", "pores"] }
+    ],
+    serums: [
+      { brand: "The Ordinary", name: "Niacinamide 10% + Zinc 1%", actives: "Niacinamide, Zinc", usage: "AM and/or PM", budget: "ultra", tags: ["acne", "pores", "oily", "combination", "dullness"] },
+      { brand: "The Ordinary", name: "Hyaluronic Acid 2% + B5", actives: "Hyaluronic Acid, Vitamin B5", usage: "AM & PM on damp skin", budget: "ultra", tags: ["dehydration", "dry", "dullness"] },
+      { brand: "The Ordinary", name: "Alpha Arbutin 2% + HA", actives: "Alpha Arbutin, HA", usage: "AM & PM", budget: "ultra", tags: ["hyperpigmentation", "pih"] },
+      { brand: "The Ordinary", name: "Retinol 0.5% in Squalane", actives: "Retinol, Squalane", usage: "PM only, start slow", budget: "ultra", tags: ["aging", "texture", "postAcneScars"] },
+      { brand: "CeraVe", name: "Resurfacing Retinol Serum", actives: "Encapsulated Retinol, Niacinamide", usage: "PM only", budget: "value", tags: ["aging", "texture", "postAcneScars"] },
+      { brand: "Paula's Choice", name: "2% BHA Liquid Exfoliant", actives: "Salicylic Acid (BHA)", usage: "PM", budget: "mid", tags: ["acne", "pores", "texture", "oily"] },
+      { brand: "Paula's Choice", name: "10% Azelaic Acid Booster", actives: "Azelaic Acid", usage: "AM and/or PM", budget: "mid", tags: ["hyperpigmentation", "acne", "rosacea", "pih"] },
+      { brand: "La Roche-Posay", name: "Cicaplast B5 Serum", actives: "Panthenol, Madecassoside", usage: "AM & PM", budget: "mid", tags: ["rosacea", "sensitive", "barrier", "reactive"] },
+      { brand: "SkinCeuticals", name: "C E Ferulic", actives: "15% L-Ascorbic Acid, Vit E, Ferulic", usage: "AM only", budget: "high", tags: ["hyperpigmentation", "aging", "dullness"] },
+      { brand: "The Ordinary", name: "Azelaic Acid Suspension 10%", actives: "Azelaic Acid", usage: "AM and/or PM", budget: "ultra", tags: ["acne", "rosacea", "hyperpigmentation", "pih"] }
+    ],
+    moisturizers: [
+      { brand: "CeraVe", name: "PM Facial Moisturizing Lotion", actives: "Ceramides, Niacinamide", usage: "PM", budget: "value", tags: ["normal", "combination", "oily", "acne"] },
+      { brand: "CeraVe", name: "Moisturizing Cream", actives: "Ceramides, HA", usage: "AM & PM", budget: "value", tags: ["dry", "flakiness", "arid", "cold"] },
+      { brand: "La Roche-Posay", name: "Toleriane Double Repair", actives: "Ceramides, Niacinamide", usage: "AM & PM", budget: "mid", tags: ["normal", "sensitive", "combination", "rosacea"] },
+      { brand: "La Roche-Posay", name: "Toleriane Sensitive Fluide", actives: "Neurosensine, Glycerin", usage: "AM & PM", budget: "mid", tags: ["oily", "sensitive", "rosacea"] },
+      { brand: "Cetaphil", name: "Moisturizing Cream", actives: "Glycerin", usage: "AM & PM", budget: "ultra", tags: ["dry", "sensitive", "normal"] },
+      { brand: "Neutrogena", name: "Hydro Boost Water Gel", actives: "Hyaluronic Acid", usage: "AM & PM", budget: "ultra", tags: ["dehydration", "oily", "combination", "normal"] },
+      { brand: "La Roche-Posay", name: "Cicaplast Baume B5", actives: "Panthenol, Madecassoside", usage: "PM on dry patches", budget: "mid", tags: ["dry", "barrier", "reactive", "flakiness"] }
+    ],
+    sunscreens: [
+      { brand: "La Roche-Posay", name: "Anthelios UVMune 400 Invisible Fluid SPF 50+", actives: "Mexoryl 400", usage: "AM, reapply outdoors", budget: "mid", tags: ["all", "normal", "combination", "oily"] },
+      { brand: "EltaMD", name: "UV Clear Broad-Spectrum SPF 46", actives: "Zinc Oxide, Niacinamide", usage: "AM", budget: "high", tags: ["acne", "oily", "sensitive", "rosacea"] },
+      { brand: "EltaMD", name: "UV Physical SPF 41", actives: "Zinc Oxide, Titanium Dioxide", usage: "AM", budget: "high", tags: ["sensitive", "veryReactive", "rosacea"] },
+      { brand: "CeraVe", name: "Hydrating Mineral Sunscreen SPF 30", actives: "Zinc Oxide, Ceramides", usage: "AM", budget: "value", tags: ["dry", "sensitive", "normal"] },
+      { brand: "Neutrogena", name: "Ultra Sheer Dry-Touch SPF 55", actives: "Broad-spectrum filters", usage: "AM", budget: "ultra", tags: ["oily", "combination", "normal"] },
+      { brand: "Bioderma", name: "Photoderm Aquafluide SPF 50+", actives: "Broad-spectrum", usage: "AM", budget: "mid", tags: ["all", "sensitive"] }
+    ]
+  };
+
+  var BUDGET_ORDER = { ultra: 0, value: 1, mid: 2, high: 3 };
+
+  function $(sel) { return document.querySelector(sel); }
+  function $$(sel) { return document.querySelectorAll(sel); }
+
+  var screens = {
+    landing: $("#screen-landing"),
+    name: $("#screen-name"),
+    mascot: $("#screen-mascot"),
+    questions: $("#screen-questions"),
+    results: $("#screen-results"),
+    history: $("#screen-history")
+  };
+
+  $("#landing-mascot").innerHTML = bunnySVG("full");
+  $("#mascot-dialog-svg").innerHTML = bunnySVG("full");
+  $("#mini-mascot").innerHTML = bunnySVG("mini");
+
+  function showScreen(name) {
+    Object.keys(screens).forEach(function (k) {
+      if (screens[k]) screens[k].classList.remove("active");
     });
-    opts.appendChild(div);
-  });
-  $('#btn-q-next').disabled=!state.answers[q.id];
-  $('#btn-q-prev').style.visibility=state.currentQ===0?'hidden':'visible';
-  $('#btn-q-next').textContent=state.currentQ===total-1?'See Results':'Next';
-}
-function renderHistory(){
-  var list=getHistory(),c=$('#history-list');
-  if(!list.length){c.innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No prescriptions yet</div><div class="empty-text">Complete an assessment to generate your first report card.</div></div>';return}
-  c.innerHTML=list.map(function(item){
-    var dateStr=new Date(item.date).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
-    return '<div class="history-item" data-id="'+item.id+'"><div class="history-name">'+escapeHtml(item.userName)+'</div><div class="history-date">'+dateStr+'</div><div class="history-summary">'+escapeHtml(item.profileSummary)+'</div><div class="history-products"><strong>Cleanser:</strong> '+escapeHtml(item.cleanser.brand)+' '+escapeHtml(item.cleanser.name)+'<br><strong>Serum:</strong> '+escapeHtml(item.serum.brand)+' '+escapeHtml(item.serum.name)+'<br><strong>Moisturizer:</strong> '+escapeHtml(item.moisturizer.brand)+' '+escapeHtml(item.moisturizer.name)+'<br><strong>SPF:</strong> '+escapeHtml(item.sunscreen.brand)+' '+escapeHtml(item.sunscreen.name)+'</div><div class="history-actions"><button class="btn btn-primary btn-redownload" type="button" data-id="'+item.id+'">Download</button><button class="btn btn-danger btn-delete" type="button" data-id="'+item.id+'">Delete</button></div></div>';
-  }).join('');
-  c.querySelectorAll('.btn-delete').forEach(function(btn){btn.addEventListener('click',function(){state.deleteId=btn.getAttribute('data-id');$('#overlay').classList.add('show')})});
-  c.querySelectorAll('.btn-redownload').forEach(function(btn){btn.addEventListener('click',function(){var item=getHistory().find(function(h){return h.id===btn.getAttribute('data-id')});if(item)downloadReportCard(item)})});
-}
-function startAssessment(){state.userName='';state.currentQ=0;state.answers={};$('#user-name').value='';$('#btn-name-next').disabled=true;showScreen('name')}
-function goHome(){renderStreak();showScreen('landing')}
-
-$('#nav-home').addEventListener('click',goHome);
-$('#nav-start').addEventListener('click',startAssessment);
-$('#nav-history').addEventListener('click',function(){renderHistory();showScreen('history')});
-$$('[data-goto]').forEach(function(btn){btn.addEventListener('click',function(){var g=btn.getAttribute('data-goto');if(g==='landing')goHome();else showScreen(g)})});
-$('#btn-results-home').addEventListener('click',goHome);
-$('#btn-results-back').addEventListener('click',goHome);
-$('#btn-history-back').addEventListener('click',goHome);
-$('#btn-download-report').addEventListener('click',function(){if(state.lastRx)downloadReportCard(state.lastRx)});
-$('#user-name').addEventListener('input',function(e){$('#btn-name-next').disabled=e.target.value.trim().length<1});
-$('#btn-name-next').addEventListener('click',function(){
-  state.userName=$('#user-name').value.trim();if(!state.userName)return;
-  $('#mascot-speech').innerHTML='Hello, <span class="user-highlight">'+escapeHtml(state.userName)+'</span>! How are you doing today? I\'m Dr. Bunny. Let\'s analyze your skin together!';
-  showScreen('mascot');
-});
-$('#btn-lets-begin').addEventListener('click',function(){state.currentQ=0;renderQuestion();showScreen('questions')});
-$('#btn-q-back').addEventListener('click',function(){if(state.currentQ===0)showScreen('mascot');else{state.currentQ--;renderQuestion()}});
-$('#btn-q-prev').addEventListener('click',function(){if(state.currentQ>0){state.currentQ--;renderQuestion()}});
-$('#btn-q-next').addEventListener('click',function(){
-  if(!state.answers[questions[state.currentQ].id])return;
-  if(state.currentQ<questions.length-1){state.currentQ++;renderQuestion()}
-  else{
-    var recs=generateRecommendations(state.answers);
-    var rx={id:'rx_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),userName:state.userName,date:new Date().toISOString(),answers:Object.assign({},state.answers),profileSummary:recs.profileSummary,cleanser:recs.cleanser,serum:recs.serum,moisturizer:recs.moisturizer,sunscreen:recs.sunscreen,tips:recs.tips};
-    addPrescription(rx);renderResults(rx);showScreen('results');showToast('Routine saved to history');
+    if (screens[name]) screens[name].classList.add("active");
+    state.screen = name;
+    window.scrollTo(0, 0);
+    $("#nav-home").classList.toggle("active", name === "landing");
+    $("#nav-history").classList.toggle("active", name === "history");
   }
-});
-$('#btn-cancel-delete').addEventListener('click',function(){state.deleteId=null;$('#overlay').classList.remove('show')});
-$('#btn-confirm-delete').addEventListener('click',function(){
-  if(!state.deleteId)return;
-  var item=document.querySelector('.history-item[data-id="'+state.deleteId+'"]');
-  if(item){item.classList.add('removing');setTimeout(function(){deletePrescription(state.deleteId);state.deleteId=null;$('#overlay').classList.remove('show');renderHistory();showToast('Prescription deleted')},280)}
-  else{deletePrescription(state.deleteId);state.deleteId=null;$('#overlay').classList.remove('show');renderHistory();showToast('Prescription deleted')}
-});
-$('#overlay').addEventListener('click',function(e){if(e.target===$('#overlay')){state.deleteId=null;$('#overlay').classList.remove('show')}});
-var lastTouch=0;
-document.addEventListener('touchend',function(e){var now=Date.now();if(now-lastTouch<=300)e.preventDefault();lastTouch=now},{passive:false});
-renderStreak();
+
+  function showToast(msg) {
+    var t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(function () { t.classList.remove("show"); }, 2400);
+  }
+
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  function getStreakData() {
+    try {
+      return JSON.parse(localStorage.getItem("skinveda_streak") || '{"count":0,"last":"","days":[]}');
+    } catch (e) {
+      return { count: 0, last: "", days: [] };
+    }
+  }
+
+  function saveStreakData(d) {
+    localStorage.setItem("skinveda_streak", JSON.stringify(d));
+  }
+
+  function renderStreak() {
+    var data = getStreakData();
+    var today = todayKey();
+    var checked = data.last === today;
+    $("#streak-count").innerHTML = (data.count || 0) + "<span>days</span>";
+    var btn = $("#btn-streak-checkin");
+    var msg = $("#streak-msg");
+    if (checked) {
+      btn.disabled = true;
+      btn.textContent = "Checked in today";
+      msg.textContent = "Great job! Come back tomorrow to keep your streak.";
+    } else {
+      btn.disabled = false;
+      btn.textContent = "Check in today";
+      msg.textContent = "Build a healthy routine — check in after your skincare!";
+    }
+    var labels = ["S", "M", "T", "W", "T", "F", "S"];
+    var html = "";
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+      var done = (data.days || []).indexOf(key) !== -1;
+      var isToday = key === today;
+      html += '<div class="streak-day"><div class="streak-dot' + (done ? " done" : "") + (isToday ? " today" : "") + '">' + (done ? "✓" : labels[d.getDay()]) + '</div><div class="streak-label">' + labels[d.getDay()] + "</div></div>";
+    }
+    $("#streak-days").innerHTML = html;
+  }
+
+  $("#btn-streak-checkin").addEventListener("click", function () {
+    var data = getStreakData();
+    var today = todayKey();
+    if (data.last === today) return;
+    var y = new Date();
+    y.setDate(y.getDate() - 1);
+    var yKey = y.getFullYear() + "-" + String(y.getMonth() + 1).padStart(2, "0") + "-" + String(y.getDate()).padStart(2, "0");
+    data.count = data.last === yKey ? (data.count || 0) + 1 : 1;
+    data.last = today;
+    if (!data.days) data.days = [];
+    if (data.days.indexOf(today) === -1) data.days.push(today);
+    data.days = data.days.slice(-30);
+    saveStreakData(data);
+    renderStreak();
+    showToast("Streak updated! " + data.count + " day" + (data.count > 1 ? "s" : ""));
+  });
+
+  function getHistory() {
+    try {
+      return JSON.parse(localStorage.getItem("skinveda_history") || "[]");
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveHistory(list) {
+    localStorage.setItem("skinveda_history", JSON.stringify(list));
+  }
+
+  function addPrescription(rx) {
+    var list = getHistory();
+    list.unshift(rx);
+    saveHistory(list);
+  }
+
+  function deletePrescription(id) {
+    saveHistory(getHistory().filter(function (i) { return i.id !== id; }));
+  }
+
+  function filterByBudget(list, b) {
+    var max = BUDGET_ORDER[b] != null ? BUDGET_ORDER[b] : 1;
+    return list.filter(function (p) { return BUDGET_ORDER[p.budget] <= max; });
+  }
+
+  function pickBest(cands, pref, fall) {
+    if (!cands.length) return null;
+    var best = null;
+    var bs = -1;
+    cands.forEach(function (p) {
+      var s = 0;
+      (pref || []).forEach(function (t) { if (p.tags.indexOf(t) !== -1) s += 3; });
+      (fall || []).forEach(function (t) { if (p.tags.indexOf(t) !== -1) s += 1; });
+      if (p.tags.indexOf("all") !== -1) s += 0.5;
+      if (s > bs) { bs = s; best = p; }
+    });
+    return best || cands[0];
+  }
+
+  function generateRecommendations(a) {
+    var budget = a.budget || "value";
+    var typeLabels = { dry: "Dry", oily: "Oily", combination: "Combination", sensitive: "Sensitive", normal: "Normal" };
+    var concernLabels = { acne: "acne-prone", hyperpigmentation: "hyperpigmentation focus", aging: "aging / firmness focus", rosacea: "rosacea / redness-prone", dehydration: "dehydrated" };
+    var parts = [typeLabels[a.skinType] + " skin", concernLabels[a.primaryConcern]];
+    if (a.secondaryConcern && a.secondaryConcern !== "none") {
+      parts.push(a.secondaryConcern.replace(/([A-Z])/g, " $1").toLowerCase());
+    }
+    if (a.pih === "severe" || a.pih === "moderate") parts.push("notable PIH tendency");
+    if (a.sunscreenHabit === "never" || a.sunscreenHabit === "sometimes") parts.push("sunscreen habit needs improvement");
+
+    var cTags = [a.skinType, a.primaryConcern];
+    if (a.primaryConcern === "acne" && (a.acneSeverity === "moderateInflammatory" || a.acneSeverity === "severeCystic") && a.skinType !== "dry" && a.sensitivity !== "veryReactive") {
+      cTags.push("acne");
+    }
+    if (a.sensitivity === "reactive" || a.sensitivity === "veryReactive" || a.fragranceAlcohol === "avoid") {
+      cTags.push("sensitive", "reactive");
+    }
+    var cleanser = pickBest(filterByBudget(products.cleansers, budget), cTags, [a.skinType, "normal"]);
+
+    var sTags = [a.primaryConcern];
+    if (a.primaryConcern === "acne") {
+      sTags = (a.sensitivity === "veryReactive" || a.skinType === "sensitive") ? ["acne", "sensitive"] : ["acne", "pores"];
+    } else if (a.primaryConcern === "hyperpigmentation") {
+      sTags = ["hyperpigmentation", "pih"];
+    } else if (a.primaryConcern === "aging") {
+      sTags = (a.sensitivity === "veryReactive" || a.ageRange === "under25") ? ["aging", "dullness"] : ["aging", "texture"];
+    } else if (a.primaryConcern === "rosacea") {
+      sTags = ["rosacea", "sensitive", "barrier"];
+    } else {
+      sTags = ["dehydration", "dullness"];
+    }
+    if (a.postAcneScars === "moderate" || a.postAcneScars === "significant") {
+      sTags.push("postAcneScars", "texture");
+    }
+    var serum = pickBest(filterByBudget(products.serums, budget), sTags, [a.primaryConcern, "normal"]);
+
+    var mTags = [a.skinType];
+    if (a.skinType === "dry" || a.textureIssues === "flakiness" || a.climate === "arid" || a.climate === "cold") {
+      mTags = ["dry", "flakiness", "barrier"];
+    } else if (a.skinType === "oily" || a.textureIssues === "excessSebum") {
+      mTags = ["oily", "combination"];
+    } else if (a.primaryConcern === "rosacea" || a.sensitivity === "veryReactive") {
+      mTags = ["sensitive", "rosacea", "reactive"];
+    } else if (a.primaryConcern === "dehydration") {
+      mTags = ["dehydration", "normal"];
+    }
+    var moisturizer = pickBest(filterByBudget(products.moisturizers, budget), mTags, [a.skinType, "normal"]);
+
+    var spfTags = ["all"];
+    if (a.sensitivity === "veryReactive" || a.primaryConcern === "rosacea" || a.skinType === "sensitive" || a.fragranceAlcohol === "avoid") {
+      spfTags = ["sensitive", "rosacea", "veryReactive"];
+    } else if (a.primaryConcern === "acne" || a.skinType === "oily") {
+      spfTags = ["acne", "oily", "sensitive"];
+    } else if (a.skinType === "dry") {
+      spfTags = ["dry", "sensitive", "normal"];
+    }
+    var sunscreen = pickBest(filterByBudget(products.sunscreens, budget), spfTags, ["all", "normal"]);
+
+    var tips = [];
+    if (a.waterIntake === "low") tips.push("Increase daily water intake toward 2+ liters.");
+    if (a.sunscreenHabit === "never" || a.sunscreenHabit === "sometimes") tips.push("Daily broad-spectrum SPF is non-negotiable.");
+    if (a.sleepHygiene === "poor" || a.sleepHygiene === "chronic") tips.push("Prioritize consistent sleep for barrier repair.");
+    if (a.stressLevel === "high" || a.stressLevel === "chronic") tips.push("Stress management supports clearer skin.");
+    if (a.diet === "high" || a.diet === "veryHigh") tips.push("Consider moderating dairy and high-glycemic foods.");
+    if (a.sensitivity === "reactive" || a.sensitivity === "veryReactive") tips.push("Introduce actives slowly and buffer with moisturizer.");
+
+    return {
+      profileSummary: parts.join(" · ") + ".",
+      cleanser: cleanser || products.cleansers[0],
+      serum: serum || products.serums[0],
+      moisturizer: moisturizer || products.moisturizers[0],
+      sunscreen: sunscreen || products.sunscreens[0],
+      tips: tips
+    };
+  }
+
+  function escapeHtml(str) {
+    var d = document.createElement("div");
+    d.textContent = str || "";
+    return d.innerHTML;
+  }
+
+  function renderResults(rx) {
+    state.lastRx = rx;
+    var dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    var tipsHtml = "";
+    if (rx.tips && rx.tips.length) {
+      tipsHtml = '<div class="product-section"><div class="product-label-row"><div class="product-icon" style="background:#E8F4F4"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="2.5" fill="#4A7C7D"/></svg></div><div class="product-label">Tips</div></div><div class="product-item" style="border-left-color:var(--teal)"><ul style="margin:0;padding-left:18px;font-size:13px;color:var(--slate-soft);line-height:1.55">' +
+        rx.tips.map(function (t) { return '<li style="margin-bottom:4px">' + escapeHtml(t) + "</li>"; }).join("") +
+        "</ul></div></div>";
+    }
+    function pb(label, key, p) {
+      return '<div class="product-section"><div class="product-label-row"><div class="product-icon">' + catIcons[key] + '</div><div class="product-label">' + label + '</div></div><div class="product-item"><div class="product-brand">' +
+        escapeHtml(p.brand) + '</div><div class="product-name">' + escapeHtml(p.name) + '</div><div class="product-actives">Key actives: ' +
+        escapeHtml(p.actives) + '</div><div class="product-usage">Use: ' + escapeHtml(p.usage) + "</div></div></div>";
+    }
+    $("#rx-content").innerHTML =
+      '<div class="rx-card"><div class="rx-header"><div class="rx-badge">Personalized Routine</div><div class="rx-name">' +
+      escapeHtml(rx.userName) + '</div><div class="rx-date">' + dateStr +
+      '</div></div><div class="rx-body"><div class="profile-summary"><h3>Skin Analysis</h3><p>' +
+      escapeHtml(rx.profileSummary) + "</p></div>" +
+      pb("1. Cleanser", "cleanser", rx.cleanser) +
+      pb("2. Active Serum", "serum", rx.serum) +
+      pb("3. Moisturizer", "moisturizer", rx.moisturizer) +
+      pb("4. Sunscreen", "sunscreen", rx.sunscreen) +
+      tipsHtml +
+      '<div class="rx-footer">Tap Download Report for your certificate · Patch-test new products</div></div></div>';
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function wrapText(ctx, text, x, y, maxW, lh) {
+    var words = (text || "").split(" ");
+    var line = "";
+    for (var n = 0; n < words.length; n++) {
+      var test = line + words[n] + " ";
+      if (ctx.measureText(test).width > maxW && n > 0) {
+        ctx.fillText(line, x, y);
+        line = words[n] + " ";
+        y += lh;
+      } else {
+        line = test;
+      }
+    }
+    ctx.fillText(line, x, y);
+  }
+
+  function drawSparkle(ctx, x, y, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x, y);
+    ctx.beginPath();
+    ctx.moveTo(0, -size);
+    ctx.quadraticCurveTo(size * 0.15, -size * 0.15, size, 0);
+    ctx.quadraticCurveTo(size * 0.15, size * 0.15, 0, size);
+    ctx.quadraticCurveTo(-size * 0.15, size * 0.15, -size, 0);
+    ctx.quadraticCurveTo(-size * 0.15, -size * 0.15, 0, -size);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawMiniBunny(ctx, x, y, scale, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = "#F8DCC8";
+    ctx.beginPath();
+    ctx.ellipse(-14, -28, 7, 18, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(14, -28, 7, 18, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#F5B8A0";
+    ctx.beginPath();
+    ctx.ellipse(-14, -28, 3, 10, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(14, -28, 3, 10, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#F8DCC8";
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 22, 20, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#2C3333";
+    ctx.beginPath();
+    ctx.ellipse(-8, -2, 3, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(8, -2, 3, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#E8A090";
+    ctx.beginPath();
+    ctx.ellipse(0, 6, 3, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function buildReportCanvas(rx) {
+    var canvas = document.getElementById("report-canvas");
+    var ctx = canvas.getContext("2d");
+    var W = 794;
+    var H = 1123;
+    canvas.width = W;
+    canvas.height = H;
+
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#FFFEFB");
+    bg.addColorStop(0.5, "#FAF9F6");
+    bg.addColorStop(1, "#F5F3EF");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = "rgba(74,124,125,0.25)";
+    ctx.lineWidth = 2;
+    roundRect(ctx, 28, 28, W - 56, H - 56, 18);
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(74,124,125,0.12)";
+    ctx.lineWidth = 1;
+    roundRect(ctx, 36, 36, W - 72, H - 72, 14);
+    ctx.stroke();
+
+    drawMiniBunny(ctx, 90, 180, 0.9, 0.06);
+    drawMiniBunny(ctx, W - 90, 420, 0.7, 0.05);
+    drawMiniBunny(ctx, 110, H - 160, 0.65, 0.05);
+    drawSparkle(ctx, 70, 70, 10, "rgba(59,155,156,0.2)");
+    drawSparkle(ctx, W - 70, 90, 8, "rgba(45,212,191,0.25)");
+
+    var grd = ctx.createLinearGradient(48, 48, W - 48, 48);
+    grd.addColorStop(0, "#3B9B9C");
+    grd.addColorStop(1, "#1E5A5C");
+    ctx.fillStyle = grd;
+    roundRect(ctx, 48, 52, W - 96, 130, 16);
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(255,255,255,0.22)";
+    roundRect(ctx, 68, 68, 150, 26, 13);
+    ctx.fill();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "600 13px system-ui,sans-serif";
+    ctx.fillText("SKIN REPORT CARD", 82, 86);
+    ctx.font = "700 34px system-ui,sans-serif";
+    ctx.fillText(rx.userName || "Patient", 68, 128);
+    ctx.font = "400 15px system-ui,sans-serif";
+    ctx.globalAlpha = 0.9;
+    ctx.fillText(new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }), 68, 154);
+    ctx.globalAlpha = 1;
+    ctx.font = "600 14px system-ui,sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.fillText("Skinveda", W - 68, 100);
+    ctx.textAlign = "left";
+
+    var y = 210;
+    ctx.fillStyle = "#E8F0F0";
+    roundRect(ctx, 48, y, W - 96, 88, 14);
+    ctx.fill();
+    ctx.fillStyle = "#5C7A7B";
+    ctx.font = "600 11px system-ui,sans-serif";
+    ctx.fillText("SKIN ANALYSIS", 68, y + 26);
+    ctx.fillStyle = "#2C3333";
+    ctx.font = "500 15px system-ui,sans-serif";
+    wrapText(ctx, rx.profileSummary || "", 68, y + 50, W - 140, 20);
+    y += 110;
+
+    var items = [
+      { label: "CLEANSER", p: rx.cleanser },
+      { label: "ACTIVE SERUM", p: rx.serum },
+      { label: "MOISTURIZER", p: rx.moisturizer },
+      { label: "SUNSCREEN (SPF)", p: rx.sunscreen }
+    ];
+    items.forEach(function (it, idx) {
+      ctx.fillStyle = "#8A9595";
+      ctx.font = "600 11px system-ui,sans-serif";
+      ctx.fillText((idx + 1) + ". " + it.label, 68, y);
+      y += 10;
+      ctx.fillStyle = "#fff";
+      ctx.strokeStyle = "rgba(122,158,159,0.25)";
+      ctx.lineWidth = 1;
+      roundRect(ctx, 48, y, W - 96, 72, 12);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#7A9E9F";
+      ctx.fillRect(48, y + 12, 4, 48);
+      ctx.fillStyle = "#4A7C7D";
+      ctx.font = "600 13px system-ui,sans-serif";
+      ctx.fillText(it.p.brand, 68, y + 24);
+      ctx.fillStyle = "#2C3333";
+      ctx.font = "600 15px system-ui,sans-serif";
+      ctx.fillText(it.p.name, 68, y + 44);
+      ctx.fillStyle = "#4A5555";
+      ctx.font = "400 12px system-ui,sans-serif";
+      ctx.fillText(it.p.usage + "  ·  " + it.p.actives, 68, y + 62);
+      y += 90;
+    });
+
+    if (rx.tips && rx.tips.length) {
+      ctx.fillStyle = "#8A9595";
+      ctx.font = "600 11px system-ui,sans-serif";
+      ctx.fillText("DERMATOLOGIST TIPS", 68, y);
+      y += 10;
+      var tips = rx.tips.slice(0, 4);
+      var tipH = 20 + tips.length * 22;
+      ctx.fillStyle = "#F0F7F7";
+      roundRect(ctx, 48, y, W - 96, tipH, 12);
+      ctx.fill();
+      ctx.fillStyle = "#4A5555";
+      ctx.font = "400 13px system-ui,sans-serif";
+      tips.forEach(function (t, i) {
+        ctx.fillText("•  " + t, 68, y + 22 + i * 22);
+      });
+      y += tipH + 20;
+    }
+
+    y = Math.max(y + 8, H - 150);
+    ctx.strokeStyle = "rgba(122,158,159,0.3)";
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(48, y);
+    ctx.lineTo(W - 48, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#8A9595";
+    ctx.font = "400 12px system-ui,sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText("With care,", W - 68, y + 28);
+    ctx.fillStyle = "#2A7A7B";
+    ctx.font = 'italic 600 36px "Segoe Script","Brush Script MT",cursive';
+    ctx.fillText("Dr. Bunny", W - 68, y + 72);
+    ctx.fillStyle = "#A0A0A0";
+    ctx.font = "400 11px system-ui,sans-serif";
+    ctx.fillText("Virtual Dermatologist · Skinveda", W - 68, y + 94);
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#A0A0A0";
+    ctx.font = "400 11px system-ui,sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Personalized routine · Patch-test new products · Not a medical diagnosis", W / 2, H - 44);
+    ctx.textAlign = "left";
+    return canvas;
+  }
+
+  /* ===== FIXED DOWNLOAD (syntax-safe) ===== */
+  function dataUrlToBlob(dataUrl) {
+    var parts = dataUrl.split(",");
+    var mime = "image/jpeg";
+    var header = parts[0] || "";
+    var mimeStart = header.indexOf(":");
+    var mimeEnd = header.indexOf(";");
+    if (mimeStart !== -1 && mimeEnd !== -1 && mimeEnd > mimeStart) {
+      mime = header.substring(mimeStart + 1, mimeEnd);
+    }
+    var bin = atob(parts[1] || "");
+    var len = bin.length;
+    var u8 = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+      u8[i] = bin.charCodeAt(i);
+    }
+    return new Blob([u8], { type: mime });
+  }
+
+  function isIOS() {
+    var ua = navigator.userAgent || "";
+    if (/iPad|iPhone|iPod/.test(ua)) return true;
+    if (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) return true;
+    return false;
+  }
+
+  function downloadReportCard(rx) {
+    if (!rx) return;
+    var fileName = "SkinVeda-Report.jpg";
+    try {
+      var canvas = buildReportCanvas(rx);
+      var dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+      var blob = dataUrlToBlob(dataUrl);
+
+      if (isIOS() && typeof navigator.share === "function") {
+        try {
+          var file = new File([blob], fileName, { type: "image/jpeg" });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], title: "Skinveda Report" }).catch(function () {});
+            return;
+          }
+        } catch (shareErr) {}
+      }
+
+      if (typeof URL !== "undefined" && URL.createObjectURL) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.style.display = "none";
+        a.setAttribute("download", fileName);
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          try { document.body.removeChild(a); } catch (e1) {}
+          try { URL.revokeObjectURL(url); } catch (e2) {}
+        }, 400);
+        return;
+      }
+
+      var link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = fileName;
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      try {
+        var c2 = buildReportCanvas(rx);
+        var a2 = document.createElement("a");
+        a2.href = c2.toDataURL("image/jpeg", 0.85);
+        a2.download = fileName;
+        document.body.appendChild(a2);
+        a2.click();
+        document.body.removeChild(a2);
+      } catch (e2) {}
+    }
+  }
+
+  function renderQuestion() {
+    var q = questions[state.currentQ];
+    var total = questions.length;
+    var pct = ((state.currentQ + 1) / total * 100).toFixed(0);
+    $("#progress-text").textContent = "Question " + (state.currentQ + 1) + " of " + total;
+    $("#progress-pct").textContent = pct + "%";
+    $("#progress-fill").style.width = pct + "%";
+    $("#q-label").textContent = q.label;
+    $("#q-text").textContent = q.text;
+    var card = $("#question-card");
+    card.style.animation = "none";
+    void card.offsetHeight;
+    card.style.animation = "qIn 0.35s cubic-bezier(0.22, 1, 0.36, 1)";
+    var opts = $("#q-options");
+    opts.innerHTML = "";
+    q.options.forEach(function (opt) {
+      var div = document.createElement("div");
+      div.className = "option" + (state.answers[q.id] === opt.value ? " selected" : "");
+      div.innerHTML = '<div class="option-radio"></div><div class="option-text">' + opt.label + "</div>";
+      div.addEventListener("click", function () {
+        state.answers[q.id] = opt.value;
+        var all = opts.querySelectorAll(".option");
+        for (var i = 0; i < all.length; i++) all[i].classList.remove("selected");
+        div.classList.add("selected");
+        $("#btn-q-next").disabled = false;
+      });
+      opts.appendChild(div);
+    });
+    $("#btn-q-next").disabled = !state.answers[q.id];
+    $("#btn-q-prev").style.visibility = state.currentQ === 0 ? "hidden" : "visible";
+    $("#btn-q-next").textContent = state.currentQ === total - 1 ? "See Results" : "Next";
+  }
+
+  function renderHistory() {
+    var list = getHistory();
+    var c = $("#history-list");
+    if (!list.length) {
+      c.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No prescriptions yet</div><div class="empty-text">Complete an assessment to generate your first report card.</div></div>';
+      return;
+    }
+    c.innerHTML = list.map(function (item) {
+      var dateStr = new Date(item.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+      return '<div class="history-item" data-id="' + item.id + '"><div class="history-name">' + escapeHtml(item.userName) +
+        '</div><div class="history-date">' + dateStr + '</div><div class="history-summary">' + escapeHtml(item.profileSummary) +
+        '</div><div class="history-products"><strong>Cleanser:</strong> ' + escapeHtml(item.cleanser.brand) + " " + escapeHtml(item.cleanser.name) +
+        "<br><strong>Serum:</strong> " + escapeHtml(item.serum.brand) + " " + escapeHtml(item.serum.name) +
+        "<br><strong>Moisturizer:</strong> " + escapeHtml(item.moisturizer.brand) + " " + escapeHtml(item.moisturizer.name) +
+        "<br><strong>SPF:</strong> " + escapeHtml(item.sunscreen.brand) + " " + escapeHtml(item.sunscreen.name) +
+        '</div><div class="history-actions"><button class="btn btn-primary btn-redownload" type="button" data-id="' + item.id +
+        '">Download</button><button class="btn btn-danger btn-delete" type="button" data-id="' + item.id + '">Delete</button></div></div>';
+    }).join("");
+
+    c.querySelectorAll(".btn-delete").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.deleteId = btn.getAttribute("data-id");
+        $("#overlay").classList.add("show");
+      });
+    });
+    c.querySelectorAll(".btn-redownload").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var item = getHistory().find(function (h) { return h.id === btn.getAttribute("data-id"); });
+        if (item) downloadReportCard(item);
+      });
+    });
+  }
+
+  function startAssessment() {
+    state.userName = "";
+    state.currentQ = 0;
+    state.answers = {};
+    $("#user-name").value = "";
+    $("#btn-name-next").disabled = true;
+    showScreen("name");
+  }
+
+  function goHome() {
+    renderStreak();
+    showScreen("landing");
+  }
+
+  $("#nav-home").addEventListener("click", goHome);
+  $("#nav-start").addEventListener("click", startAssessment);
+  $("#nav-history").addEventListener("click", function () {
+    renderHistory();
+    showScreen("history");
+  });
+
+  $$("[data-goto]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var g = btn.getAttribute("data-goto");
+      if (g === "landing") goHome();
+      else showScreen(g);
+    });
+  });
+
+  $("#btn-results-home").addEventListener("click", goHome);
+  $("#btn-results-back").addEventListener("click", goHome);
+  $("#btn-history-back").addEventListener("click", goHome);
+  $("#btn-download-report").addEventListener("click", function () {
+    if (state.lastRx) downloadReportCard(state.lastRx);
+  });
+
+  $("#user-name").addEventListener("input", function (e) {
+    $("#btn-name-next").disabled = e.target.value.trim().length < 1;
+  });
+
+  $("#btn-name-next").addEventListener("click", function () {
+    state.userName = $("#user-name").value.trim();
+    if (!state.userName) return;
+    $("#mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(state.userName) + "</span>! How are you doing today? I'm Dr. Bunny. Let's analyze your skin together!";
+    showScreen("mascot");
+  });
+
+  $("#btn-lets-begin").addEventListener("click", function () {
+    state.currentQ = 0;
+    renderQuestion();
+    showScreen("questions");
+  });
+
+  $("#btn-q-back").addEventListener("click", function () {
+    if (state.currentQ === 0) showScreen("mascot");
+    else {
+      state.currentQ--;
+      renderQuestion();
+    }
+  });
+
+  $("#btn-q-prev").addEventListener("click", function () {
+    if (state.currentQ > 0) {
+      state.currentQ--;
+      renderQuestion();
+    }
+  });
+
+  $("#btn-q-next").addEventListener("click", function () {
+    if (!state.answers[questions[state.currentQ].id]) return;
+    if (state.currentQ < questions.length - 1) {
+      state.currentQ++;
+      renderQuestion();
+    } else {
+      var recs = generateRecommendations(state.answers);
+      var rx = {
+        id: "rx_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+        userName: state.userName,
+        date: new Date().toISOString(),
+        answers: Object.assign({}, state.answers),
+        profileSummary: recs.profileSummary,
+        cleanser: recs.cleanser,
+        serum: recs.serum,
+        moisturizer: recs.moisturizer,
+        sunscreen: recs.sunscreen,
+        tips: recs.tips
+      };
+      addPrescription(rx);
+      renderResults(rx);
+      showScreen("results");
+      showToast("Routine saved to history");
+    }
+  });
+
+  $("#btn-cancel-delete").addEventListener("click", function () {
+    state.deleteId = null;
+    $("#overlay").classList.remove("show");
+  });
+
+  $("#btn-confirm-delete").addEventListener("click", function () {
+    if (!state.deleteId) return;
+    var item = document.querySelector('.history-item[data-id="' + state.deleteId + '"]');
+    if (item) {
+      item.classList.add("removing");
+      setTimeout(function () {
+        deletePrescription(state.deleteId);
+        state.deleteId = null;
+        $("#overlay").classList.remove("show");
+        renderHistory();
+        showToast("Prescription deleted");
+      }, 280);
+    } else {
+      deletePrescription(state.deleteId);
+      state.deleteId = null;
+      $("#overlay").classList.remove("show");
+      renderHistory();
+      showToast("Prescription deleted");
+    }
+  });
+
+  $("#overlay").addEventListener("click", function (e) {
+    if (e.target === $("#overlay")) {
+      state.deleteId = null;
+      $("#overlay").classList.remove("show");
+    }
+  });
+
+  var lastTouch = 0;
+  document.addEventListener("touchend", function (e) {
+    var now = Date.now();
+    if (now - lastTouch <= 300) e.preventDefault();
+    lastTouch = now;
+  }, { passive: false });
+
+  renderStreak();
 })();
 </script>
 </body>
