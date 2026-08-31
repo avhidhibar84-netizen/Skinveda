@@ -253,10 +253,14 @@ body {
 .progress-fill { height: 100%; background: linear-gradient(90deg, #3B9B9C, #2A7A7B); border-radius: 3px; transition: width .4s; }
 .question-card { flex: 1; display: flex; flex-direction: column; animation: qIn .35s cubic-bezier(.22,1,.36,1); min-height: 0; }
 .q-label { font-size: 12px; font-weight: 600; color: var(--sage); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
-.q-text { font-size: 18.5px; font-weight: 650; line-height: 1.35; margin-bottom: 16px; color: var(--slate); }
+.q-text { font-size: 18.5px; font-weight: 650; line-height: 1.35; margin-bottom: 6px; color: var(--slate); }
+.q-hint {
+  font-size: 13px; color: var(--muted); line-height: 1.45; margin-bottom: 14px; font-weight: 500;
+  background: var(--sage-light); border-radius: 12px; padding: 10px 12px;
+}
 .options { display: flex; flex-direction: column; gap: 9px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
 .option {
-  display: flex; align-items: center; padding: 13px 15px; background: var(--glass);
+  display: flex; align-items: flex-start; padding: 13px 15px; background: var(--glass);
   border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
   box-shadow: 0 2px 10px rgba(44,51,51,.04); touch-action: manipulation; flex-shrink: 0;
 }
@@ -267,11 +271,12 @@ body {
 }
 .option-radio {
   width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border);
-  margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  margin-right: 14px; margin-top: 1px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
 }
 .option.selected .option-radio { border-color: var(--teal); background: var(--teal); }
 .option.selected .option-radio::after { content: ""; width: 8px; height: 8px; background: #fff; border-radius: 50%; }
-.option-text { font-size: 14.5px; font-weight: 500; color: var(--slate); line-height: 1.4; }
+.option-text { font-size: 14.5px; font-weight: 500; color: var(--slate); line-height: 1.35; }
+.option-hint { font-size: 12px; color: var(--muted); margin-top: 3px; font-weight: 400; line-height: 1.35; }
 .nav-row { display: flex; gap: 12px; margin-top: 14px; flex-shrink: 0; }
 .nav-row .btn { flex: 1; height: 48px; font-size: 15px; }
 
@@ -332,7 +337,6 @@ body {
 
 .checkin-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
 .checkin-intro { font-size: 13px; color: var(--muted); margin-bottom: 12px; text-align: left; line-height: 1.4; }
-/* Locked / post-save panel — only place the timer lives */
 .checkin-lock-panel {
   display: none; text-align: center; padding: 32px 20px; background: #fff;
   border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-lg);
@@ -342,7 +346,7 @@ body {
 .checkin-lock-panel .lock-icon { font-size: 36px; margin-bottom: 10px; }
 .checkin-lock-panel .lock-title { font-size: 17px; font-weight: 700; color: var(--slate); margin-bottom: 8px; }
 .checkin-lock-panel .lock-msg {
-  font-size: 14px; color: var(--slate-soft); line-height: 1.5; margin-bottom: 18px; max-width: 280px; margin-left: auto; margin-right: auto;
+  font-size: 14px; color: var(--slate-soft); line-height: 1.5; margin-bottom: 18px; max-width: 300px; margin-left: auto; margin-right: auto;
 }
 .checkin-lock-panel .lock-timer {
   font-size: 36px; font-weight: 800; color: var(--teal-deep); font-variant-numeric: tabular-nums;
@@ -354,7 +358,8 @@ body {
   background: var(--sage-light); font-size: 13px; font-weight: 700; color: var(--teal-deep);
 }
 .metric-block { margin-bottom: 18px; text-align: left; }
-.metric-title { font-size: 14px; font-weight: 650; color: var(--slate); margin-bottom: 8px; }
+.metric-title { font-size: 14px; font-weight: 650; color: var(--slate); margin-bottom: 4px; }
+.metric-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.4; }
 .metric-opts { display: flex; flex-wrap: wrap; gap: 6px; }
 .metric-opt {
   flex: 1 1 30%; min-width: 64px; height: auto; min-height: 42px; padding: 8px 6px;
@@ -445,6 +450,7 @@ body {
     <div class="question-card">
       <div class="q-label">Getting started</div>
       <div class="q-text">What should we call you?</div>
+      <div class="q-hint">We'll use this name on your routine card. You only enter it once.</div>
       <input type="text" class="name-input" id="user-name" placeholder="Your first name" maxlength="40" autocomplete="given-name">
       <div class="nav-row" style="margin-top:auto">
         <button class="btn btn-primary" id="btn-name-next" type="button" disabled>Continue</button>
@@ -479,6 +485,7 @@ body {
     <div class="question-card" id="question-card">
       <div class="q-label" id="q-label">Skin Fundamentals</div>
       <div class="q-text" id="q-text"></div>
+      <div class="q-hint" id="q-hint"></div>
       <div class="options" id="q-options"></div>
       <div class="nav-row">
         <button class="btn btn-secondary" id="btn-q-prev" type="button">Back</button>
@@ -487,7 +494,6 @@ body {
     </div>
   </div>
 
-  <!-- DAILY PROGRESS: questions OR timer panel (never both) -->
   <div class="screen" id="screen-checkin">
     <div class="header">
       <button class="back-btn" id="btn-checkin-back" type="button" aria-label="Back">
@@ -500,13 +506,13 @@ body {
       <div class="checkin-lock-panel" id="checkin-lock-panel">
         <div class="lock-icon">✓</div>
         <div class="lock-title" id="checkin-lock-title">Check-in saved</div>
-        <div class="lock-msg" id="checkin-lock-msg">Your check-in for today is saved. Next check-in unlocks after this timer.</div>
+        <div class="lock-msg" id="checkin-lock-msg">Your check-in is saved. The next progress check unlocks in 2 days (48 hours).</div>
         <div class="lock-timer" id="checkin-lock-timer">00:00:00</div>
-        <div class="lock-sub" id="checkin-lock-sub">Smart cooldown based on your skin signals</div>
+        <div class="lock-sub" id="checkin-lock-sub">Come back when the timer reaches zero</div>
         <div class="lock-score" id="checkin-lock-score" style="display:none"></div>
       </div>
       <div id="checkin-form-wrap">
-        <p class="checkin-intro" id="checkin-intro">Rate how your skin feels. Questions adapt each session.</p>
+        <p class="checkin-intro" id="checkin-intro">Quick self-check on how your skin feels. Each answer has a short plain-language tip.</p>
         <div id="checkin-metrics"></div>
       </div>
     </div>
@@ -613,37 +619,88 @@ body {
     "If your barrier is stressed, pause actives and soothe.",
     "Reapply SPF every 2–3 hours outdoors.",
     "Consistency beats perfection — simple daily beats complex skipped.",
-    "Don't pick at breakouts; it increases PIH risk."
+    "Don't pick at breakouts; it increases dark mark risk."
   ];
+
+  /* Fixed 48-hour cooldown */
+  var COOLDOWN_MS = 48 * 60 * 60 * 1000;
 
   var METRIC_BANKS = {
     oil: [
-      { title: "Oil balance right now", opts: [{ v: 1, t: "Very oily" }, { v: 2, t: "Oily T-zone" }, { v: 3, t: "Balanced" }, { v: 4, t: "Slightly dry" }, { v: 5, t: "Very dry" }] },
-      { title: "How shiny does your skin feel mid-day?", opts: [{ v: 1, t: "Greasy" }, { v: 2, t: "Shiny" }, { v: 3, t: "Normal" }, { v: 4, t: "Matte / dry" }, { v: 5, t: "Tight & dry" }] },
-      { title: "Sebum level vs yesterday", opts: [{ v: 1, t: "Much oilier" }, { v: 2, t: "A bit oilier" }, { v: 3, t: "Same" }, { v: 4, t: "Less oil" }, { v: 5, t: "Much drier" }] }
+      {
+        title: "Oil balance right now",
+        hint: "Oil balance = how greasy or dry your face feels. Think: does your T-zone (forehead, nose, chin) look shiny by afternoon?",
+        opts: [{ v: 1, t: "Very oily" }, { v: 2, t: "Oily T-zone" }, { v: 3, t: "Balanced" }, { v: 4, t: "Slightly dry" }, { v: 5, t: "Very dry" }]
+      },
+      {
+        title: "How shiny does your skin feel mid-day?",
+        hint: "Mid-day shine often means extra oil. Dry skin may feel tight instead of shiny.",
+        opts: [{ v: 1, t: "Greasy" }, { v: 2, t: "Shiny" }, { v: 3, t: "Normal" }, { v: 4, t: "Matte / dry" }, { v: 5, t: "Tight & dry" }]
+      },
+      {
+        title: "Sebum level vs last check",
+        hint: "Sebum is your skin's natural oil. Compare to how you felt last time you checked in.",
+        opts: [{ v: 1, t: "Much oilier" }, { v: 2, t: "A bit oilier" }, { v: 3, t: "Same" }, { v: 4, t: "Less oil" }, { v: 5, t: "Much drier" }]
+      }
     ],
     acne: [
-      { title: "Breakouts / acne today", opts: [{ v: 1, t: "Worse flare" }, { v: 2, t: "Same" }, { v: 3, t: "Slightly better" }, { v: 4, t: "Better" }, { v: 5, t: "Clear" }] },
-      { title: "New inflamed spots since last check?", opts: [{ v: 1, t: "Several new" }, { v: 2, t: "A few" }, { v: 3, t: "One maybe" }, { v: 4, t: "None new" }, { v: 5, t: "Clearing up" }] },
-      { title: "How calm is your acne zone?", opts: [{ v: 1, t: "Angry / painful" }, { v: 2, t: "Active" }, { v: 3, t: "Mild" }, { v: 4, t: "Settling" }, { v: 5, t: "Calm" }] }
+      {
+        title: "Breakouts / acne today",
+        hint: "Breakouts = pimples, whiteheads, or red bumps. \"Worse flare\" means more or angrier spots than usual.",
+        opts: [{ v: 1, t: "Worse flare" }, { v: 2, t: "Same" }, { v: 3, t: "Slightly better" }, { v: 4, t: "Better" }, { v: 5, t: "Clear" }]
+      },
+      {
+        title: "New inflamed spots since last check?",
+        hint: "Inflamed = red, tender, or pus-filled. Count only new ones since your last progress check.",
+        opts: [{ v: 1, t: "Several new" }, { v: 2, t: "A few" }, { v: 3, t: "One maybe" }, { v: 4, t: "None new" }, { v: 5, t: "Clearing up" }]
+      },
+      {
+        title: "How calm is your acne zone?",
+        hint: "Acne zone is where you usually break out (cheeks, jaw, forehead). \"Calm\" means less red and less sore.",
+        opts: [{ v: 1, t: "Angry / painful" }, { v: 2, t: "Active" }, { v: 3, t: "Mild" }, { v: 4, t: "Settling" }, { v: 5, t: "Calm" }]
+      }
     ],
     texture: [
-      { title: "Texture smoothness", opts: [{ v: 1, t: "Rough" }, { v: 2, t: "Uneven" }, { v: 3, t: "OK" }, { v: 4, t: "Smoother" }, { v: 5, t: "Glowing" }] },
-      { title: "How does makeup / touch feel on skin?", opts: [{ v: 1, t: "Catches / rough" }, { v: 2, t: "Slight grit" }, { v: 3, t: "Fine" }, { v: 4, t: "Soft" }, { v: 5, t: "Silky" }] },
-      { title: "Congestion / bumps feel?", opts: [{ v: 1, t: "Many bumps" }, { v: 2, t: "Some" }, { v: 3, t: "Few" }, { v: 4, t: "Improving" }, { v: 5, t: "Smooth" }] }
+      {
+        title: "Texture smoothness",
+        hint: "Texture = how smooth your skin feels to the touch — rough, bumpy, or soft like a cheek after a good routine.",
+        opts: [{ v: 1, t: "Rough" }, { v: 2, t: "Uneven" }, { v: 3, t: "OK" }, { v: 4, t: "Smoother" }, { v: 5, t: "Glowing" }]
+      },
+      {
+        title: "How does makeup or touch feel on skin?",
+        hint: "If foundation \"catches\" or feels gritty, texture is uneven. Soft/silky is a good sign.",
+        opts: [{ v: 1, t: "Catches / rough" }, { v: 2, t: "Slight grit" }, { v: 3, t: "Fine" }, { v: 4, t: "Soft" }, { v: 5, t: "Silky" }]
+      },
+      {
+        title: "Congestion / small bumps?",
+        hint: "Congestion = tiny bumps or clogged pores (not always red). Common on forehead and cheeks.",
+        opts: [{ v: 1, t: "Many bumps" }, { v: 2, t: "Some" }, { v: 3, t: "Few" }, { v: 4, t: "Improving" }, { v: 5, t: "Smooth" }]
+      }
     ],
     hydration: [
-      { title: "Hydration / comfort", opts: [{ v: 1, t: "Tight" }, { v: 2, t: "Dry" }, { v: 3, t: "OK" }, { v: 4, t: "Comfortable" }, { v: 5, t: "Plump" }] },
-      { title: "Does skin feel quenched after moisturizer?", opts: [{ v: 1, t: "Still tight" }, { v: 2, t: "Somewhat dry" }, { v: 3, t: "OK" }, { v: 4, t: "Yes" }, { v: 5, t: "Very plump" }] },
-      { title: "Flaking or tightness today?", opts: [{ v: 1, t: "Lots" }, { v: 2, t: "Some" }, { v: 3, t: "Mild" }, { v: 4, t: "Rare" }, { v: 5, t: "None" }] }
+      {
+        title: "Hydration / comfort",
+        hint: "Hydration = how moist and comfortable skin feels. Tight or flaky usually means low water content, not always \"dry skin type\".",
+        opts: [{ v: 1, t: "Tight" }, { v: 2, t: "Dry" }, { v: 3, t: "OK" }, { v: 4, t: "Comfortable" }, { v: 5, t: "Plump" }]
+      },
+      {
+        title: "Skin after moisturizer?",
+        hint: "After cream, does your face still feel tight within an hour? That points to needing more moisture or a richer cream.",
+        opts: [{ v: 1, t: "Still tight" }, { v: 2, t: "Somewhat dry" }, { v: 3, t: "OK" }, { v: 4, t: "Yes, good" }, { v: 5, t: "Very plump" }]
+      },
+      {
+        title: "Flaking or tightness today?",
+        hint: "Flakes or stretchy-tight feeling after washing are classic \"needs more moisture\" signs.",
+        opts: [{ v: 1, t: "Lots" }, { v: 2, t: "Some" }, { v: 3, t: "Mild" }, { v: 4, t: "Rare" }, { v: 5, t: "None" }]
+      }
     ]
   };
 
   var BONUS_BANK = [
-    { id: "redness", title: "Any unexpected redness?", opts: [{ v: 1, t: "Severe" }, { v: 2, t: "Moderate" }, { v: 3, t: "Mild" }, { v: 4, t: "Barely" }, { v: 5, t: "None" }] },
-    { id: "barrier", title: "Barrier comfort (stinging / sensitivity)?", opts: [{ v: 1, t: "Very reactive" }, { v: 2, t: "Reactive" }, { v: 3, t: "Mild" }, { v: 4, t: "Stable" }, { v: 5, t: "Very calm" }] },
-    { id: "sleep", title: "Last night's sleep quality?", opts: [{ v: 1, t: "Poor" }, { v: 2, t: "Fair" }, { v: 3, t: "OK" }, { v: 4, t: "Good" }, { v: 5, t: "Great" }] },
-    { id: "spf", title: "Did you wear SPF today?", opts: [{ v: 1, t: "No" }, { v: 2, t: "Forgot mostly" }, { v: 3, t: "Once" }, { v: 4, t: "Yes" }, { v: 5, t: "Yes + reapplied" }] }
+    { id: "redness", title: "Any unexpected redness?", hint: "Redness that is new or stronger than usual (not just a little post-workout flush).", opts: [{ v: 1, t: "Severe" }, { v: 2, t: "Moderate" }, { v: 3, t: "Mild" }, { v: 4, t: "Barely" }, { v: 5, t: "None" }] },
+    { id: "barrier", title: "Barrier comfort (stinging / sensitivity)?", hint: "Your skin barrier is the outer \"shield\". If products sting or burn, the barrier may be stressed.", opts: [{ v: 1, t: "Very reactive" }, { v: 2, t: "Reactive" }, { v: 3, t: "Mild" }, { v: 4, t: "Stable" }, { v: 5, t: "Very calm" }] },
+    { id: "sleep", title: "Last night's sleep quality?", hint: "Poor sleep can show up as dullness, oiliness, or more breakouts the next day.", opts: [{ v: 1, t: "Poor" }, { v: 2, t: "Fair" }, { v: 3, t: "OK" }, { v: 4, t: "Good" }, { v: 5, t: "Great" }] },
+    { id: "spf", title: "Did you wear sunscreen (SPF)?", hint: "SPF protects against sun damage and dark marks. Even indoor near windows counts.", opts: [{ v: 1, t: "No" }, { v: 2, t: "Forgot mostly" }, { v: 3, t: "Once" }, { v: 4, t: "Yes" }, { v: 5, t: "Yes + reapplied" }] }
   ];
 
   var state = {
@@ -659,27 +716,136 @@ body {
   };
 
   var questions = [
-    { id: "skinType", label: "Skin Fundamentals", text: "How would you describe your skin type most days?", options: [{ value: "dry", label: "Dry — tight, flaky, or rough" }, { value: "oily", label: "Oily — shiny, especially T-zone" }, { value: "combination", label: "Combination — oily T-zone, dry cheeks" }, { value: "sensitive", label: "Sensitive — easily reactive or red" }, { value: "normal", label: "Normal — balanced, rarely troubled" }] },
-    { id: "primaryConcern", label: "Primary Concern", text: "What is your main skin concern right now?", options: [{ value: "acne", label: "Acne / breakouts" }, { value: "hyperpigmentation", label: "Hyperpigmentation / dark spots" }, { value: "aging", label: "Aging / fine lines" }, { value: "rosacea", label: "Rosacea / persistent redness" }, { value: "dehydration", label: "Dehydration / dullness" }] },
-    { id: "secondaryConcern", label: "Secondary Concern", text: "What is your secondary skin concern?", options: [{ value: "pores", label: "Visible pores" }, { value: "texture", label: "Uneven texture" }, { value: "darkCircles", label: "Dark circles" }, { value: "dullness", label: "Dullness" }, { value: "none", label: "No major secondary concern" }] },
-    { id: "acneSeverity", label: "Acne Profile", text: "If you experience acne, how severe is it?", options: [{ value: "none", label: "No significant acne" }, { value: "mildComedonal", label: "Mild — blackheads / whiteheads" }, { value: "moderateInflammatory", label: "Moderate — papules / pustules" }, { value: "severeCystic", label: "Severe — cystic" }] },
-    { id: "pih", label: "Pigmentation", text: "Do you develop dark marks after breakouts?", options: [{ value: "no", label: "No" }, { value: "mild", label: "Mild" }, { value: "moderate", label: "Moderate" }, { value: "severe", label: "Significant" }] },
-    { id: "waterIntake", label: "Lifestyle", text: "Daily water intake?", options: [{ value: "low", label: "Less than 1 liter" }, { value: "moderate", label: "1–2 liters" }, { value: "good", label: "2–3 liters" }, { value: "high", label: "More than 3 liters" }] },
-    { id: "sunExposure", label: "Sun Exposure", text: "Time outdoors daily?", options: [{ value: "minimal", label: "<30 min" }, { value: "moderate", label: "30–90 min" }, { value: "significant", label: "1.5–3 hours" }, { value: "high", label: "3+ hours" }] },
-    { id: "sunscreenHabit", label: "Sun Protection", text: "Sunscreen habit?", options: [{ value: "never", label: "Never" }, { value: "sometimes", label: "Sometimes" }, { value: "mostDays", label: "Most days" }, { value: "daily", label: "Every day" }] },
-    { id: "sensitivity", label: "Sensitivity", text: "Reaction to actives?", options: [{ value: "tolerant", label: "Tolerant" }, { value: "mild", label: "Mild tingling" }, { value: "reactive", label: "Often stings" }, { value: "veryReactive", label: "Very reactive" }] },
-    { id: "poreSize", label: "Pores", text: "Pore visibility?", options: [{ value: "fine", label: "Fine" }, { value: "moderate", label: "Moderate" }, { value: "enlarged", label: "Enlarged" }, { value: "clogged", label: "Often clogged" }] },
-    { id: "climate", label: "Environment", text: "Your climate?", options: [{ value: "humid", label: "Humid" }, { value: "arid", label: "Arid" }, { value: "polluted", label: "Urban / polluted" }, { value: "cold", label: "Cold winters" }] },
-    { id: "sleepHygiene", label: "Recovery", text: "Sleep quality?", options: [{ value: "excellent", label: "Excellent" }, { value: "fair", label: "Fair" }, { value: "poor", label: "Poor" }, { value: "chronic", label: "Chronic issues" }] },
-    { id: "stressLevel", label: "Stress", text: "Stress level?", options: [{ value: "low", label: "Low" }, { value: "moderate", label: "Moderate" }, { value: "high", label: "High" }, { value: "chronic", label: "Chronic" }] },
-    { id: "diet", label: "Diet", text: "Dairy & sugar intake?", options: [{ value: "low", label: "Low" }, { value: "moderate", label: "Moderate" }, { value: "high", label: "High" }, { value: "veryHigh", label: "Very high" }] },
-    { id: "ageRange", label: "Age", text: "Age range?", options: [{ value: "under25", label: "Under 25" }, { value: "25to35", label: "25–35" }, { value: "36to45", label: "36–45" }, { value: "46plus", label: "46+" }] },
-    { id: "routineComplexity", label: "Routine", text: "Current routine complexity?", options: [{ value: "none", label: "None" }, { value: "basic", label: "Basic" }, { value: "moderate", label: "Moderate" }, { value: "advanced", label: "Advanced" }] },
-    { id: "textureIssues", label: "Texture", text: "Main texture issue?", options: [{ value: "flakiness", label: "Flakiness" }, { value: "roughness", label: "Roughness" }, { value: "excessSebum", label: "Excess oil" }, { value: "none", label: "None" }] },
-    { id: "fragranceAlcohol", label: "Ingredients", text: "Fragrance / alcohol sensitivity?", options: [{ value: "tolerant", label: "None" }, { value: "mild", label: "Mild" }, { value: "reactive", label: "Reactive" }, { value: "avoid", label: "Avoid both" }] },
-    { id: "eyeArea", label: "Eyes", text: "Eye-area concerns?", options: [{ value: "none", label: "None" }, { value: "darkCircles", label: "Dark circles" }, { value: "puffiness", label: "Puffiness" }, { value: "fineLines", label: "Fine lines" }, { value: "multiple", label: "Multiple" }] },
-    { id: "postAcneScars", label: "Scars", text: "Post-acne scars?", options: [{ value: "none", label: "None" }, { value: "mild", label: "Mild" }, { value: "moderate", label: "Moderate" }, { value: "significant", label: "Significant" }] },
-    { id: "budget", label: "Budget", text: "Routine budget (4 steps)?", options: [{ value: "ultra", label: "Ultra-Budget" }, { value: "value", label: "Value" }, { value: "mid", label: "Mid-Tier" }, { value: "high", label: "High-End" }] }
+    { id: "skinType", label: "Skin Fundamentals", text: "How would you describe your skin type most days?", hint: "Skin type is how your face usually behaves — oily, dry, mixed, sensitive, or balanced. Pick what fits most days, not one bad day.", options: [
+      { value: "dry", label: "Dry — tight, flaky, or rough", hint: "Often feels tight after washing; may need richer cream." },
+      { value: "oily", label: "Oily — shiny, especially T-zone", hint: "Shiny by midday; makeup may slide." },
+      { value: "combination", label: "Combination — oily T-zone, dry cheeks", hint: "Oily forehead/nose/chin but drier cheeks." },
+      { value: "sensitive", label: "Sensitive — easily reactive or red", hint: "Stings or reddens with many products." },
+      { value: "normal", label: "Normal — balanced, rarely troubled", hint: "Comfortable most days without extremes." }
+    ]},
+    { id: "primaryConcern", label: "Primary Concern", text: "What is your main skin concern right now?", hint: "Choose the one issue that bothers you most. We'll build the routine around this first.", options: [
+      { value: "acne", label: "Acne / breakouts", hint: "Pimples, whiteheads, or frequent bumps." },
+      { value: "hyperpigmentation", label: "Hyperpigmentation / dark spots", hint: "Brown or dark marks left after pimples or sun." },
+      { value: "aging", label: "Aging / fine lines", hint: "Lines, loss of firmness, or dullness with age." },
+      { value: "rosacea", label: "Rosacea / persistent redness", hint: "Ongoing redness or flushing that is not just temporary." },
+      { value: "dehydration", label: "Dehydration / dullness", hint: "Looks tired or thirsty; feels tight but not always \"dry type\"." }
+    ]},
+    { id: "secondaryConcern", label: "Secondary Concern", text: "What is your secondary skin concern?", hint: "Optional second focus. Pick \"none\" if one main issue is enough.", options: [
+      { value: "pores", label: "Visible pores", hint: "Pores look large, especially on nose/cheeks." },
+      { value: "texture", label: "Uneven texture", hint: "Rough or bumpy to the touch." },
+      { value: "darkCircles", label: "Dark circles", hint: "Shadowy under-eyes." },
+      { value: "dullness", label: "Dullness", hint: "Skin looks flat or lacks glow." },
+      { value: "none", label: "No major secondary concern", hint: "Only the main concern matters for now." }
+    ]},
+    { id: "acneSeverity", label: "Acne Profile", text: "If you experience acne, how severe is it?", hint: "Skip concern if you rarely break out. Mild = mostly blackheads; severe = deep, painful cysts.", options: [
+      { value: "none", label: "No significant acne", hint: "Rare or no pimples." },
+      { value: "mildComedonal", label: "Mild — blackheads / whiteheads", hint: "Clogged pores, few red bumps." },
+      { value: "moderateInflammatory", label: "Moderate — papules / pustules", hint: "Several red or pus-filled spots." },
+      { value: "severeCystic", label: "Severe — cystic", hint: "Deep, painful lumps under the skin." }
+    ]},
+    { id: "pih", label: "Pigmentation", text: "Do you develop dark marks after breakouts?", hint: "PIH = post-inflammatory hyperpigmentation — brown/dark spots that stay after a pimple heals.", options: [
+      { value: "no", label: "No", hint: "Marks fade quickly or never appear." },
+      { value: "mild", label: "Mild", hint: "Light marks for a short time." },
+      { value: "moderate", label: "Moderate", hint: "Marks linger for weeks." },
+      { value: "severe", label: "Significant", hint: "Dark marks last months." }
+    ]},
+    { id: "waterIntake", label: "Lifestyle", text: "Daily water intake?", hint: "Rough estimate of plain water (not only tea/coffee). Hydration supports skin comfort.", options: [
+      { value: "low", label: "Less than 1 liter", hint: "About 2–3 glasses or less." },
+      { value: "moderate", label: "1–2 liters", hint: "About 4–8 glasses." },
+      { value: "good", label: "2–3 liters", hint: "Solid daily intake." },
+      { value: "high", label: "More than 3 liters", hint: "Very high water intake." }
+    ]},
+    { id: "sunExposure", label: "Sun Exposure", text: "Time outdoors daily?", hint: "Include commuting and outdoor work. More sun = stronger need for daily SPF.", options: [
+      { value: "minimal", label: "<30 min", hint: "Mostly indoors." },
+      { value: "moderate", label: "30–90 min", hint: "Short outdoor periods." },
+      { value: "significant", label: "1.5–3 hours", hint: "Fair amount of outdoor time." },
+      { value: "high", label: "3+ hours", hint: "Long outdoor exposure." }
+    ]},
+    { id: "sunscreenHabit", label: "Sun Protection", text: "Sunscreen habit?", hint: "SPF should be the last step of your morning routine on face (and neck).", options: [
+      { value: "never", label: "Never", hint: "Rarely or never uses SPF." },
+      { value: "sometimes", label: "Sometimes", hint: "Only on sunny trips or beach days." },
+      { value: "mostDays", label: "Most days", hint: "Often, but not every single day." },
+      { value: "daily", label: "Every day", hint: "Daily SPF habit." }
+    ]},
+    { id: "sensitivity", label: "Sensitivity", text: "Reaction to actives?", hint: "Actives = stronger ingredients like retinol, acids, vitamin C. Do they sting or make you red?", options: [
+      { value: "tolerant", label: "Tolerant", hint: "Most products feel fine." },
+      { value: "mild", label: "Mild tingling", hint: "Slight tingle, settles quickly." },
+      { value: "reactive", label: "Often stings", hint: "Burning or redness is common." },
+      { value: "veryReactive", label: "Very reactive", hint: "You avoid most strong products." }
+    ]},
+    { id: "poreSize", label: "Pores", text: "Pore visibility?", hint: "Pores are tiny openings. \"Enlarged\" means they look more obvious, often with oil.", options: [
+      { value: "fine", label: "Fine", hint: "Hard to see." },
+      { value: "moderate", label: "Moderate", hint: "Noticeable but not very large." },
+      { value: "enlarged", label: "Enlarged", hint: "Clearly visible on nose/cheeks." },
+      { value: "clogged", label: "Often clogged", hint: "Blackheads or frequent congestion." }
+    ]},
+    { id: "climate", label: "Environment", text: "Your climate?", hint: "Where you live most of the year. Climate affects oil, dryness, and product choices.", options: [
+      { value: "humid", label: "Humid", hint: "Sticky air, tropical or monsoon." },
+      { value: "arid", label: "Arid", hint: "Very dry air." },
+      { value: "polluted", label: "Urban / polluted", hint: "City air, dust, pollution." },
+      { value: "cold", label: "Cold winters", hint: "Harsh dry winters." }
+    ]},
+    { id: "sleepHygiene", label: "Recovery", text: "Sleep quality?", hint: "Skin repairs at night. Poor sleep can mean dullness and more breakouts.", options: [
+      { value: "excellent", label: "Excellent", hint: "Solid 7–9 hours most nights." },
+      { value: "fair", label: "Fair", hint: "Some disruption." },
+      { value: "poor", label: "Poor", hint: "Often short or broken sleep." },
+      { value: "chronic", label: "Chronic issues", hint: "Long-term sleep problems." }
+    ]},
+    { id: "stressLevel", label: "Stress", text: "Stress level?", hint: "Stress can trigger oil and breakouts. Pick your typical level, not one busy week only.", options: [
+      { value: "low", label: "Low", hint: "Mostly calm." },
+      { value: "moderate", label: "Moderate", hint: "Normal ups and downs." },
+      { value: "high", label: "High", hint: "Often stressed." },
+      { value: "chronic", label: "Chronic", hint: "Ongoing high stress." }
+    ]},
+    { id: "diet", label: "Diet", text: "Dairy & sugar intake?", hint: "For some people, lots of dairy or sugar links to more breakouts. Rough estimate is fine.", options: [
+      { value: "low", label: "Low", hint: "You limit both." },
+      { value: "moderate", label: "Moderate", hint: "Some daily." },
+      { value: "high", label: "High", hint: "Frequent sweets or dairy." },
+      { value: "veryHigh", label: "Very high", hint: "Heavy daily intake." }
+    ]},
+    { id: "ageRange", label: "Age", text: "Age range?", hint: "Helps match products to common needs at different life stages.", options: [
+      { value: "under25", label: "Under 25", hint: "" },
+      { value: "25to35", label: "25–35", hint: "" },
+      { value: "36to45", label: "36–45", hint: "" },
+      { value: "46plus", label: "46+", hint: "" }
+    ]},
+    { id: "routineComplexity", label: "Routine", text: "Current routine complexity?", hint: "How many face products you use now (cleanser, cream, serum, SPF, etc.).", options: [
+      { value: "none", label: "None", hint: "Water only or almost nothing." },
+      { value: "basic", label: "Basic", hint: "Cleanser + moisturizer mostly." },
+      { value: "moderate", label: "Moderate", hint: "About 3–5 products." },
+      { value: "advanced", label: "Advanced", hint: "Many layers / many bottles." }
+    ]},
+    { id: "textureIssues", label: "Texture", text: "Main texture issue?", hint: "How skin feels when you touch it — flakes, roughness, or excess oil film.", options: [
+      { value: "flakiness", label: "Flakiness", hint: "Dry patches that peel." },
+      { value: "roughness", label: "Roughness", hint: "Uneven, not smooth." },
+      { value: "excessSebum", label: "Excess oil", hint: "Greasy film on surface." },
+      { value: "none", label: "None", hint: "Texture feels fine." }
+    ]},
+    { id: "fragranceAlcohol", label: "Ingredients", text: "Fragrance / alcohol sensitivity?", hint: "Perfume in products or drying alcohols can sting sensitive skin.", options: [
+      { value: "tolerant", label: "None", hint: "No issues." },
+      { value: "mild", label: "Mild", hint: "Occasional irritation." },
+      { value: "reactive", label: "Reactive", hint: "Often stings." },
+      { value: "avoid", label: "Avoid both", hint: "You strictly skip fragrance and alcohol." }
+    ]},
+    { id: "eyeArea", label: "Eyes", text: "Eye-area concerns?", hint: "Under-eye and outer eye only — not the whole face.", options: [
+      { value: "none", label: "None", hint: "" },
+      { value: "darkCircles", label: "Dark circles", hint: "Shadowy under-eyes." },
+      { value: "puffiness", label: "Puffiness", hint: "Swollen or baggy look." },
+      { value: "fineLines", label: "Fine lines", hint: "Small creases." },
+      { value: "multiple", label: "Multiple", hint: "More than one of the above." }
+    ]},
+    { id: "postAcneScars", label: "Scars", text: "Post-acne scars?", hint: "Texture scars or dents left after acne — not just temporary dark marks.", options: [
+      { value: "none", label: "None", hint: "" },
+      { value: "mild", label: "Mild", hint: "Slight unevenness." },
+      { value: "moderate", label: "Moderate", hint: "Clear dents or pits." },
+      { value: "significant", label: "Significant", hint: "Deep or widespread scarring." }
+    ]},
+    { id: "budget", label: "Budget", text: "Routine budget (4 steps)?", hint: "Total for cleanser + serum + moisturizer + sunscreen. Pick what you can stick with long term.", options: [
+      { value: "ultra", label: "Ultra-Budget", hint: "Under about $25 / ₹1500 total." },
+      { value: "value", label: "Value", hint: "About $25–$60 / ₹1500–₹4500." },
+      { value: "mid", label: "Mid-Tier", hint: "About $60–$120 / ₹4500–₹9000." },
+      { value: "high", label: "High-End", hint: "$120+ / ₹9000+ total." }
+    ]}
   ];
 
   var products = {
@@ -798,34 +964,6 @@ body {
     return Math.max(0, Math.min(100, Math.round(raw * 20)));
   }
 
-  function computeSmartCooldownMs(m, score) {
-    var severity = 0;
-    if ((m.acne || 3) <= 2) severity += 2;
-    if ((m.acne || 3) === 1) severity += 1;
-    if ((m.oil || 3) === 1 || (m.oil || 3) === 5) severity += 1;
-    if ((m.hydration || 3) <= 2) severity += 1;
-    if ((m.texture || 3) <= 2) severity += 1;
-    if ((m.bonus || 3) <= 2) severity += 1;
-    if (score < 40) severity += 2;
-    else if (score < 55) severity += 1;
-
-    var hours, reason;
-    if (severity >= 5) {
-      hours = 3;
-      reason = "Skin signals look unstable. Short follow-up for closer monitoring.";
-    } else if (severity >= 3) {
-      hours = 8;
-      reason = "Some active concerns detected. Next window in about 8 hours.";
-    } else if (severity >= 1) {
-      hours = 16;
-      reason = "Mild fluctuations noted. Extended rest window.";
-    } else {
-      hours = 24;
-      reason = "Skin looks stable. Next full check-in in about 24 hours.";
-    }
-    return { ms: hours * 60 * 60 * 1000, hours: hours, reason: reason, severity: severity };
-  }
-
   function isCheckinLocked() {
     var cd = getCooldownState();
     if (!cd || !cd.nextAllowedAt) return false;
@@ -853,31 +991,24 @@ body {
     }
   }
 
-  /** Show only lock panel + timer; hide all questions */
   function showLockedCheckinUI() {
     var cd = getCooldownState();
     var rem = msRemaining();
-    var formWrap = $("#checkin-form-wrap");
-    var lockPanel = $("#checkin-lock-panel");
-    var saveBtn = $("#btn-checkin-save");
-    var doneBtn = $("#btn-checkin-done");
-
-    formWrap.style.display = "none";
-    lockPanel.classList.add("show");
+    $("#checkin-form-wrap").style.display = "none";
+    $("#checkin-lock-panel").classList.add("show");
     $("#checkin-lock-timer").textContent = formatCountdown(rem);
     $("#checkin-lock-title").textContent = "Check-in saved";
-    $("#checkin-lock-msg").textContent = "Your check-in for today is saved. Next check-in unlocks after this timer.";
-    $("#checkin-lock-sub").textContent = (cd && cd.reason) ? cd.reason : "Smart cooldown based on your skin signals";
+    $("#checkin-lock-msg").textContent = "Your check-in is saved. The next progress check unlocks in 2 days (48 hours).";
+    $("#checkin-lock-sub").textContent = "Live countdown — come back when it reaches 00:00:00";
     if (cd && cd.lastScore != null) {
       var sc = $("#checkin-lock-score");
       sc.style.display = "inline-block";
       sc.textContent = "Last score: " + cd.lastScore;
     }
-    saveBtn.style.display = "none";
-    doneBtn.style.display = "flex";
+    $("#btn-checkin-save").style.display = "none";
+    $("#btn-checkin-done").style.display = "flex";
   }
 
-  /** Show questions form; hide lock panel */
   function showOpenCheckinUI() {
     $("#checkin-form-wrap").style.display = "block";
     $("#checkin-lock-panel").classList.remove("show");
@@ -923,7 +1054,9 @@ body {
       var variant = pickVariant(METRIC_BANKS[key], sessionSeed + idx * 7);
       state.activeMetrics.push({ key: key, variant: variant });
       html += '<div class="metric-block" data-metric="' + key + '">';
-      html += '<div class="metric-title">' + variant.title + '</div><div class="metric-opts">';
+      html += '<div class="metric-title">' + variant.title + "</div>";
+      if (variant.hint) html += '<div class="metric-hint">' + variant.hint + "</div>";
+      html += '<div class="metric-opts">';
       variant.opts.forEach(function (o) {
         html += '<button type="button" class="metric-opt" data-v="' + o.v + '">' + o.t + "</button>";
       });
@@ -937,14 +1070,16 @@ body {
     var bonus = BONUS_BANK[bonusIdx];
     state.activeMetrics.push({ key: "bonus", variant: bonus, bonusId: bonus.id });
     html += '<div class="metric-block" data-metric="bonus">';
-    html += '<div class="metric-title">' + bonus.title + '</div><div class="metric-opts">';
+    html += '<div class="metric-title">' + bonus.title + "</div>";
+    if (bonus.hint) html += '<div class="metric-hint">' + bonus.hint + "</div>";
+    html += '<div class="metric-opts">';
     bonus.opts.forEach(function (o) {
       html += '<button type="button" class="metric-opt" data-v="' + o.v + '">' + o.t + "</button>";
     });
     html += "</div></div>";
 
     $("#checkin-metrics").innerHTML = html;
-    $("#checkin-intro").textContent = "Session questions rotated for accuracy. Answer honestly — cooldown adapts to your skin signals.";
+    $("#checkin-intro").textContent = "Answer honestly. After you save, the next check-in unlocks in 48 hours.";
 
     $$("#checkin-metrics .metric-block").forEach(function (block) {
       var metric = block.getAttribute("data-metric");
@@ -991,7 +1126,7 @@ body {
       '<div class="score-box"><div class="num">' + a.latest + '</div><div class="lbl">Latest</div></div>' +
       '<div class="score-box"><div class="num">' + a.avg + '</div><div class="lbl">Avg</div></div>' +
       '<div class="score-box"><div class="num">' + (a.delta > 0 ? "+" : "") + a.delta + '</div><div class="lbl">Trend</div></div>' +
-      '<div class="score-box"><div class="num">' + a.days + '</div><div class="lbl">Days</div></div>';
+      '<div class="score-box"><div class="num">' + a.days + '</div><div class="lbl">Logs</div></div>';
     $("#analytics-insight").textContent = a.insight;
   }
 
@@ -1019,8 +1154,7 @@ body {
       return;
     }
     var score = computeDailyScore(m);
-    var smart = computeSmartCooldownMs(m, score);
-    var nextAllowedAt = Date.now() + smart.ms;
+    var nextAllowedAt = Date.now() + COOLDOWN_MS;
 
     var log = getProgressLog();
     log.unshift({
@@ -1031,8 +1165,7 @@ body {
       hydration: m.hydration,
       bonus: m.bonus,
       score: score,
-      severity: smart.severity,
-      cooldownHours: smart.hours,
+      cooldownHours: 48,
       ts: Date.now()
     });
     log = log.slice(0, 90);
@@ -1040,17 +1173,16 @@ body {
 
     saveCooldownState({
       nextAllowedAt: nextAllowedAt,
-      hours: smart.hours,
-      reason: smart.reason,
+      hours: 48,
+      reason: "Fixed 48-hour (2-day) cooldown between progress check-ins.",
       lastScore: score,
       setAt: Date.now()
     });
 
-    /* Immediately hide questions and show live timer */
     showLockedCheckinUI();
     startCountdownLoop();
     renderAnalytics();
-    showToast("Saved · Next unlock in ~" + smart.hours + "h");
+    showToast("Saved · Next check-in in 48 hours");
   });
 
   $("#btn-checkin-done").addEventListener("click", function () { goHome(); });
@@ -1224,7 +1356,7 @@ body {
       pb("4. Sunscreen", "sunscreen", rx.sunscreen) +
       '<div class="handwriting-block"><div class="hw-title">Note from Dr. Bunny</div><div class="hw-text">' +
       escapeHtml(tipsHw) + '</div><div class="hw-sign">— Dr. Bunny</div></div>' +
-      '<div class="rx-footer">Streak unlocked · Center button = daily progress</div></div></div>';
+      '<div class="rx-footer">Streak unlocked · Center button = daily progress (every 48h)</div></div></div>';
   }
 
   function renderQuestion() {
@@ -1236,6 +1368,14 @@ body {
     $("#progress-fill").style.width = pct + "%";
     $("#q-label").textContent = q.label;
     $("#q-text").textContent = q.text;
+    var hintEl = $("#q-hint");
+    if (q.hint) {
+      hintEl.style.display = "block";
+      hintEl.textContent = q.hint;
+    } else {
+      hintEl.style.display = "none";
+      hintEl.textContent = "";
+    }
     var card = $("#question-card");
     card.style.animation = "none";
     void card.offsetHeight;
@@ -1245,7 +1385,8 @@ body {
     q.options.forEach(function (opt) {
       var div = document.createElement("div");
       div.className = "option" + (state.answers[q.id] === opt.value ? " selected" : "");
-      div.innerHTML = '<div class="option-radio"></div><div class="option-text">' + opt.label + "</div>";
+      var hintHtml = opt.hint ? '<div class="option-hint">' + escapeHtml(opt.hint) + "</div>" : "";
+      div.innerHTML = '<div class="option-radio"></div><div><div class="option-text">' + escapeHtml(opt.label) + "</div>" + hintHtml + "</div>";
       div.addEventListener("click", function () {
         state.answers[q.id] = opt.value;
         var all = opts.querySelectorAll(".option");
