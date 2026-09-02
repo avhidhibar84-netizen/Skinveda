@@ -60,7 +60,6 @@ body {
 @keyframes miniBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px) rotate(2deg)} }
 @keyframes screenIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 @keyframes slideUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeOut { to{opacity:0;transform:scale(.96)} }
 @keyframes qIn { from{opacity:0;transform:translateX(14px)} to{opacity:1;transform:translateX(0)} }
 @keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 0 rgba(42,122,123,.25)} 50%{box-shadow:0 0 0 10px rgba(42,122,123,0)} }
 
@@ -171,10 +170,6 @@ body {
   background: rgba(255,255,255,.95); color: var(--teal);
   border: 1.5px solid var(--border); box-shadow: var(--shadow);
 }
-.btn-danger {
-  background: #FEECEC; color: #C45C5C; border: none; height: 40px;
-  font-size: 14px; padding: 0 16px; border-radius: 12px;
-}
 
 .bottom-nav {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: 0;
@@ -216,6 +211,7 @@ body {
 }
 .back-btn:active { transform: scale(.94); }
 .back-btn svg { width: 20px; height: 20px; }
+.back-btn.hidden { visibility: hidden; pointer-events: none; }
 
 .name-input {
   width: 100%; height: 56px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
@@ -282,47 +278,58 @@ body {
 
 .results { padding-bottom: 8px; }
 .results-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-.rx-card { background: #fff; border-radius: 22px; box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 12px; animation: slideUp .4s ease; }
-.rx-header { background: linear-gradient(145deg, #3B9B9C, #1E5A5C); color: #fff; padding: 20px 18px; }
-.rx-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; background: rgba(255,255,255,.2); padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
-.rx-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.rx-date { font-size: 13px; opacity: .88; }
-.rx-body { padding: 18px; }
-.profile-summary { background: var(--sage-light); border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
-.profile-summary h3 { font-size: 11px; font-weight: 600; color: var(--sage-dark); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
-.profile-summary p { font-size: 14px; line-height: 1.5; color: var(--slate); }
-.product-section { margin-bottom: 14px; }
-.product-label-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.product-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--sage-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.product-icon svg { width: 20px; height: 20px; }
-.product-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
-.product-item { background: var(--cream); border-radius: 14px; padding: 12px 14px; border-left: 3px solid var(--sage); }
-.product-brand { font-size: 12px; font-weight: 600; color: var(--teal); margin-bottom: 2px; }
-.product-name { font-size: 14.5px; font-weight: 600; color: var(--slate); margin-bottom: 4px; }
-.product-actives { font-size: 12.5px; color: var(--slate-soft); margin-bottom: 4px; }
-.product-usage { font-size: 12px; color: var(--muted); font-weight: 500; }
-.handwriting-block {
-  margin-top: 12px; padding: 14px 16px; background: #FFFEF9;
-  border: 1px dashed rgba(122,158,159,.35); border-radius: 14px;
-}
-.handwriting-block .hw-title { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
-.handwriting-block .hw-text { font-family: var(--hand); font-size: 18px; line-height: 1.5; color: #2A5A5B; }
-.handwriting-block .hw-sign { font-family: var(--hand); font-size: 22px; color: #2A7A7B; text-align: right; margin-top: 10px; }
-.rx-footer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 16px; line-height: 1.5; }
 .results-actions { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
 
-.history-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-.history-item {
-  background: #fff; border-radius: var(--radius); padding: 14px 16px;
-  box-shadow: var(--shadow); border: 1px solid var(--border); animation: slideUp .3s ease;
+/* —— SKIN VEDA ROUTINE CARD —— */
+.routine-card {
+  background: #FFFEF9; border: 2px solid #C5DCDD; border-radius: 16px;
+  box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 14px; animation: slideUp .4s ease;
+  text-align: left;
 }
-.history-item.removing { animation: fadeOut .3s ease forwards; }
-.history-name { font-size: 16px; font-weight: 650; color: var(--slate); }
-.history-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.history-summary { font-size: 13px; color: var(--slate-soft); line-height: 1.45; margin: 8px 0 10px; }
-.history-products { font-size: 12px; color: var(--muted); line-height: 1.5; }
-.history-actions { display: flex; gap: 8px; margin-top: 10px; }
-.history-actions .btn { width: auto; flex: 1; min-width: 100px; height: 40px; font-size: 13px; }
+.rc-top {
+  background: linear-gradient(145deg, #3B9B9C, #1E5A5C); color: #fff; padding: 16px 14px; text-align: center;
+}
+.rc-logo { font-size: 11px; letter-spacing: 1.5px; opacity: .9; margin-bottom: 4px; font-weight: 600; }
+.rc-title { font-size: 18px; font-weight: 800; letter-spacing: .5px; }
+.rc-bunny-mini { width: 36px; height: 36px; margin: 8px auto 0; }
+.rc-bunny-mini svg { width: 100%; height: 100%; }
+.rc-meta {
+  padding: 12px 14px; background: #F0F7F7; border-bottom: 1px solid var(--border);
+  font-size: 12.5px; line-height: 1.7; color: var(--slate);
+}
+.rc-meta strong { color: var(--teal-deep); font-weight: 700; margin-right: 4px; }
+.rc-section { padding: 14px; }
+.rc-section-title {
+  font-size: 11px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase;
+  color: var(--teal-deep); margin-bottom: 10px; border-bottom: 1.5px dashed rgba(74,124,125,.25); padding-bottom: 6px;
+}
+.rc-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.rc-table th {
+  text-align: left; padding: 6px 4px; background: var(--sage-light); color: var(--sage-dark);
+  font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: .3px;
+}
+.rc-table td { padding: 7px 4px; border-bottom: 1px solid #EEF3F3; color: var(--slate); vertical-align: top; }
+.rc-table .crit { font-weight: 600; width: 34%; }
+.rc-table .rate { width: 22%; color: var(--teal-deep); font-weight: 650; }
+.rc-table .notes { color: var(--muted); font-size: 11px; line-height: 1.35; }
+.rc-products { list-style: none; }
+.rc-products li {
+  background: var(--cream); border-left: 3px solid var(--sage); border-radius: 10px;
+  padding: 10px 12px; margin-bottom: 8px;
+}
+.rc-prod-cat { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+.rc-prod-name { font-size: 13.5px; font-weight: 650; color: var(--slate); margin: 2px 0; }
+.rc-prod-meta { font-size: 11.5px; color: var(--slate-soft); }
+.rc-footer {
+  padding: 16px 14px 18px; border-top: 1px dashed rgba(74,124,125,.3); text-align: right;
+}
+.rc-footer .sig-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .3px; }
+.rc-footer .sig-name {
+  font-family: var(--hand); font-size: 22px; color: #2A7A7B; margin-top: 4px;
+}
+.rc-summary { font-size: 12.5px; color: var(--slate-soft); line-height: 1.45; margin-bottom: 8px; }
+
+.history-list { display: flex; flex-direction: column; gap: 14px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
 .empty-state {
   flex: 1; display: flex; flex-direction: column; align-items: center;
   justify-content: center; text-align: center; padding: 40px 20px;
@@ -371,20 +378,6 @@ body {
   border-color: var(--teal); background: linear-gradient(135deg, #E8F4F4, #F0F7F7); color: var(--teal-deep);
 }
 
-.overlay {
-  position: fixed; inset: 0; background: rgba(44,51,51,.42); display: none;
-  align-items: flex-end; justify-content: center; z-index: 600; backdrop-filter: blur(5px);
-}
-.overlay.show { display: flex; }
-.sheet {
-  background: #fff; border-radius: 22px 22px 0 0;
-  padding: 24px 20px calc(24px + var(--safe-bottom));
-  width: 100%; max-width: 430px; animation: slideUp .3s ease;
-}
-.sheet h3 { font-size: 18px; font-weight: 650; margin-bottom: 8px; }
-.sheet p { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
-.sheet-actions { display: flex; gap: 10px; }
-.sheet-actions .btn { flex: 1; }
 .toast {
   position: fixed; bottom: calc(var(--nav-h) + 16px + var(--safe-bottom)); left: 50%;
   transform: translateX(-50%) translateY(80px); background: var(--slate); color: #fff;
@@ -401,7 +394,7 @@ body {
 </div>
 
 <div class="app" id="app">
-  <div class="screen landing active" id="screen-landing">
+  <div class="screen landing" id="screen-landing">
     <div class="hero-bunny" id="hero-bunny"></div>
     <h1 class="landing-title">Skinveda</h1>
     <p class="landing-tag">Dr. Bunny · Virtual Dermatologist</p>
@@ -441,7 +434,7 @@ body {
 
   <div class="screen" id="screen-name">
     <div class="header">
-      <button class="back-btn" id="btn-name-back" type="button" aria-label="Back">
+      <button class="back-btn hidden" id="btn-name-back" type="button" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <span class="header-title">Welcome</span>
@@ -450,7 +443,7 @@ body {
     <div class="question-card">
       <div class="q-label">Getting started</div>
       <div class="q-text">What should we call you?</div>
-      <div class="q-hint">We'll use this name on your routine card. You only enter it once.</div>
+      <div class="q-hint">Dr. Bunny will use this on your SKIN VEDA ROUTINE CARD. You only enter it once.</div>
       <input type="text" class="name-input" id="user-name" placeholder="Your first name" maxlength="40" autocomplete="given-name">
       <div class="nav-row" style="margin-top:auto">
         <button class="btn btn-primary" id="btn-name-next" type="button" disabled>Continue</button>
@@ -460,7 +453,7 @@ body {
 
   <div class="screen mascot-dialog" id="screen-mascot">
     <div class="mascot-center" id="mascot-dialog-svg"></div>
-    <div class="speech-bubble"><p id="mascot-speech">Hello! I'm Dr. Bunny. Let's analyze your skin together.</p></div>
+    <div class="speech-bubble"><p id="mascot-speech">Hello! I'm Dr. Bunny. Let's set up your personalized skin routine.</p></div>
     <button class="btn btn-primary" id="btn-lets-begin" type="button" style="max-width:280px">Let's Begin</button>
   </div>
 
@@ -505,18 +498,18 @@ body {
     <div class="checkin-scroll">
       <div class="checkin-lock-panel" id="checkin-lock-panel">
         <div class="lock-icon">✓</div>
-        <div class="lock-title" id="checkin-lock-title">Check-in saved</div>
-        <div class="lock-msg" id="checkin-lock-msg">Your check-in is saved. The next progress check unlocks in 2 days (48 hours).</div>
+        <div class="lock-title">Check-in saved</div>
+        <div class="lock-msg">Your check-in is saved. The next progress check unlocks in 2 days (48 hours).</div>
         <div class="lock-timer" id="checkin-lock-timer">00:00:00</div>
-        <div class="lock-sub" id="checkin-lock-sub">Come back when the timer reaches zero</div>
+        <div class="lock-sub">Live countdown — come back when it reaches 00:00:00</div>
         <div class="lock-score" id="checkin-lock-score" style="display:none"></div>
       </div>
       <div id="checkin-form-wrap">
-        <p class="checkin-intro" id="checkin-intro">Quick self-check on how your skin feels. Each answer has a short plain-language tip.</p>
+        <p class="checkin-intro" id="checkin-intro">Quick self-check. After you save, the next check-in unlocks in 48 hours.</p>
         <div id="checkin-metrics"></div>
       </div>
     </div>
-    <div class="nav-row" style="flex-shrink:0" id="checkin-actions">
+    <div class="nav-row" style="flex-shrink:0">
       <button class="btn btn-primary" id="btn-checkin-save" type="button">Save check-in</button>
       <button class="btn btn-secondary" id="btn-checkin-done" type="button" style="display:none">Back to Home</button>
     </div>
@@ -527,7 +520,7 @@ body {
       <button class="back-btn" id="btn-results-back" type="button" aria-label="Home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <span class="header-title">Your Routine</span>
+      <span class="header-title">Routine Card</span>
       <div style="width:42px"></div>
     </div>
     <div class="results-scroll" id="rx-content"></div>
@@ -541,7 +534,7 @@ body {
       <button class="back-btn" id="btn-history-back" type="button" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <span class="header-title">Prescription History</span>
+      <span class="header-title">Routine Cards</span>
       <div style="width:42px"></div>
     </div>
     <div class="history-list" id="history-list"></div>
@@ -566,16 +559,6 @@ body {
   </button>
 </nav>
 
-<div class="overlay" id="overlay">
-  <div class="sheet">
-    <h3>Delete prescription?</h3>
-    <p>This action cannot be undone.</p>
-    <div class="sheet-actions">
-      <button class="btn btn-secondary" id="btn-cancel-delete" type="button">Cancel</button>
-      <button class="btn btn-danger" id="btn-confirm-delete" type="button">Delete</button>
-    </div>
-  </div>
-</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -588,10 +571,17 @@ body {
     }
   } catch (e) {}
 
+  var COOLDOWN_MS = 48 * 60 * 60 * 1000;
+  var pendingFirstLaunch = false;
+
   window.addEventListener("load", function () {
     setTimeout(function () {
       var s = document.getElementById("splash");
       if (s) s.classList.add("hide");
+      if (pendingFirstLaunch) {
+        pendingFirstLaunch = false;
+        openNameOnboarding(true);
+      }
     }, 2500);
   });
 
@@ -601,13 +591,6 @@ body {
     }
     return '<svg viewBox="0 0 200 220" fill="none"><ellipse cx="100" cy="190" rx="55" ry="24" fill="#FFFFFF" opacity=".9"/><path d="M55 145 Q55 108 75 95 L100 88 L125 95 Q145 108 145 145 L145 188 Q145 200 132 200 L68 200 Q55 200 55 188 Z" fill="#FFFFFF" stroke="#E4EAEA" stroke-width="1.5"/><rect x="91" y="94" width="18" height="11" rx="3" fill="#F5D0B5"/><circle cx="100" cy="155" r="7" fill="#4A7C7D"/><circle cx="100" cy="155" r="3" fill="#E8F0F0"/><ellipse cx="100" cy="70" rx="34" ry="31" fill="#F8DCC8"/><ellipse cx="76" cy="28" rx="11" ry="30" fill="#F8DCC8" transform="rotate(-14 76 28)"/><ellipse cx="124" cy="28" rx="11" ry="30" fill="#F8DCC8" transform="rotate(14 124 28)"/><ellipse cx="88" cy="68" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="112" cy="68" rx="5" ry="5.5" fill="#2C3333"/><ellipse cx="100" cy="80" rx="4.5" ry="3.2" fill="#E8A090"/><path d="M90 88 Q100 96 110 88" stroke="#C47A6A" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
   }
-
-  var catIcons = {
-    cleanser: '<svg viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="10" height="4" rx="1.5" fill="#7A9E9F"/><path d="M6 7h12v12a3 3 0 01-3 3H9a3 3 0 01-3-3V7z" fill="#A8C5C6"/></svg>',
-    serum: '<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="5" rx="1" fill="#7A9E9F"/><path d="M8 7h8l1 3v9a2 2 0 01-2 2H9a2 2 0 01-2-2V10l1-3z" fill="#B8D4D5"/></svg>',
-    moisturizer: '<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="18" rx="8" ry="4" fill="#A8C5C6"/><path d="M4 14c0-2 1.5-4 4-5.5C9.5 7.5 11 6 12 6s2.5 1.5 4 2.5c2.5 1.5 4 3.5 4 5.5v4H4v-4z" fill="#C5DCDD"/></svg>',
-    sunscreen: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#FFF3C4" stroke="#E8C84A" stroke-width="1.2"/><circle cx="12" cy="12" r="4" fill="#F5D76E"/></svg>'
-  };
 
   var DAILY_TIPS = [
     "Always apply sunscreen last in the morning — even on cloudy days.",
@@ -622,85 +605,34 @@ body {
     "Don't pick at breakouts; it increases dark mark risk."
   ];
 
-  /* Fixed 48-hour cooldown */
-  var COOLDOWN_MS = 48 * 60 * 60 * 1000;
-
   var METRIC_BANKS = {
     oil: [
-      {
-        title: "Oil balance right now",
-        hint: "Oil balance = how greasy or dry your face feels. Think: does your T-zone (forehead, nose, chin) look shiny by afternoon?",
-        opts: [{ v: 1, t: "Very oily" }, { v: 2, t: "Oily T-zone" }, { v: 3, t: "Balanced" }, { v: 4, t: "Slightly dry" }, { v: 5, t: "Very dry" }]
-      },
-      {
-        title: "How shiny does your skin feel mid-day?",
-        hint: "Mid-day shine often means extra oil. Dry skin may feel tight instead of shiny.",
-        opts: [{ v: 1, t: "Greasy" }, { v: 2, t: "Shiny" }, { v: 3, t: "Normal" }, { v: 4, t: "Matte / dry" }, { v: 5, t: "Tight & dry" }]
-      },
-      {
-        title: "Sebum level vs last check",
-        hint: "Sebum is your skin's natural oil. Compare to how you felt last time you checked in.",
-        opts: [{ v: 1, t: "Much oilier" }, { v: 2, t: "A bit oilier" }, { v: 3, t: "Same" }, { v: 4, t: "Less oil" }, { v: 5, t: "Much drier" }]
-      }
+      { title: "Oil balance right now", hint: "How greasy or dry your face feels — especially the T-zone.", opts: [{ v: 1, t: "Very oily" }, { v: 2, t: "Oily T-zone" }, { v: 3, t: "Balanced" }, { v: 4, t: "Slightly dry" }, { v: 5, t: "Very dry" }] },
+      { title: "Mid-day shine?", hint: "Shiny by afternoon often means extra oil.", opts: [{ v: 1, t: "Greasy" }, { v: 2, t: "Shiny" }, { v: 3, t: "Normal" }, { v: 4, t: "Matte / dry" }, { v: 5, t: "Tight & dry" }] },
+      { title: "Oil vs last check", hint: "Compare to your previous progress check.", opts: [{ v: 1, t: "Much oilier" }, { v: 2, t: "A bit oilier" }, { v: 3, t: "Same" }, { v: 4, t: "Less oil" }, { v: 5, t: "Much drier" }] }
     ],
     acne: [
-      {
-        title: "Breakouts / acne today",
-        hint: "Breakouts = pimples, whiteheads, or red bumps. \"Worse flare\" means more or angrier spots than usual.",
-        opts: [{ v: 1, t: "Worse flare" }, { v: 2, t: "Same" }, { v: 3, t: "Slightly better" }, { v: 4, t: "Better" }, { v: 5, t: "Clear" }]
-      },
-      {
-        title: "New inflamed spots since last check?",
-        hint: "Inflamed = red, tender, or pus-filled. Count only new ones since your last progress check.",
-        opts: [{ v: 1, t: "Several new" }, { v: 2, t: "A few" }, { v: 3, t: "One maybe" }, { v: 4, t: "None new" }, { v: 5, t: "Clearing up" }]
-      },
-      {
-        title: "How calm is your acne zone?",
-        hint: "Acne zone is where you usually break out (cheeks, jaw, forehead). \"Calm\" means less red and less sore.",
-        opts: [{ v: 1, t: "Angry / painful" }, { v: 2, t: "Active" }, { v: 3, t: "Mild" }, { v: 4, t: "Settling" }, { v: 5, t: "Calm" }]
-      }
+      { title: "Breakouts / acne today", hint: "Pimples, whiteheads, or red bumps compared to usual.", opts: [{ v: 1, t: "Worse flare" }, { v: 2, t: "Same" }, { v: 3, t: "Slightly better" }, { v: 4, t: "Better" }, { v: 5, t: "Clear" }] },
+      { title: "New inflamed spots?", hint: "Red or tender new spots since last check.", opts: [{ v: 1, t: "Several new" }, { v: 2, t: "A few" }, { v: 3, t: "One maybe" }, { v: 4, t: "None new" }, { v: 5, t: "Clearing up" }] },
+      { title: "How calm is acne zone?", hint: "Where you usually break out — less red is better.", opts: [{ v: 1, t: "Angry / painful" }, { v: 2, t: "Active" }, { v: 3, t: "Mild" }, { v: 4, t: "Settling" }, { v: 5, t: "Calm" }] }
     ],
     texture: [
-      {
-        title: "Texture smoothness",
-        hint: "Texture = how smooth your skin feels to the touch — rough, bumpy, or soft like a cheek after a good routine.",
-        opts: [{ v: 1, t: "Rough" }, { v: 2, t: "Uneven" }, { v: 3, t: "OK" }, { v: 4, t: "Smoother" }, { v: 5, t: "Glowing" }]
-      },
-      {
-        title: "How does makeup or touch feel on skin?",
-        hint: "If foundation \"catches\" or feels gritty, texture is uneven. Soft/silky is a good sign.",
-        opts: [{ v: 1, t: "Catches / rough" }, { v: 2, t: "Slight grit" }, { v: 3, t: "Fine" }, { v: 4, t: "Soft" }, { v: 5, t: "Silky" }]
-      },
-      {
-        title: "Congestion / small bumps?",
-        hint: "Congestion = tiny bumps or clogged pores (not always red). Common on forehead and cheeks.",
-        opts: [{ v: 1, t: "Many bumps" }, { v: 2, t: "Some" }, { v: 3, t: "Few" }, { v: 4, t: "Improving" }, { v: 5, t: "Smooth" }]
-      }
+      { title: "Texture smoothness", hint: "How smooth skin feels when you touch it.", opts: [{ v: 1, t: "Rough" }, { v: 2, t: "Uneven" }, { v: 3, t: "OK" }, { v: 4, t: "Smoother" }, { v: 5, t: "Glowing" }] },
+      { title: "Makeup / touch feel?", hint: "If makeup catches, texture may be uneven.", opts: [{ v: 1, t: "Catches / rough" }, { v: 2, t: "Slight grit" }, { v: 3, t: "Fine" }, { v: 4, t: "Soft" }, { v: 5, t: "Silky" }] },
+      { title: "Small bumps / congestion?", hint: "Tiny clogged bumps, not always red.", opts: [{ v: 1, t: "Many bumps" }, { v: 2, t: "Some" }, { v: 3, t: "Few" }, { v: 4, t: "Improving" }, { v: 5, t: "Smooth" }] }
     ],
     hydration: [
-      {
-        title: "Hydration / comfort",
-        hint: "Hydration = how moist and comfortable skin feels. Tight or flaky usually means low water content, not always \"dry skin type\".",
-        opts: [{ v: 1, t: "Tight" }, { v: 2, t: "Dry" }, { v: 3, t: "OK" }, { v: 4, t: "Comfortable" }, { v: 5, t: "Plump" }]
-      },
-      {
-        title: "Skin after moisturizer?",
-        hint: "After cream, does your face still feel tight within an hour? That points to needing more moisture or a richer cream.",
-        opts: [{ v: 1, t: "Still tight" }, { v: 2, t: "Somewhat dry" }, { v: 3, t: "OK" }, { v: 4, t: "Yes, good" }, { v: 5, t: "Very plump" }]
-      },
-      {
-        title: "Flaking or tightness today?",
-        hint: "Flakes or stretchy-tight feeling after washing are classic \"needs more moisture\" signs.",
-        opts: [{ v: 1, t: "Lots" }, { v: 2, t: "Some" }, { v: 3, t: "Mild" }, { v: 4, t: "Rare" }, { v: 5, t: "None" }]
-      }
+      { title: "Hydration / comfort", hint: "Tight or flaky usually means low moisture.", opts: [{ v: 1, t: "Tight" }, { v: 2, t: "Dry" }, { v: 3, t: "OK" }, { v: 4, t: "Comfortable" }, { v: 5, t: "Plump" }] },
+      { title: "After moisturizer?", hint: "Still tight within an hour? May need richer cream.", opts: [{ v: 1, t: "Still tight" }, { v: 2, t: "Somewhat dry" }, { v: 3, t: "OK" }, { v: 4, t: "Yes, good" }, { v: 5, t: "Very plump" }] },
+      { title: "Flaking or tightness?", hint: "Classic signs you need more moisture.", opts: [{ v: 1, t: "Lots" }, { v: 2, t: "Some" }, { v: 3, t: "Mild" }, { v: 4, t: "Rare" }, { v: 5, t: "None" }] }
     ]
   };
 
   var BONUS_BANK = [
-    { id: "redness", title: "Any unexpected redness?", hint: "Redness that is new or stronger than usual (not just a little post-workout flush).", opts: [{ v: 1, t: "Severe" }, { v: 2, t: "Moderate" }, { v: 3, t: "Mild" }, { v: 4, t: "Barely" }, { v: 5, t: "None" }] },
-    { id: "barrier", title: "Barrier comfort (stinging / sensitivity)?", hint: "Your skin barrier is the outer \"shield\". If products sting or burn, the barrier may be stressed.", opts: [{ v: 1, t: "Very reactive" }, { v: 2, t: "Reactive" }, { v: 3, t: "Mild" }, { v: 4, t: "Stable" }, { v: 5, t: "Very calm" }] },
-    { id: "sleep", title: "Last night's sleep quality?", hint: "Poor sleep can show up as dullness, oiliness, or more breakouts the next day.", opts: [{ v: 1, t: "Poor" }, { v: 2, t: "Fair" }, { v: 3, t: "OK" }, { v: 4, t: "Good" }, { v: 5, t: "Great" }] },
-    { id: "spf", title: "Did you wear sunscreen (SPF)?", hint: "SPF protects against sun damage and dark marks. Even indoor near windows counts.", opts: [{ v: 1, t: "No" }, { v: 2, t: "Forgot mostly" }, { v: 3, t: "Once" }, { v: 4, t: "Yes" }, { v: 5, t: "Yes + reapplied" }] }
+    { id: "redness", title: "Unexpected redness?", hint: "New or stronger than usual redness.", opts: [{ v: 1, t: "Severe" }, { v: 2, t: "Moderate" }, { v: 3, t: "Mild" }, { v: 4, t: "Barely" }, { v: 5, t: "None" }] },
+    { id: "barrier", title: "Stinging / sensitivity?", hint: "If products sting, the barrier may be stressed.", opts: [{ v: 1, t: "Very reactive" }, { v: 2, t: "Reactive" }, { v: 3, t: "Mild" }, { v: 4, t: "Stable" }, { v: 5, t: "Very calm" }] },
+    { id: "sleep", title: "Last night's sleep?", hint: "Poor sleep can show as dullness or breakouts.", opts: [{ v: 1, t: "Poor" }, { v: 2, t: "Fair" }, { v: 3, t: "OK" }, { v: 4, t: "Good" }, { v: 5, t: "Great" }] },
+    { id: "spf", title: "Wear sunscreen today?", hint: "SPF is the last morning step for face.", opts: [{ v: 1, t: "No" }, { v: 2, t: "Forgot mostly" }, { v: 3, t: "Once" }, { v: 4, t: "Yes" }, { v: 5, t: "Yes + reapplied" }] }
   ];
 
   var state = {
@@ -708,143 +640,142 @@ body {
     userName: "",
     currentQ: 0,
     answers: {},
-    deleteId: null,
     lastRx: null,
     checkin: {},
-    activeMetrics: [],
-    countdownTimer: null
+    countdownTimer: null,
+    forceOnboarding: false
   };
 
   var questions = [
-    { id: "skinType", label: "Skin Fundamentals", text: "How would you describe your skin type most days?", hint: "Skin type is how your face usually behaves — oily, dry, mixed, sensitive, or balanced. Pick what fits most days, not one bad day.", options: [
-      { value: "dry", label: "Dry — tight, flaky, or rough", hint: "Often feels tight after washing; may need richer cream." },
-      { value: "oily", label: "Oily — shiny, especially T-zone", hint: "Shiny by midday; makeup may slide." },
-      { value: "combination", label: "Combination — oily T-zone, dry cheeks", hint: "Oily forehead/nose/chin but drier cheeks." },
-      { value: "sensitive", label: "Sensitive — easily reactive or red", hint: "Stings or reddens with many products." },
-      { value: "normal", label: "Normal — balanced, rarely troubled", hint: "Comfortable most days without extremes." }
+    { id: "skinType", label: "Skin Fundamentals", text: "How would you describe your skin type most days?", hint: "Pick what fits most days — oily, dry, mixed, sensitive, or balanced.", options: [
+      { value: "dry", label: "Dry — tight, flaky, or rough", hint: "Often tight after washing." },
+      { value: "oily", label: "Oily — shiny, especially T-zone", hint: "Shiny by midday." },
+      { value: "combination", label: "Combination — oily T-zone, dry cheeks", hint: "Mixed zones." },
+      { value: "sensitive", label: "Sensitive — easily reactive or red", hint: "Stings with many products." },
+      { value: "normal", label: "Normal — balanced, rarely troubled", hint: "Comfortable most days." }
     ]},
-    { id: "primaryConcern", label: "Primary Concern", text: "What is your main skin concern right now?", hint: "Choose the one issue that bothers you most. We'll build the routine around this first.", options: [
-      { value: "acne", label: "Acne / breakouts", hint: "Pimples, whiteheads, or frequent bumps." },
-      { value: "hyperpigmentation", label: "Hyperpigmentation / dark spots", hint: "Brown or dark marks left after pimples or sun." },
-      { value: "aging", label: "Aging / fine lines", hint: "Lines, loss of firmness, or dullness with age." },
-      { value: "rosacea", label: "Rosacea / persistent redness", hint: "Ongoing redness or flushing that is not just temporary." },
-      { value: "dehydration", label: "Dehydration / dullness", hint: "Looks tired or thirsty; feels tight but not always \"dry type\"." }
+    { id: "primaryConcern", label: "Primary Concern", text: "What is your main skin concern right now?", hint: "Choose the issue that bothers you most.", options: [
+      { value: "acne", label: "Acne / breakouts", hint: "Pimples or frequent bumps." },
+      { value: "hyperpigmentation", label: "Hyperpigmentation / dark spots", hint: "Marks after pimples or sun." },
+      { value: "aging", label: "Aging / fine lines", hint: "Lines or loss of firmness." },
+      { value: "rosacea", label: "Rosacea / persistent redness", hint: "Ongoing redness." },
+      { value: "dehydration", label: "Dehydration / dullness", hint: "Looks tired or thirsty." }
     ]},
-    { id: "secondaryConcern", label: "Secondary Concern", text: "What is your secondary skin concern?", hint: "Optional second focus. Pick \"none\" if one main issue is enough.", options: [
-      { value: "pores", label: "Visible pores", hint: "Pores look large, especially on nose/cheeks." },
-      { value: "texture", label: "Uneven texture", hint: "Rough or bumpy to the touch." },
-      { value: "darkCircles", label: "Dark circles", hint: "Shadowy under-eyes." },
-      { value: "dullness", label: "Dullness", hint: "Skin looks flat or lacks glow." },
-      { value: "none", label: "No major secondary concern", hint: "Only the main concern matters for now." }
+    { id: "secondaryConcern", label: "Secondary Concern", text: "What is your secondary skin concern?", hint: "Optional second focus.", options: [
+      { value: "pores", label: "Visible pores", hint: "" },
+      { value: "texture", label: "Uneven texture", hint: "" },
+      { value: "darkCircles", label: "Dark circles", hint: "" },
+      { value: "dullness", label: "Dullness", hint: "" },
+      { value: "none", label: "No major secondary concern", hint: "" }
     ]},
-    { id: "acneSeverity", label: "Acne Profile", text: "If you experience acne, how severe is it?", hint: "Skip concern if you rarely break out. Mild = mostly blackheads; severe = deep, painful cysts.", options: [
-      { value: "none", label: "No significant acne", hint: "Rare or no pimples." },
-      { value: "mildComedonal", label: "Mild — blackheads / whiteheads", hint: "Clogged pores, few red bumps." },
-      { value: "moderateInflammatory", label: "Moderate — papules / pustules", hint: "Several red or pus-filled spots." },
-      { value: "severeCystic", label: "Severe — cystic", hint: "Deep, painful lumps under the skin." }
+    { id: "acneSeverity", label: "Acne Profile", text: "If you experience acne, how severe is it?", hint: "Mild = blackheads; severe = deep painful cysts.", options: [
+      { value: "none", label: "No significant acne", hint: "" },
+      { value: "mildComedonal", label: "Mild — blackheads / whiteheads", hint: "" },
+      { value: "moderateInflammatory", label: "Moderate — papules / pustules", hint: "" },
+      { value: "severeCystic", label: "Severe — cystic", hint: "" }
     ]},
-    { id: "pih", label: "Pigmentation", text: "Do you develop dark marks after breakouts?", hint: "PIH = post-inflammatory hyperpigmentation — brown/dark spots that stay after a pimple heals.", options: [
-      { value: "no", label: "No", hint: "Marks fade quickly or never appear." },
-      { value: "mild", label: "Mild", hint: "Light marks for a short time." },
-      { value: "moderate", label: "Moderate", hint: "Marks linger for weeks." },
-      { value: "severe", label: "Significant", hint: "Dark marks last months." }
+    { id: "pih", label: "Pigmentation", text: "Do you develop dark marks after breakouts?", hint: "Dark spots that stay after a pimple heals.", options: [
+      { value: "no", label: "No", hint: "" },
+      { value: "mild", label: "Mild", hint: "" },
+      { value: "moderate", label: "Moderate", hint: "" },
+      { value: "severe", label: "Significant", hint: "" }
     ]},
-    { id: "waterIntake", label: "Lifestyle", text: "Daily water intake?", hint: "Rough estimate of plain water (not only tea/coffee). Hydration supports skin comfort.", options: [
-      { value: "low", label: "Less than 1 liter", hint: "About 2–3 glasses or less." },
-      { value: "moderate", label: "1–2 liters", hint: "About 4–8 glasses." },
-      { value: "good", label: "2–3 liters", hint: "Solid daily intake." },
-      { value: "high", label: "More than 3 liters", hint: "Very high water intake." }
+    { id: "waterIntake", label: "Lifestyle", text: "Daily water intake?", hint: "Rough estimate of plain water.", options: [
+      { value: "low", label: "Less than 1 liter", hint: "" },
+      { value: "moderate", label: "1–2 liters", hint: "" },
+      { value: "good", label: "2–3 liters", hint: "" },
+      { value: "high", label: "More than 3 liters", hint: "" }
     ]},
-    { id: "sunExposure", label: "Sun Exposure", text: "Time outdoors daily?", hint: "Include commuting and outdoor work. More sun = stronger need for daily SPF.", options: [
-      { value: "minimal", label: "<30 min", hint: "Mostly indoors." },
-      { value: "moderate", label: "30–90 min", hint: "Short outdoor periods." },
-      { value: "significant", label: "1.5–3 hours", hint: "Fair amount of outdoor time." },
-      { value: "high", label: "3+ hours", hint: "Long outdoor exposure." }
+    { id: "sunExposure", label: "Sun Exposure", text: "Time outdoors daily?", hint: "Include commuting.", options: [
+      { value: "minimal", label: "<30 min", hint: "" },
+      { value: "moderate", label: "30–90 min", hint: "" },
+      { value: "significant", label: "1.5–3 hours", hint: "" },
+      { value: "high", label: "3+ hours", hint: "" }
     ]},
-    { id: "sunscreenHabit", label: "Sun Protection", text: "Sunscreen habit?", hint: "SPF should be the last step of your morning routine on face (and neck).", options: [
-      { value: "never", label: "Never", hint: "Rarely or never uses SPF." },
-      { value: "sometimes", label: "Sometimes", hint: "Only on sunny trips or beach days." },
-      { value: "mostDays", label: "Most days", hint: "Often, but not every single day." },
-      { value: "daily", label: "Every day", hint: "Daily SPF habit." }
+    { id: "sunscreenHabit", label: "Sun Protection", text: "Sunscreen habit?", hint: "SPF as last morning step.", options: [
+      { value: "never", label: "Never", hint: "" },
+      { value: "sometimes", label: "Sometimes", hint: "" },
+      { value: "mostDays", label: "Most days", hint: "" },
+      { value: "daily", label: "Every day", hint: "" }
     ]},
-    { id: "sensitivity", label: "Sensitivity", text: "Reaction to actives?", hint: "Actives = stronger ingredients like retinol, acids, vitamin C. Do they sting or make you red?", options: [
-      { value: "tolerant", label: "Tolerant", hint: "Most products feel fine." },
-      { value: "mild", label: "Mild tingling", hint: "Slight tingle, settles quickly." },
-      { value: "reactive", label: "Often stings", hint: "Burning or redness is common." },
-      { value: "veryReactive", label: "Very reactive", hint: "You avoid most strong products." }
+    { id: "sensitivity", label: "Sensitivity", text: "Reaction to actives?", hint: "Retinol, acids, vitamin C — do they sting?", options: [
+      { value: "tolerant", label: "Tolerant", hint: "" },
+      { value: "mild", label: "Mild tingling", hint: "" },
+      { value: "reactive", label: "Often stings", hint: "" },
+      { value: "veryReactive", label: "Very reactive", hint: "" }
     ]},
-    { id: "poreSize", label: "Pores", text: "Pore visibility?", hint: "Pores are tiny openings. \"Enlarged\" means they look more obvious, often with oil.", options: [
-      { value: "fine", label: "Fine", hint: "Hard to see." },
-      { value: "moderate", label: "Moderate", hint: "Noticeable but not very large." },
-      { value: "enlarged", label: "Enlarged", hint: "Clearly visible on nose/cheeks." },
-      { value: "clogged", label: "Often clogged", hint: "Blackheads or frequent congestion." }
+    { id: "poreSize", label: "Pores", text: "Pore visibility?", hint: "How obvious pores look.", options: [
+      { value: "fine", label: "Fine", hint: "" },
+      { value: "moderate", label: "Moderate", hint: "" },
+      { value: "enlarged", label: "Enlarged", hint: "" },
+      { value: "clogged", label: "Often clogged", hint: "" }
     ]},
-    { id: "climate", label: "Environment", text: "Your climate?", hint: "Where you live most of the year. Climate affects oil, dryness, and product choices.", options: [
-      { value: "humid", label: "Humid", hint: "Sticky air, tropical or monsoon." },
-      { value: "arid", label: "Arid", hint: "Very dry air." },
-      { value: "polluted", label: "Urban / polluted", hint: "City air, dust, pollution." },
-      { value: "cold", label: "Cold winters", hint: "Harsh dry winters." }
+    { id: "climate", label: "Environment", text: "Your climate?", hint: "Where you live most of the year.", options: [
+      { value: "humid", label: "Humid", hint: "" },
+      { value: "arid", label: "Arid", hint: "" },
+      { value: "polluted", label: "Urban / polluted", hint: "" },
+      { value: "cold", label: "Cold winters", hint: "" }
     ]},
-    { id: "sleepHygiene", label: "Recovery", text: "Sleep quality?", hint: "Skin repairs at night. Poor sleep can mean dullness and more breakouts.", options: [
-      { value: "excellent", label: "Excellent", hint: "Solid 7–9 hours most nights." },
-      { value: "fair", label: "Fair", hint: "Some disruption." },
-      { value: "poor", label: "Poor", hint: "Often short or broken sleep." },
-      { value: "chronic", label: "Chronic issues", hint: "Long-term sleep problems." }
+    { id: "sleepHygiene", label: "Recovery", text: "Sleep quality?", hint: "Skin repairs at night.", options: [
+      { value: "excellent", label: "Excellent", hint: "" },
+      { value: "fair", label: "Fair", hint: "" },
+      { value: "poor", label: "Poor", hint: "" },
+      { value: "chronic", label: "Chronic issues", hint: "" }
     ]},
-    { id: "stressLevel", label: "Stress", text: "Stress level?", hint: "Stress can trigger oil and breakouts. Pick your typical level, not one busy week only.", options: [
-      { value: "low", label: "Low", hint: "Mostly calm." },
-      { value: "moderate", label: "Moderate", hint: "Normal ups and downs." },
-      { value: "high", label: "High", hint: "Often stressed." },
-      { value: "chronic", label: "Chronic", hint: "Ongoing high stress." }
+    { id: "stressLevel", label: "Stress", text: "Stress level?", hint: "Typical level, not one busy week.", options: [
+      { value: "low", label: "Low", hint: "" },
+      { value: "moderate", label: "Moderate", hint: "" },
+      { value: "high", label: "High", hint: "" },
+      { value: "chronic", label: "Chronic", hint: "" }
     ]},
-    { id: "diet", label: "Diet", text: "Dairy & sugar intake?", hint: "For some people, lots of dairy or sugar links to more breakouts. Rough estimate is fine.", options: [
-      { value: "low", label: "Low", hint: "You limit both." },
-      { value: "moderate", label: "Moderate", hint: "Some daily." },
-      { value: "high", label: "High", hint: "Frequent sweets or dairy." },
-      { value: "veryHigh", label: "Very high", hint: "Heavy daily intake." }
+    { id: "diet", label: "Diet", text: "Dairy & sugar intake?", hint: "Rough estimate is fine.", options: [
+      { value: "low", label: "Low", hint: "" },
+      { value: "moderate", label: "Moderate", hint: "" },
+      { value: "high", label: "High", hint: "" },
+      { value: "veryHigh", label: "Very high", hint: "" }
     ]},
-    { id: "ageRange", label: "Age", text: "Age range?", hint: "Helps match products to common needs at different life stages.", options: [
+    { id: "ageRange", label: "Age", text: "Age range?", hint: "Helps match products to life stage.", options: [
       { value: "under25", label: "Under 25", hint: "" },
       { value: "25to35", label: "25–35", hint: "" },
       { value: "36to45", label: "36–45", hint: "" },
       { value: "46plus", label: "46+", hint: "" }
     ]},
-    { id: "routineComplexity", label: "Routine", text: "Current routine complexity?", hint: "How many face products you use now (cleanser, cream, serum, SPF, etc.).", options: [
-      { value: "none", label: "None", hint: "Water only or almost nothing." },
-      { value: "basic", label: "Basic", hint: "Cleanser + moisturizer mostly." },
-      { value: "moderate", label: "Moderate", hint: "About 3–5 products." },
-      { value: "advanced", label: "Advanced", hint: "Many layers / many bottles." }
-    ]},
-    { id: "textureIssues", label: "Texture", text: "Main texture issue?", hint: "How skin feels when you touch it — flakes, roughness, or excess oil film.", options: [
-      { value: "flakiness", label: "Flakiness", hint: "Dry patches that peel." },
-      { value: "roughness", label: "Roughness", hint: "Uneven, not smooth." },
-      { value: "excessSebum", label: "Excess oil", hint: "Greasy film on surface." },
-      { value: "none", label: "None", hint: "Texture feels fine." }
-    ]},
-    { id: "fragranceAlcohol", label: "Ingredients", text: "Fragrance / alcohol sensitivity?", hint: "Perfume in products or drying alcohols can sting sensitive skin.", options: [
-      { value: "tolerant", label: "None", hint: "No issues." },
-      { value: "mild", label: "Mild", hint: "Occasional irritation." },
-      { value: "reactive", label: "Reactive", hint: "Often stings." },
-      { value: "avoid", label: "Avoid both", hint: "You strictly skip fragrance and alcohol." }
-    ]},
-    { id: "eyeArea", label: "Eyes", text: "Eye-area concerns?", hint: "Under-eye and outer eye only — not the whole face.", options: [
+    { id: "routineComplexity", label: "Routine", text: "Current routine complexity?", hint: "How many face products you use now.", options: [
       { value: "none", label: "None", hint: "" },
-      { value: "darkCircles", label: "Dark circles", hint: "Shadowy under-eyes." },
-      { value: "puffiness", label: "Puffiness", hint: "Swollen or baggy look." },
-      { value: "fineLines", label: "Fine lines", hint: "Small creases." },
-      { value: "multiple", label: "Multiple", hint: "More than one of the above." }
+      { value: "basic", label: "Basic", hint: "" },
+      { value: "moderate", label: "Moderate", hint: "" },
+      { value: "advanced", label: "Advanced", hint: "" }
     ]},
-    { id: "postAcneScars", label: "Scars", text: "Post-acne scars?", hint: "Texture scars or dents left after acne — not just temporary dark marks.", options: [
+    { id: "textureIssues", label: "Texture", text: "Main texture issue?", hint: "Flakes, roughness, or excess oil film.", options: [
+      { value: "flakiness", label: "Flakiness", hint: "" },
+      { value: "roughness", label: "Roughness", hint: "" },
+      { value: "excessSebum", label: "Excess oil", hint: "" },
+      { value: "none", label: "None", hint: "" }
+    ]},
+    { id: "fragranceAlcohol", label: "Ingredients", text: "Fragrance / alcohol sensitivity?", hint: "Perfume or drying alcohols may sting.", options: [
+      { value: "tolerant", label: "None", hint: "" },
+      { value: "mild", label: "Mild", hint: "" },
+      { value: "reactive", label: "Reactive", hint: "" },
+      { value: "avoid", label: "Avoid both", hint: "" }
+    ]},
+    { id: "eyeArea", label: "Eyes", text: "Eye-area concerns?", hint: "Under-eye area only.", options: [
       { value: "none", label: "None", hint: "" },
-      { value: "mild", label: "Mild", hint: "Slight unevenness." },
-      { value: "moderate", label: "Moderate", hint: "Clear dents or pits." },
-      { value: "significant", label: "Significant", hint: "Deep or widespread scarring." }
+      { value: "darkCircles", label: "Dark circles", hint: "" },
+      { value: "puffiness", label: "Puffiness", hint: "" },
+      { value: "fineLines", label: "Fine lines", hint: "" },
+      { value: "multiple", label: "Multiple", hint: "" }
     ]},
-    { id: "budget", label: "Budget", text: "Routine budget (4 steps)?", hint: "Total for cleanser + serum + moisturizer + sunscreen. Pick what you can stick with long term.", options: [
-      { value: "ultra", label: "Ultra-Budget", hint: "Under about $25 / ₹1500 total." },
-      { value: "value", label: "Value", hint: "About $25–$60 / ₹1500–₹4500." },
-      { value: "mid", label: "Mid-Tier", hint: "About $60–$120 / ₹4500–₹9000." },
-      { value: "high", label: "High-End", hint: "$120+ / ₹9000+ total." }
+    { id: "postAcneScars", label: "Scars", text: "Post-acne scars?", hint: "Texture dents after acne — not just temporary dark marks.", options: [
+      { value: "none", label: "None", hint: "" },
+      { value: "mild", label: "Mild", hint: "" },
+      { value: "moderate", label: "Moderate", hint: "" },
+      { value: "significant", label: "Significant", hint: "" }
+    ]},
+    { id: "budget", label: "Budget", text: "Routine budget (4 steps)?", hint: "Total for cleanser + serum + moisturizer + sunscreen.", options: [
+      { value: "ultra", label: "Ultra-Budget", hint: "Under ~$25 / ₹1500." },
+      { value: "value", label: "Value", hint: "~$25–$60 / ₹1500–₹4500." },
+      { value: "mid", label: "Mid-Tier", hint: "~$60–$120 / ₹4500–₹9000." },
+      { value: "high", label: "High-End", hint: "$120+ / ₹9000+." }
     ]}
   ];
 
@@ -937,17 +868,13 @@ body {
     try { return JSON.parse(localStorage.getItem("skinveda_progress") || "[]"); }
     catch (e) { return []; }
   }
-  function saveProgressLog(arr) {
-    localStorage.setItem("skinveda_progress", JSON.stringify(arr));
-  }
+  function saveProgressLog(arr) { localStorage.setItem("skinveda_progress", JSON.stringify(arr)); }
 
   function getCooldownState() {
     try { return JSON.parse(localStorage.getItem("skinveda_cooldown") || "null"); }
     catch (e) { return null; }
   }
-  function saveCooldownState(obj) {
-    localStorage.setItem("skinveda_cooldown", JSON.stringify(obj));
-  }
+  function saveCooldownState(obj) { localStorage.setItem("skinveda_cooldown", JSON.stringify(obj)); }
 
   function todayKey() {
     var d = new Date();
@@ -956,11 +883,7 @@ body {
 
   function computeDailyScore(m) {
     var oilScore = 5 - Math.abs((m.oil || 3) - 3);
-    var acne = m.acne || 3;
-    var texture = m.texture || 3;
-    var hydration = m.hydration || 3;
-    var bonus = m.bonus != null ? m.bonus : 3;
-    var raw = (oilScore + acne + texture + hydration + bonus * 0.5) / 4.5;
+    var raw = (oilScore + (m.acne || 3) + (m.texture || 3) + (m.hydration || 3) + ((m.bonus != null ? m.bonus : 3) * 0.5)) / 4.5;
     return Math.max(0, Math.min(100, Math.round(raw * 20)));
   }
 
@@ -969,13 +892,11 @@ body {
     if (!cd || !cd.nextAllowedAt) return false;
     return Date.now() < cd.nextAllowedAt;
   }
-
   function msRemaining() {
     var cd = getCooldownState();
     if (!cd || !cd.nextAllowedAt) return 0;
     return Math.max(0, cd.nextAllowedAt - Date.now());
   }
-
   function formatCountdown(ms) {
     var s = Math.floor(ms / 1000);
     var h = Math.floor(s / 3600);
@@ -983,23 +904,15 @@ body {
     var sec = s % 60;
     return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(sec).padStart(2, "0");
   }
-
   function stopCountdown() {
-    if (state.countdownTimer) {
-      clearInterval(state.countdownTimer);
-      state.countdownTimer = null;
-    }
+    if (state.countdownTimer) { clearInterval(state.countdownTimer); state.countdownTimer = null; }
   }
 
   function showLockedCheckinUI() {
     var cd = getCooldownState();
-    var rem = msRemaining();
     $("#checkin-form-wrap").style.display = "none";
     $("#checkin-lock-panel").classList.add("show");
-    $("#checkin-lock-timer").textContent = formatCountdown(rem);
-    $("#checkin-lock-title").textContent = "Check-in saved";
-    $("#checkin-lock-msg").textContent = "Your check-in is saved. The next progress check unlocks in 2 days (48 hours).";
-    $("#checkin-lock-sub").textContent = "Live countdown — come back when it reaches 00:00:00";
+    $("#checkin-lock-timer").textContent = formatCountdown(msRemaining());
     if (cd && cd.lastScore != null) {
       var sc = $("#checkin-lock-score");
       sc.style.display = "inline-block";
@@ -1008,17 +921,14 @@ body {
     $("#btn-checkin-save").style.display = "none";
     $("#btn-checkin-done").style.display = "flex";
   }
-
   function showOpenCheckinUI() {
     $("#checkin-form-wrap").style.display = "block";
     $("#checkin-lock-panel").classList.remove("show");
     $("#btn-checkin-save").style.display = "flex";
     $("#btn-checkin-save").disabled = false;
-    $("#btn-checkin-save").textContent = "Save check-in";
     $("#btn-checkin-done").style.display = "none";
     $("#checkin-lock-score").style.display = "none";
   }
-
   function tickCountdownUI() {
     if (state.screen !== "checkin") return;
     if (!isCheckinLocked()) {
@@ -1030,31 +940,24 @@ body {
     }
     $("#checkin-lock-timer").textContent = formatCountdown(msRemaining());
   }
-
   function startCountdownLoop() {
     stopCountdown();
     tickCountdownUI();
     state.countdownTimer = setInterval(tickCountdownUI, 1000);
   }
 
-  function pickVariant(bank, seed) {
-    return bank[Math.abs(seed) % bank.length];
-  }
+  function pickVariant(bank, seed) { return bank[Math.abs(seed) % bank.length]; }
 
   function buildDynamicQuestions() {
     var daySeed = Math.floor(Date.now() / 86400000);
     var log = getProgressLog();
     var sessionSeed = daySeed + (log.length || 0);
     var cores = ["oil", "acne", "texture", "hydration"];
-    state.activeMetrics = [];
     state.checkin = {};
-
     var html = "";
     cores.forEach(function (key, idx) {
       var variant = pickVariant(METRIC_BANKS[key], sessionSeed + idx * 7);
-      state.activeMetrics.push({ key: key, variant: variant });
-      html += '<div class="metric-block" data-metric="' + key + '">';
-      html += '<div class="metric-title">' + variant.title + "</div>";
+      html += '<div class="metric-block" data-metric="' + key + '"><div class="metric-title">' + variant.title + "</div>";
       if (variant.hint) html += '<div class="metric-hint">' + variant.hint + "</div>";
       html += '<div class="metric-opts">';
       variant.opts.forEach(function (o) {
@@ -1062,25 +965,19 @@ body {
       });
       html += "</div></div>";
     });
-
     var bonusIdx = sessionSeed % BONUS_BANK.length;
     var last = log[0];
     if (last && (last.acne || 3) <= 2) bonusIdx = 0;
     else if (last && (last.hydration || 3) <= 2) bonusIdx = 1;
     var bonus = BONUS_BANK[bonusIdx];
-    state.activeMetrics.push({ key: "bonus", variant: bonus, bonusId: bonus.id });
-    html += '<div class="metric-block" data-metric="bonus">';
-    html += '<div class="metric-title">' + bonus.title + "</div>";
+    html += '<div class="metric-block" data-metric="bonus"><div class="metric-title">' + bonus.title + "</div>";
     if (bonus.hint) html += '<div class="metric-hint">' + bonus.hint + "</div>";
     html += '<div class="metric-opts">';
     bonus.opts.forEach(function (o) {
       html += '<button type="button" class="metric-opt" data-v="' + o.v + '">' + o.t + "</button>";
     });
     html += "</div></div>";
-
     $("#checkin-metrics").innerHTML = html;
-    $("#checkin-intro").textContent = "Answer honestly. After you save, the next check-in unlocks in 48 hours.";
-
     $$("#checkin-metrics .metric-block").forEach(function (block) {
       var metric = block.getAttribute("data-metric");
       block.querySelectorAll(".metric-opt").forEach(function (btn) {
@@ -1101,26 +998,14 @@ body {
     var latest = recent[0].score;
     var oldest = recent[recent.length - 1].score;
     var delta = latest - oldest;
-    var insight = "";
-    if (delta > 5) insight = "Your skin score is trending up. Keep the routine consistent.";
-    else if (delta < -5) insight = "Score dipped recently. Double-check SPF, sleep, and barrier care.";
-    else insight = "Stable progress. Small daily habits are compounding.";
-    return {
-      latest: Math.round(latest),
-      avg: Math.round(avg),
-      delta: Math.round(delta),
-      days: recent.length,
-      insight: insight
-    };
+    var insight = delta > 5 ? "Your skin score is trending up." : delta < -5 ? "Score dipped — focus on SPF and barrier care." : "Stable progress. Keep the routine consistent.";
+    return { latest: Math.round(latest), avg: Math.round(avg), delta: Math.round(delta), days: recent.length, insight: insight };
   }
 
   function renderAnalytics() {
     var card = $("#analytics-card");
     var a = analyzeProgress();
-    if (!a || !hasCompletedInitial()) {
-      card.style.display = "none";
-      return;
-    }
+    if (!a || !hasCompletedInitial()) { card.style.display = "none"; return; }
     card.style.display = "block";
     $("#analytics-scores").innerHTML =
       '<div class="score-box"><div class="num">' + a.latest + '</div><div class="lbl">Latest</div></div>' +
@@ -1132,22 +1017,12 @@ body {
 
   function openCheckin() {
     showScreen("checkin");
-    if (isCheckinLocked()) {
-      showLockedCheckinUI();
-      startCountdownLoop();
-    } else {
-      showOpenCheckinUI();
-      buildDynamicQuestions();
-      stopCountdown();
-    }
+    if (isCheckinLocked()) { showLockedCheckinUI(); startCountdownLoop(); }
+    else { showOpenCheckinUI(); buildDynamicQuestions(); stopCountdown(); }
   }
 
   $("#btn-checkin-save").addEventListener("click", function () {
-    if (isCheckinLocked()) {
-      showLockedCheckinUI();
-      startCountdownLoop();
-      return;
-    }
+    if (isCheckinLocked()) { showLockedCheckinUI(); startCountdownLoop(); return; }
     var m = state.checkin;
     if (m.oil == null || m.acne == null || m.texture == null || m.hydration == null || m.bonus == null) {
       showToast("Please answer every question");
@@ -1155,42 +1030,20 @@ body {
     }
     var score = computeDailyScore(m);
     var nextAllowedAt = Date.now() + COOLDOWN_MS;
-
     var log = getProgressLog();
-    log.unshift({
-      date: todayKey(),
-      oil: m.oil,
-      acne: m.acne,
-      texture: m.texture,
-      hydration: m.hydration,
-      bonus: m.bonus,
-      score: score,
-      cooldownHours: 48,
-      ts: Date.now()
-    });
-    log = log.slice(0, 90);
-    saveProgressLog(log);
-
-    saveCooldownState({
-      nextAllowedAt: nextAllowedAt,
-      hours: 48,
-      reason: "Fixed 48-hour (2-day) cooldown between progress check-ins.",
-      lastScore: score,
-      setAt: Date.now()
-    });
-
+    log.unshift({ date: todayKey(), oil: m.oil, acne: m.acne, texture: m.texture, hydration: m.hydration, bonus: m.bonus, score: score, cooldownHours: 48, ts: Date.now() });
+    saveProgressLog(log.slice(0, 90));
+    saveCooldownState({ nextAllowedAt: nextAllowedAt, hours: 48, lastScore: score, setAt: Date.now() });
     showLockedCheckinUI();
     startCountdownLoop();
     renderAnalytics();
     showToast("Saved · Next check-in in 48 hours");
   });
-
   $("#btn-checkin-done").addEventListener("click", function () { goHome(); });
   $("#btn-checkin-back").addEventListener("click", function () { goHome(); });
 
   function renderDailyTip() {
-    var day = Math.floor(Date.now() / 86400000) % DAILY_TIPS.length;
-    $("#daily-tip-text").textContent = DAILY_TIPS[day];
+    $("#daily-tip-text").textContent = DAILY_TIPS[Math.floor(Date.now() / 86400000) % DAILY_TIPS.length];
   }
 
   function getStreakData() {
@@ -1202,29 +1055,17 @@ body {
 
   function renderStreak() {
     var unlocked = isStreakUnlocked();
-    var lock = $("#streak-lock");
-    if (unlocked) lock.classList.add("hide");
-    else lock.classList.remove("hide");
-
+    if (unlocked) $("#streak-lock").classList.add("hide");
+    else $("#streak-lock").classList.remove("hide");
     var data = getStreakData();
     var today = todayKey();
     var checked = data.last === today;
     $("#streak-count").innerHTML = (data.count || 0) + "<span>days</span>";
     var btn = $("#btn-streak-checkin");
     var msg = $("#streak-msg");
-    if (!unlocked) {
-      btn.disabled = true;
-      btn.textContent = "Locked";
-      msg.textContent = "Unlock by completing your first checkup";
-    } else if (checked) {
-      btn.disabled = true;
-      btn.textContent = "Checked in today";
-      msg.textContent = "Great job! See you tomorrow.";
-    } else {
-      btn.disabled = false;
-      btn.textContent = "Check in today";
-      msg.textContent = "Log that you completed your routine today";
-    }
+    if (!unlocked) { btn.disabled = true; btn.textContent = "Locked"; msg.textContent = "Unlock by completing your first checkup"; }
+    else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Great job! See you tomorrow."; }
+    else { btn.disabled = false; btn.textContent = "Check in today"; msg.textContent = "Log that you completed your routine today"; }
     var labels = ["S", "M", "T", "W", "T", "F", "S"];
     var html = "";
     for (var i = 6; i >= 0; i--) {
@@ -1232,22 +1073,17 @@ body {
       d.setDate(d.getDate() - i);
       var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
       var done = (data.days || []).indexOf(key) !== -1;
-      var isToday = key === today;
-      html += '<div class="streak-day"><div class="streak-dot' + (done ? " done" : "") + (isToday ? " today" : "") + '">' + (done ? "✓" : labels[d.getDay()]) + '</div><div class="streak-label">' + labels[d.getDay()] + "</div></div>";
+      html += '<div class="streak-day"><div class="streak-dot' + (done ? " done" : "") + (key === today ? " today" : "") + '">' + (done ? "✓" : labels[d.getDay()]) + '</div><div class="streak-label">' + labels[d.getDay()] + "</div></div>";
     }
     $("#streak-days").innerHTML = html;
   }
 
   $("#btn-streak-checkin").addEventListener("click", function () {
-    if (!isStreakUnlocked()) {
-      showToast("Complete a checkup first to unlock streaks");
-      return;
-    }
+    if (!isStreakUnlocked()) { showToast("Complete a checkup first to unlock streaks"); return; }
     var data = getStreakData();
     var today = todayKey();
     if (data.last === today) return;
-    var y = new Date();
-    y.setDate(y.getDate() - 1);
+    var y = new Date(); y.setDate(y.getDate() - 1);
     var yKey = y.getFullYear() + "-" + String(y.getMonth() + 1).padStart(2, "0") + "-" + String(y.getDate()).padStart(2, "0");
     data.count = data.last === yKey ? (data.count || 0) + 1 : 1;
     data.last = today;
@@ -1268,9 +1104,6 @@ body {
     var list = getHistory();
     list.unshift(rx);
     saveHistory(list);
-  }
-  function deletePrescription(id) {
-    saveHistory(getHistory().filter(function (i) { return i.id !== id; }));
   }
 
   function filterByBudget(list, b) {
@@ -1295,9 +1128,7 @@ body {
     var typeLabels = { dry: "Dry", oily: "Oily", combination: "Combination", sensitive: "Sensitive", normal: "Normal" };
     var concernLabels = { acne: "acne-prone", hyperpigmentation: "hyperpigmentation focus", aging: "aging focus", rosacea: "rosacea-prone", dehydration: "dehydrated" };
     var parts = [typeLabels[a.skinType] + " skin", concernLabels[a.primaryConcern]];
-    if (a.secondaryConcern && a.secondaryConcern !== "none") {
-      parts.push(a.secondaryConcern.replace(/([A-Z])/g, " $1").toLowerCase());
-    }
+    if (a.secondaryConcern && a.secondaryConcern !== "none") parts.push(a.secondaryConcern.replace(/([A-Z])/g, " $1").toLowerCase());
     var cTags = [a.skinType, a.primaryConcern];
     if (a.sensitivity === "reactive" || a.sensitivity === "veryReactive") cTags.push("sensitive");
     var cleanser = pickBest(filterByBudget(products.cleansers, budget), cTags, [a.skinType]);
@@ -1330,33 +1161,67 @@ body {
     };
   }
 
+  /** Build dermal evaluation ratings from answers */
+  function buildEvaluation(a) {
+    function rate(map, key, fallback) {
+      return map[key] || fallback || "Fair";
+    }
+    var healthMap = { normal: "Excellent", combination: "Good", dry: "Fair", oily: "Fair", sensitive: "Fair" };
+    var hydMap = { good: "Excellent", high: "Excellent", moderate: "Good", low: "Poor" };
+    var poreMap = { fine: "Excellent", moderate: "Good", enlarged: "Fair", clogged: "Poor" };
+    var texMap = { none: "Excellent", excessSebum: "Fair", roughness: "Fair", flakiness: "Poor" };
+    var ageMap = { under25: "Excellent", "25to35": "Good", "36to45": "Good", "46plus": "Fair" };
+    var glowMap = { dehydration: "Poor", aging: "Fair", acne: "Fair", rosacea: "Fair", hyperpigmentation: "Fair" };
+
+    return [
+      { crit: "Skin Health Rating", rate: rate(healthMap, a.skinType, "Good"), notes: "Based on reported skin type & balance" },
+      { crit: "Hydration Level", rate: rate(hydMap, a.waterIntake, "Fair"), notes: a.primaryConcern === "dehydration" ? "Dehydration flagged as primary concern" : "From lifestyle & comfort signals" },
+      { crit: "Pore Condition", rate: rate(poreMap, a.poreSize, "Good"), notes: "From pore visibility answers" },
+      { crit: "Texture Smoothness", rate: rate(texMap, a.textureIssues, "Good"), notes: "Touch / surface feel profile" },
+      { crit: "Elasticity", rate: rate(ageMap, a.ageRange, "Good"), notes: "Age-related firmness estimate" },
+      { crit: "Overall Glow", rate: a.primaryConcern === "dehydration" || a.secondaryConcern === "dullness" ? "Fair" : rate(glowMap, a.primaryConcern, "Good"), notes: "Composite of concerns & recovery habits" }
+    ];
+  }
+
   function escapeHtml(str) {
     var d = document.createElement("div");
     d.textContent = str || "";
     return d.innerHTML;
   }
 
+  function buildRoutineCardHtml(rx) {
+    var dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    var evalRows = rx.evaluation || [];
+    var tableRows = evalRows.map(function (r) {
+      return "<tr><td class=\"crit\">" + escapeHtml(r.crit) + "</td><td class=\"rate\">" + escapeHtml(r.rate) + "</td><td class=\"notes\">" + escapeHtml(r.notes) + "</td></tr>";
+    }).join("");
+    function prod(cat, p) {
+      return "<li><div class=\"rc-prod-cat\">" + cat + "</div><div class=\"rc-prod-name\">" + escapeHtml(p.brand) + " — " + escapeHtml(p.name) +
+        "</div><div class=\"rc-prod-meta\">Actives: " + escapeHtml(p.actives) + " · Use: " + escapeHtml(p.usage) + "</div></li>";
+    }
+    return '<div class="routine-card">' +
+      '<div class="rc-top"><div class="rc-logo">DR. BUNNY\'S DERMATOLOGY</div>' +
+      '<div class="rc-title">SKIN VEDA ROUTINE CARD</div>' +
+      '<div class="rc-bunny-mini">' + bunnySVG("mini") + "</div></div>" +
+      '<div class="rc-meta"><div><strong>NAME:</strong> ' + escapeHtml(rx.userName) + "</div>" +
+      "<div><strong>DATE:</strong> " + dateStr + "</div>" +
+      "<div><strong>CLINIC:</strong> DR. BUNNY'S DERMATOLOGY</div></div>" +
+      '<div class="rc-section"><div class="rc-section-title">Dermal Evaluation</div>' +
+      (rx.profileSummary ? '<p class="rc-summary">' + escapeHtml(rx.profileSummary) + "</p>" : "") +
+      '<table class="rc-table"><thead><tr><th>Criteria</th><th>Rating</th><th>Notes / Comments</th></tr></thead><tbody>' +
+      tableRows + "</tbody></table></div>" +
+      '<div class="rc-section"><div class="rc-section-title">Suggesting Product(s) for Regimen</div><ul class="rc-products">' +
+      prod("Cleanser", rx.cleanser) +
+      prod("Active Serum", rx.serum) +
+      prod("Moisturizer", rx.moisturizer) +
+      prod("Sunscreen (SPF)", rx.sunscreen) +
+      "</ul></div>" +
+      '<div class="rc-footer"><div class="sig-label">DOCTOR\'S SIGNATURE:</div><div class="sig-name">Dr. Bunny</div></div></div>';
+  }
+
   function renderResults(rx) {
     state.lastRx = rx;
-    var dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-    var tipsHw = (rx.tips && rx.tips.length) ? rx.tips.map(function (t) { return "• " + t; }).join(" ") : "Stay consistent and patch-test new products.";
-    function pb(label, key, p) {
-      return '<div class="product-section"><div class="product-label-row"><div class="product-icon">' + catIcons[key] + '</div><div class="product-label">' + label + '</div></div><div class="product-item"><div class="product-brand">' +
-        escapeHtml(p.brand) + '</div><div class="product-name">' + escapeHtml(p.name) + '</div><div class="product-actives">Key actives: ' +
-        escapeHtml(p.actives) + '</div><div class="product-usage">Use: ' + escapeHtml(p.usage) + "</div></div></div>";
-    }
-    $("#rx-content").innerHTML =
-      '<div class="rx-card"><div class="rx-header"><div class="rx-badge">Personalized Routine</div><div class="rx-name">' +
-      escapeHtml(rx.userName) + '</div><div class="rx-date">' + dateStr +
-      '</div></div><div class="rx-body"><div class="profile-summary"><h3>Skin Analysis</h3><p>' +
-      escapeHtml(rx.profileSummary) + "</p></div>" +
-      pb("1. Cleanser", "cleanser", rx.cleanser) +
-      pb("2. Active Serum", "serum", rx.serum) +
-      pb("3. Moisturizer", "moisturizer", rx.moisturizer) +
-      pb("4. Sunscreen", "sunscreen", rx.sunscreen) +
-      '<div class="handwriting-block"><div class="hw-title">Note from Dr. Bunny</div><div class="hw-text">' +
-      escapeHtml(tipsHw) + '</div><div class="hw-sign">— Dr. Bunny</div></div>' +
-      '<div class="rx-footer">Streak unlocked · Center button = daily progress (every 48h)</div></div></div>';
+    $("#rx-content").innerHTML = buildRoutineCardHtml(rx);
   }
 
   function renderQuestion() {
@@ -1369,13 +1234,8 @@ body {
     $("#q-label").textContent = q.label;
     $("#q-text").textContent = q.text;
     var hintEl = $("#q-hint");
-    if (q.hint) {
-      hintEl.style.display = "block";
-      hintEl.textContent = q.hint;
-    } else {
-      hintEl.style.display = "none";
-      hintEl.textContent = "";
-    }
+    if (q.hint) { hintEl.style.display = "block"; hintEl.textContent = q.hint; }
+    else { hintEl.style.display = "none"; }
     var card = $("#question-card");
     card.style.animation = "none";
     void card.offsetHeight;
@@ -1389,8 +1249,7 @@ body {
       div.innerHTML = '<div class="option-radio"></div><div><div class="option-text">' + escapeHtml(opt.label) + "</div>" + hintHtml + "</div>";
       div.addEventListener("click", function () {
         state.answers[q.id] = opt.value;
-        var all = opts.querySelectorAll(".option");
-        for (var i = 0; i < all.length; i++) all[i].classList.remove("selected");
+        opts.querySelectorAll(".option").forEach(function (o) { o.classList.remove("selected"); });
         div.classList.add("selected");
         $("#btn-q-next").disabled = false;
       });
@@ -1405,28 +1264,17 @@ body {
     var list = getHistory();
     var c = $("#history-list");
     if (!list.length) {
-      c.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No prescriptions yet</div><div class="empty-text">Complete your first assessment from the center button.</div></div>';
+      c.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No routine cards yet</div><div class="empty-text">Complete your first assessment. Cards are saved permanently.</div></div>';
       return;
     }
-    c.innerHTML = list.map(function (item) {
-      var dateStr = new Date(item.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-      return '<div class="history-item" data-id="' + item.id + '"><div class="history-name">' + escapeHtml(item.userName) +
-        '</div><div class="history-date">' + dateStr + '</div><div class="history-summary">' + escapeHtml(item.profileSummary) +
-        '</div><div class="history-products"><strong>Cleanser:</strong> ' + escapeHtml(item.cleanser.brand) + " " + escapeHtml(item.cleanser.name) +
-        "<br><strong>Serum:</strong> " + escapeHtml(item.serum.brand) + " " + escapeHtml(item.serum.name) +
-        "<br><strong>Moisturizer:</strong> " + escapeHtml(item.moisturizer.brand) + " " + escapeHtml(item.moisturizer.name) +
-        "<br><strong>SPF:</strong> " + escapeHtml(item.sunscreen.brand) + " " + escapeHtml(item.sunscreen.name) +
-        '</div><div class="history-actions"><button class="btn btn-danger btn-delete" type="button" data-id="' + item.id + '">Delete</button></div></div>';
-    }).join("");
-    c.querySelectorAll(".btn-delete").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        state.deleteId = btn.getAttribute("data-id");
-        $("#overlay").classList.add("show");
-      });
-    });
+    c.innerHTML = list.map(function (item) { return buildRoutineCardHtml(item); }).join("");
   }
 
   function goHome() {
+    if (!getSavedName()) {
+      openNameOnboarding(true);
+      return;
+    }
     stopCountdown();
     var name = getSavedName();
     $("#welcome-name").textContent = name ? "Welcome back, " + name : "";
@@ -1436,43 +1284,54 @@ body {
     showScreen("landing");
   }
 
+  function openNameOnboarding(firstTime) {
+    state.forceOnboarding = !!firstTime;
+    $("#user-name").value = "";
+    $("#btn-name-next").disabled = true;
+    var back = $("#btn-name-back");
+    if (firstTime) back.classList.add("hidden");
+    else back.classList.remove("hidden");
+    showScreen("name");
+  }
+
+  function startAssessmentWithName(name) {
+    state.userName = name;
+    state.currentQ = 0;
+    state.answers = {};
+    $("#mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>! Let's set up your personalized skin routine.";
+    showScreen("mascot");
+  }
+
+  /** Center button: never asks name again if profile exists */
   function onMainButton() {
+    var name = getSavedName();
+    if (!name) {
+      openNameOnboarding(true);
+      return;
+    }
     if (hasCompletedInitial()) {
       openCheckin();
     } else {
-      var name = getSavedName();
-      if (name) {
-        state.userName = name;
-        state.currentQ = 0;
-        state.answers = {};
-        $("#mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>! I'm Dr. Bunny. Let's build your routine.";
-        showScreen("mascot");
-      } else {
-        $("#user-name").value = "";
-        $("#btn-name-next").disabled = true;
-        showScreen("name");
-      }
+      startAssessmentWithName(name);
     }
   }
 
   $("#nav-home").addEventListener("click", goHome);
   $("#nav-start").addEventListener("click", onMainButton);
   $("#nav-history").addEventListener("click", function () {
+    if (!getSavedName()) { openNameOnboarding(true); return; }
     renderHistory();
     showScreen("history");
   });
 
-  $("#btn-name-back").addEventListener("click", goHome);
   $("#user-name").addEventListener("input", function (e) {
     $("#btn-name-next").disabled = e.target.value.trim().length < 1;
   });
   $("#btn-name-next").addEventListener("click", function () {
     var name = $("#user-name").value.trim();
     if (!name) return;
-    state.userName = name;
     saveProfile(name);
-    $("#mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>! I'm Dr. Bunny. Let's analyze your skin together.";
-    showScreen("mascot");
+    startAssessmentWithName(name);
   });
 
   $("#btn-lets-begin").addEventListener("click", function () {
@@ -1504,6 +1363,7 @@ body {
         date: new Date().toISOString(),
         answers: Object.assign({}, state.answers),
         profileSummary: recs.profileSummary,
+        evaluation: buildEvaluation(state.answers),
         cleanser: recs.cleanser,
         serum: recs.serum,
         moisturizer: recs.moisturizer,
@@ -1513,45 +1373,13 @@ body {
       addPrescription(rx);
       renderResults(rx);
       showScreen("results");
-      showToast("Routine saved · Streak unlocked!");
+      showToast("Routine card saved permanently");
     }
   });
 
   $("#btn-results-home").addEventListener("click", goHome);
   $("#btn-results-back").addEventListener("click", goHome);
   $("#btn-history-back").addEventListener("click", goHome);
-
-  $("#btn-cancel-delete").addEventListener("click", function () {
-    state.deleteId = null;
-    $("#overlay").classList.remove("show");
-  });
-  $("#btn-confirm-delete").addEventListener("click", function () {
-    if (!state.deleteId) return;
-    var item = document.querySelector('.history-item[data-id="' + state.deleteId + '"]');
-    if (item) {
-      item.classList.add("removing");
-      setTimeout(function () {
-        deletePrescription(state.deleteId);
-        state.deleteId = null;
-        $("#overlay").classList.remove("show");
-        renderHistory();
-        renderStreak();
-        showToast("Prescription deleted");
-      }, 280);
-    } else {
-      deletePrescription(state.deleteId);
-      state.deleteId = null;
-      $("#overlay").classList.remove("show");
-      renderHistory();
-      renderStreak();
-    }
-  });
-  $("#overlay").addEventListener("click", function (e) {
-    if (e.target === $("#overlay")) {
-      state.deleteId = null;
-      $("#overlay").classList.remove("show");
-    }
-  });
 
   var lastTouch = 0;
   document.addEventListener("touchend", function (e) {
@@ -1560,7 +1388,14 @@ body {
     lastTouch = now;
   }, { passive: false });
 
-  goHome();
+  /* Boot: new users → name after splash, never home first */
+  if (!getSavedName()) {
+    pendingFirstLaunch = true;
+    showScreen("name");
+    $("#btn-name-back").classList.add("hidden");
+  } else {
+    goHome();
+  }
 })();
 </script>
 </body>
