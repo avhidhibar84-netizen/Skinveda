@@ -414,8 +414,13 @@ body{
 (function () {
   "use strict";
 
-  const GEMINI_API_KEY = "AQ.Ab8RN6IYQ0-YSMaZj6VF25mYQlRW2dtPcbO0ZjzuzN0ZSPhEMw";
-  const GEMINI_MODEL = "gemini-3.6-flash";
+  const GROQ_API_KEY = "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";
+  const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+  const GROQ_MODEL_QUEUE = [
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "llama-3.1-8b-instant"
+  ];
 
   try {
     if (screen.orientation && screen.orientation.lock) {
@@ -969,7 +974,7 @@ body{
       "You are Dr. Bunny, a professional expert clinical dermatologist consultant for Skin Veda.",
       "Identity rules (strict):",
       "- Always remain in character as Dr. Bunny.",
-      "- Never reveal or imply that you are powered by Google, Gemini, or any third-party model.",
+      "- Never reveal or imply that you are powered by Groq, Llama, OpenAI, Google, Gemini, or any third-party model.",
       "- If asked who or what you are, state only that you are the proprietary clinical AI assistant of Skin Veda.",
       "- Never use childish, casual, slangy, or cartoonish phrasing.",
       "- Maintain a polished, clinical, scientific, and respectfully warm professional tone.",
@@ -1016,46 +1021,52 @@ body{
     if (el && el.parentNode) el.parentNode.removeChild(el);
   }
 
-  async function callGemini(userMessage) {
-    var systemBlock = buildSystemInstructions();
-    var patientName = getSavedName() || state.userName || "Patient";
-    var contents = [];
+  function buildMessagesPayload(userMessage) {
+    var messages = [];
+    messages.push({
+      role: "system",
+      content: buildSystemInstructions()
+    });
 
     for (var i = 0; i < state.chatHistory.length; i++) {
       var turn = state.chatHistory[i];
-      contents.push({
-        role: turn.role === "user" ? "user" : "model",
-        parts: [{ text: turn.text }]
+      messages.push({
+        role: turn.role === "user" ? "user" : "assistant",
+        content: turn.text
       });
     }
 
-    contents.push({
+    var patientName = getSavedName() || state.userName || "Patient";
+    messages.push({
       role: "user",
-      parts: [{ text: "Patient message from " + patientName + ":\n" + userMessage }]
+      content: "Patient message from " + patientName + ":\n" + userMessage
     });
 
-    var endpoint =
-      "https://generativelanguage.googleapis.com/v1beta/models/" +
-      GEMINI_MODEL +
-      ":generateContent?key=" +
-      encodeURIComponent(GEMINI_API_KEY);
+    return messages;
+  }
 
-    var response = await fetch(endpoint, {
+  async function fetchWithModel(modelId, messages) {
+    var response = await fetch(GROQ_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + GROQ_API_KEY
+      },
       body: JSON.stringify({
-        system_instruction: {
-          parts: [{ text: systemBlock }]
-        },
-        contents: contents,
-        generationConfig: {
-          temperature: 0.5,
-          maxOutputTokens: 1024
-        }
+        model: modelId,
+        messages: messages,
+        temperature: 0.5,
+        max_tokens: 1024
       })
     });
 
-    var data = await response.json();
+    var data = null;
+    try {
+      data = await response.json();
+    } catch (parseErr) {
+      throw new Error("Invalid JSON from model " + modelId);
+    }
+
     if (!response.ok) {
       var errMsg = (data && data.error && data.error.message) ? data.error.message : ("HTTP " + response.status);
       throw new Error(errMsg);
@@ -1063,15 +1074,32 @@ body{
 
     var out = "";
     try {
-      var parts = data.candidates[0].content.parts;
-      for (var p = 0; p < parts.length; p++) {
-        if (parts[p].text) out += parts[p].text;
-      }
+      out = data.choices[0].message.content || "";
     } catch (e) {
       out = "";
     }
-    if (!out) throw new Error("Empty clinical response");
+    if (!out) throw new Error("Empty clinical response from " + modelId);
     return out.trim();
+  }
+
+  async function callGroq(userMessage) {
+    var messages = buildMessagesPayload(userMessage);
+    var lastError = null;
+
+    for (var i = 0; i < GROQ_MODEL_QUEUE.length; i++) {
+      var modelId = GROQ_MODEL_QUEUE[i];
+      try {
+        var reply = await fetchWithModel(modelId, messages);
+        return reply;
+      } catch (err) {
+        lastError = err;
+        try {
+          console.warn("[Skinveda] Model failed, switching:", modelId, err && err.message ? err.message : err);
+        } catch (logErr) {}
+      }
+    }
+
+    throw lastError || new Error("All models unavailable");
   }
 
   async function sendChat() {
@@ -1093,14 +1121,14 @@ body{
     showTyping();
 
     try {
-      var reply = await callGemini(text);
+      var reply = await callGroq(text);
       hideTyping();
-      state.chatHistory.push({ role: "model", text: reply });
+      state.chatHistory.push({ role: "assistant", text: reply });
       appendChat("bot", reply);
     } catch (err) {
       hideTyping();
       appendChat("bot", "I am temporarily unable to complete this consultation.\n\n" + (err.message || "Network error") +
-        "\n\nPlease verify the API key configuration and try again.");
+        "\n\nPlease try again in a moment.");
     }
 
     state.chatBusy = false;
