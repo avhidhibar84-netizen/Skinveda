@@ -12,379 +12,242 @@
 <title>Skinveda — Virtual Dermatologist</title>
 <style>
 :root {
-  --sage: #7A9E9F; --sage-dark: #5C7A7B; --sage-light: #E8F0F0; --teal: #4A7C7D; --teal-deep: #2A7A7B;
-  --warm-white: #FAF9F7; --cream: #F5F3EF; --slate: #2C3333; --slate-soft: #4A5555;
-  --muted: #8A9595; --border: #E2E8E8; --glass: rgba(255,255,255,.88);
-  --shadow: 0 4px 24px rgba(44,51,51,.07); --shadow-lg: 0 12px 40px rgba(44,51,51,.12);
-  --radius: 20px; --radius-sm: 14px; --nav-h: 72px;
-  --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px); --safe-right: env(safe-area-inset-right, 0px);
-  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  --hand: "Segoe Script", "Brush Script MT", "Apple Chancery", cursive;
+  --sage:#7A9E9F; --sage-dark:#5C7A7B; --sage-light:#E8F0F0; --teal:#4A7C7D; --teal-deep:#2A7A7B;
+  --warm-white:#FAF9F7; --cream:#F5F3EF; --slate:#2C3333; --slate-soft:#4A5555;
+  --muted:#8A9595; --border:#E2E8E8; --glass:rgba(255,255,255,.88);
+  --shadow:0 4px 24px rgba(44,51,51,.07); --shadow-lg:0 12px 40px rgba(44,51,51,.12);
+  --radius:20px; --radius-sm:14px; --nav-h:72px;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-left:env(safe-area-inset-left,0px); --safe-right:env(safe-area-inset-right,0px);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+  --hand:"Segoe Script","Brush Script MT","Apple Chancery",cursive;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html { height: 100%; height: -webkit-fill-available; }
-body {
-  min-height: 100%; min-height: 100dvh; font-family: var(--font); background: #E8EEF0;
-  color: var(--slate); overflow-x: hidden; -webkit-font-smoothing: antialiased;
-  padding-top: var(--safe-top); padding-left: var(--safe-left); padding-right: var(--safe-right);
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;height:-webkit-fill-available}
+body{
+  min-height:100%;min-height:100dvh;font-family:var(--font);background:#E8EEF0;color:var(--slate);
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  padding-top:var(--safe-top);padding-left:var(--safe-left);padding-right:var(--safe-right);
 }
-@media screen and (orientation: landscape) and (max-height: 500px) {
-  body::after {
-    content: "Please rotate your device to portrait mode";
-    position: fixed; inset: 0; z-index: 99999; background: #fff; color: var(--slate);
-    display: flex; align-items: center; justify-content: center; text-align: center;
-    padding: 24px; font-size: 16px; font-weight: 600;
-  }
+@media screen and (orientation:landscape) and (max-height:500px){
+  body::after{content:"Please rotate your device to portrait mode";position:fixed;inset:0;z-index:99999;
+    background:#fff;color:var(--slate);display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:24px;font-size:16px;font-weight:600}
 }
-.app {
-  min-height: 100dvh; max-width: 430px; margin: 0 auto; position: relative;
-  background: var(--warm-white); box-shadow: 0 0 60px rgba(0,0,0,.05);
-  padding-bottom: calc(var(--nav-h) + var(--safe-bottom));
-}
-.splash {
-  position: fixed; inset: 0; z-index: 9999; background: #fff;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity .65s, visibility .65s;
-}
-.splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-.splash-brand {
-  font-size: 44px; font-weight: 750; letter-spacing: -1.2px;
-  background: linear-gradient(120deg, #38BDF8, #2DD4BF, #34D399);
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  animation: breathe 2.4s ease-in-out infinite;
-}
-.splash-from { position: absolute; bottom: calc(48px + var(--safe-bottom)); font-size: 13px; font-weight: 500; color: #A0A0A0; }
-@keyframes breathe { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.04);opacity:.92} }
-@keyframes floatBunny { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes miniBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px) rotate(2deg)} }
-@keyframes screenIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-@keyframes qIn { from{opacity:0;transform:translateX(14px)} to{opacity:1;transform:translateX(0)} }
-@keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 0 rgba(42,122,123,.25)} 50%{box-shadow:0 0 0 10px rgba(42,122,123,0)} }
+.app{min-height:100dvh;max-width:430px;margin:0 auto;position:relative;background:var(--warm-white);
+  box-shadow:0 0 60px rgba(0,0,0,.05);padding-bottom:calc(var(--nav-h) + var(--safe-bottom))}
+.splash{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;transition:opacity .65s,visibility .65s}
+.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-brand{font-size:44px;font-weight:750;letter-spacing:-1.2px;
+  background:linear-gradient(120deg,#38BDF8,#2DD4BF,#34D399);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:breathe 2.4s ease-in-out infinite}
+.splash-from{position:absolute;bottom:calc(48px + var(--safe-bottom));font-size:13px;font-weight:500;color:#A0A0A0}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.04);opacity:.92}}
+@keyframes floatBunny{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes miniBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px) rotate(2deg)}}
+@keyframes screenIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes qIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(42,122,123,.25)}50%{box-shadow:0 0 0 10px rgba(42,122,123,0)}}
+@keyframes typing{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
 
-.screen {
-  display: none; min-height: calc(100dvh - var(--nav-h) - var(--safe-bottom));
-  flex-direction: column; padding: 16px 20px;
-  animation: screenIn .38s cubic-bezier(.22,1,.36,1); position: relative;
-}
-.screen.active { display: flex; }
+.screen{display:none;min-height:calc(100dvh - var(--nav-h) - var(--safe-bottom));flex-direction:column;
+  padding:16px 20px;animation:screenIn .38s cubic-bezier(.22,1,.36,1);position:relative}
+.screen.active{display:flex}
 
-.landing {
-  justify-content: flex-start; align-items: stretch; text-align: center;
-  background:
-    radial-gradient(ellipse 110% 70% at 50% -5%, rgba(59,155,156,.2) 0%, transparent 55%),
-    linear-gradient(165deg, #F7FBFC 0%, #F0F7F7 40%, #FAF9F7 100%);
-  padding-top: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch;
-}
-.hero-bunny {
-  width: 130px; margin: 4px auto 4px; animation: floatBunny 3.2s ease-in-out infinite;
-  filter: drop-shadow(0 12px 24px rgba(42,122,123,.18));
-}
-.hero-bunny svg { width: 100%; height: auto; }
-.landing-title {
-  font-size: 28px; font-weight: 750; letter-spacing: -.7px;
-  background: linear-gradient(135deg, #3B9B9C, #2A7A7B 55%, #4A7C7D);
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  margin-bottom: 2px;
-}
-.landing-tag { font-size: 13px; color: var(--muted); font-weight: 500; margin-bottom: 12px; }
-.welcome-name { font-size: 14px; font-weight: 600; color: var(--teal-deep); margin-bottom: 12px; }
+.landing{justify-content:flex-start;align-items:stretch;text-align:center;
+  background:radial-gradient(ellipse 110% 70% at 50% -5%,rgba(59,155,156,.2) 0%,transparent 55%),
+    linear-gradient(165deg,#F7FBFC 0%,#F0F7F7 40%,#FAF9F7 100%);
+  padding-top:12px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.hero-bunny{width:130px;margin:4px auto;animation:floatBunny 3.2s ease-in-out infinite;
+  filter:drop-shadow(0 12px 24px rgba(42,122,123,.18))}
+.hero-bunny svg{width:100%;height:auto}
+.landing-title{font-size:28px;font-weight:750;letter-spacing:-.7px;
+  background:linear-gradient(135deg,#3B9B9C,#2A7A7B 55%,#4A7C7D);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
+.landing-tag{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:12px}
+.welcome-name{font-size:14px;font-weight:600;color:var(--teal-deep);margin-bottom:12px}
 
-.streak-card {
-  width: 100%; background: rgba(255,255,255,.95); border: 1px solid var(--border);
-  border-radius: 20px; box-shadow: var(--shadow-lg); padding: 16px; text-align: left;
-  position: relative; margin-bottom: 12px; overflow: hidden;
-}
-.streak-lock-overlay {
-  position: absolute; inset: 0; background: rgba(250,249,247,.75);
-  backdrop-filter: blur(3px); display: flex; flex-direction: column;
-  align-items: center; justify-content: center; z-index: 2; border-radius: 20px;
-  text-align: center; padding: 16px;
-}
-.streak-lock-overlay.hide { display: none; }
-.streak-lock-icon { font-size: 26px; margin-bottom: 8px; }
-.streak-lock-text { font-size: 13px; font-weight: 600; color: var(--slate-soft); max-width: 220px; line-height: 1.4; }
-.streak-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.streak-title { font-size: 15px; font-weight: 700; color: var(--slate); }
-.streak-count { font-size: 22px; font-weight: 800; color: #2A7A7B; }
-.streak-count span { font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 4px; }
-.streak-days { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 12px; }
-.streak-day { flex: 1; text-align: center; }
-.streak-dot {
-  width: 30px; height: 30px; border-radius: 50%; margin: 0 auto 4px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; background: var(--sage-light); color: var(--muted);
-  border: 1.5px solid transparent;
-}
-.streak-dot.done { background: linear-gradient(145deg, #3B9B9C, #2A7A7B); color: #fff; }
-.streak-dot.today { border-color: #2A7A7B; box-shadow: 0 0 0 3px rgba(42,122,123,.15); }
-.streak-label { font-size: 10px; color: var(--muted); font-weight: 600; }
-.streak-btn {
-  width: 100%; height: 44px; border: none; border-radius: 12px; font-size: 14px; font-weight: 650;
-  font-family: var(--font); cursor: pointer;
-  background: linear-gradient(145deg, #3B9B9C, #2A7A7B); color: #fff;
-  box-shadow: 0 6px 16px rgba(42,122,123,.25);
-}
-.streak-btn:active { transform: scale(.97); }
-.streak-btn:disabled { background: var(--sage-light); color: var(--sage-dark); box-shadow: none; cursor: default; }
-.streak-msg { font-size: 12px; color: var(--muted); text-align: center; margin-top: 10px; font-weight: 500; }
+.streak-card{width:100%;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:20px;
+  box-shadow:var(--shadow-lg);padding:16px;text-align:left;position:relative;margin-bottom:12px;overflow:hidden}
+.streak-lock-overlay{position:absolute;inset:0;background:rgba(250,249,247,.75);backdrop-filter:blur(3px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;border-radius:20px;
+  text-align:center;padding:16px}
+.streak-lock-overlay.hide{display:none}
+.streak-lock-icon{font-size:26px;margin-bottom:8px}
+.streak-lock-text{font-size:13px;font-weight:600;color:var(--slate-soft);max-width:220px;line-height:1.4}
+.streak-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.streak-title{font-size:15px;font-weight:700;color:var(--slate)}
+.streak-count{font-size:22px;font-weight:800;color:#2A7A7B}
+.streak-count span{font-size:12px;font-weight:600;color:var(--muted);margin-left:4px}
+.streak-days{display:flex;justify-content:space-between;gap:6px;margin-bottom:12px}
+.streak-day{flex:1;text-align:center}
+.streak-dot{width:30px;height:30px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;background:var(--sage-light);color:var(--muted);border:1.5px solid transparent}
+.streak-dot.done{background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff}
+.streak-dot.today{border-color:#2A7A7B;box-shadow:0 0 0 3px rgba(42,122,123,.15)}
+.streak-label{font-size:10px;color:var(--muted);font-weight:600}
+.streak-btn{width:100%;height:44px;border:none;border-radius:12px;font-size:14px;font-weight:650;font-family:var(--font);
+  cursor:pointer;background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff;box-shadow:0 6px 16px rgba(42,122,123,.25)}
+.streak-btn:active{transform:scale(.97)}
+.streak-btn:disabled{background:var(--sage-light);color:var(--sage-dark);box-shadow:none;cursor:default}
+.streak-msg{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;font-weight:500}
 
-.tip-card {
-  text-align: left; background: rgba(255,255,255,.94); border: 1px solid var(--border);
-  border-radius: 18px; box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 12px;
-}
-.tip-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.tip-avatar { width: 36px; height: 36px; flex-shrink: 0; }
-.tip-avatar svg { width: 100%; height: 100%; }
-.tip-label { font-size: 11px; font-weight: 700; color: var(--teal-deep); text-transform: uppercase; letter-spacing: .5px; }
-.tip-from { font-size: 12px; color: var(--muted); }
-.tip-body { font-family: var(--hand); font-size: 17px; line-height: 1.45; color: var(--slate); font-weight: 500; }
+.tip-card{text-align:left;background:rgba(255,255,255,.94);border:1px solid var(--border);border-radius:18px;
+  box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
+.tip-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tip-avatar{width:36px;height:36px;flex-shrink:0}
+.tip-avatar svg{width:100%;height:100%}
+.tip-label{font-size:11px;font-weight:700;color:var(--teal-deep);text-transform:uppercase;letter-spacing:.5px}
+.tip-from{font-size:12px;color:var(--muted)}
+.tip-body{font-family:var(--hand);font-size:17px;line-height:1.45;color:var(--slate);font-weight:500}
 
-.analytics-card {
-  text-align: left; background: #fff; border: 1px solid var(--border);
-  border-radius: 18px; box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 8px;
-}
-.analytics-card h3 { font-size: 13px; font-weight: 700; color: var(--slate); margin-bottom: 10px; }
-.score-row { display: flex; gap: 8px; margin-bottom: 10px; }
-.score-box {
-  flex: 1; background: var(--sage-light); border-radius: 12px; padding: 10px 6px; text-align: center;
-}
-.score-box .num { font-size: 20px; font-weight: 800; color: var(--teal-deep); }
-.score-box .lbl { font-size: 10px; color: var(--muted); font-weight: 600; margin-top: 2px; }
-.insight-text { font-size: 12.5px; color: var(--slate-soft); line-height: 1.45; }
+.chat-promo{text-align:left;background:linear-gradient(145deg,#E8F4F4,#F7FCFC 50%,#fff);
+  border:1.5px solid rgba(74,124,125,.2);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:8px;cursor:pointer}
+.chat-promo:active{transform:scale(.98)}
+.chat-promo h3{font-size:15px;font-weight:700;color:var(--slate);margin-bottom:4px}
+.chat-promo p{font-size:12.5px;color:var(--muted);line-height:1.4}
 
-.btn {
-  display: flex; align-items: center; justify-content: center; width: 100%; height: 54px;
-  border: none; border-radius: 16px; font-size: 16px; font-weight: 600; font-family: var(--font);
-  cursor: pointer; transition: transform .18s; -webkit-appearance: none;
-  touch-action: manipulation; position: relative; z-index: 5;
-}
-.btn:active { transform: scale(.96); }
-.btn-primary {
-  background: linear-gradient(145deg, #3B9B9C, #2A7A7B); color: #fff;
-  box-shadow: 0 8px 24px rgba(42,122,123,.3);
-}
-.btn-primary:disabled { opacity: .55; cursor: default; box-shadow: none; }
-.btn-secondary {
-  background: rgba(255,255,255,.95); color: var(--teal);
-  border: 1.5px solid var(--border); box-shadow: var(--shadow);
-}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:54px;border:none;border-radius:16px;
+  font-size:16px;font-weight:600;font-family:var(--font);cursor:pointer;transition:transform .18s;
+  -webkit-appearance:none;touch-action:manipulation;position:relative;z-index:5}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff;box-shadow:0 8px 24px rgba(42,122,123,.3)}
+.btn-primary:disabled{opacity:.55;cursor:default;box-shadow:none}
+.btn-secondary{background:rgba(255,255,255,.95);color:var(--teal);border:1.5px solid var(--border);box-shadow:var(--shadow)}
 
-.bottom-nav {
-  position: fixed; left: 50%; transform: translateX(-50%); bottom: 0;
-  width: 100%; max-width: 430px; height: calc(var(--nav-h) + var(--safe-bottom));
-  padding-bottom: var(--safe-bottom);
-  background: rgba(255,255,255,.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-around;
-  z-index: 500; box-shadow: 0 -4px 24px rgba(44,51,51,.06);
-}
-.nav-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 3px; background: none; border: none; cursor: pointer; color: var(--muted);
-  font-family: var(--font); font-size: 11px; font-weight: 600; padding: 8px 4px;
-  touch-action: manipulation;
-}
-.nav-item svg { width: 24px; height: 24px; }
-.nav-item.active { color: #2A7A7B; }
-.nav-center {
-  flex: 0 0 auto; width: 62px; height: 62px; margin-top: -22px; border-radius: 50%;
-  background: linear-gradient(145deg, #3B9B9C, #2A7A7B); color: #fff;
-  border: 4px solid var(--warm-white); box-shadow: 0 8px 22px rgba(42,122,123,.35);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  animation: pulseGlow 2.8s ease-in-out infinite;
-}
-.nav-center:active { transform: scale(.94); }
-.nav-center svg { width: 28px; height: 28px; }
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;
+  height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);
+  background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;
+  z-index:500;box-shadow:0 -4px 24px rgba(44,51,51,.06)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  background:none;border:none;cursor:pointer;color:var(--muted);font-family:var(--font);font-size:11px;
+  font-weight:600;padding:8px 4px;touch-action:manipulation}
+.nav-item svg{width:24px;height:24px}
+.nav-item.active{color:#2A7A7B}
+.nav-center{flex:0 0 auto;width:62px;height:62px;margin-top:-22px;border-radius:50%;
+  background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff;border:4px solid var(--warm-white);
+  box-shadow:0 8px 22px rgba(42,122,123,.35);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;animation:pulseGlow 2.8s ease-in-out infinite}
+.nav-center:active{transform:scale(.94)}
+.nav-center svg{width:28px;height:28px}
 
-.header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px; padding-top: 4px; flex-shrink: 0;
-}
-.header-title { font-size: 17px; font-weight: 600; color: var(--slate); }
-.back-btn {
-  width: 42px; height: 42px; border-radius: 14px; border: none; background: var(--glass);
-  backdrop-filter: blur(10px); box-shadow: var(--shadow);
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  color: var(--slate); touch-action: manipulation; z-index: 10;
-}
-.back-btn:active { transform: scale(.94); }
-.back-btn svg { width: 20px; height: 20px; }
-.back-btn.hidden { visibility: hidden; pointer-events: none; }
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-top:4px;flex-shrink:0}
+.header-title{font-size:17px;font-weight:600;color:var(--slate)}
+.back-btn{width:42px;height:42px;border-radius:14px;border:none;background:var(--glass);backdrop-filter:blur(10px);
+  box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--slate);
+  touch-action:manipulation;z-index:10}
+.back-btn:active{transform:scale(.94)}
+.back-btn svg{width:20px;height:20px}
+.back-btn.hidden{visibility:hidden;pointer-events:none}
 
-.name-input {
-  width: 100%; height: 56px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  padding: 0 18px; font-size: 17px; font-family: var(--font); background: #fff;
-  color: var(--slate); outline: none; -webkit-appearance: none; margin-top: 8px;
-}
-.name-input:focus { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(74,124,125,.12); }
+.name-input{width:100%;height:56px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:0 18px;
+  font-size:17px;font-family:var(--font);background:#fff;color:var(--slate);outline:none;-webkit-appearance:none;margin-top:8px}
+.name-input:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(74,124,125,.12)}
 
-.mascot-dialog {
-  justify-content: center; align-items: center; text-align: center;
-  background: linear-gradient(180deg, #F4F9F9 0%, var(--warm-white) 50%, #F0F6F6 100%);
-  padding: 20px;
-}
-.mascot-center { width: 140px; margin: 0 auto 16px; animation: floatBunny 3s ease-in-out infinite; }
-.mascot-center svg { width: 100%; height: auto; filter: drop-shadow(0 10px 22px rgba(74,124,125,.18)); }
-.speech-bubble {
-  position: relative; background: #fff; border-radius: 22px; padding: 18px 20px;
-  box-shadow: var(--shadow-lg); border: 1px solid var(--border); max-width: 340px;
-  margin: 0 auto 22px; animation: slideUp .4s ease;
-}
-.speech-bubble::after {
-  content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-  border-left: 12px solid transparent; border-right: 12px solid transparent;
-  border-bottom: 12px solid #fff;
-}
-.speech-bubble p { font-size: 15px; line-height: 1.55; color: var(--slate); font-weight: 500; }
-.speech-bubble .user-highlight { color: var(--teal); font-weight: 700; }
+.mascot-dialog{justify-content:center;align-items:center;text-align:center;
+  background:linear-gradient(180deg,#F4F9F9 0%,var(--warm-white) 50%,#F0F6F6 100%);padding:20px}
+.mascot-center{width:140px;margin:0 auto 16px;animation:floatBunny 3s ease-in-out infinite}
+.mascot-center svg{width:100%;height:auto;filter:drop-shadow(0 10px 22px rgba(74,124,125,.18))}
+.speech-bubble{position:relative;background:#fff;border-radius:22px;padding:18px 20px;box-shadow:var(--shadow-lg);
+  border:1px solid var(--border);max-width:340px;margin:0 auto 22px;animation:slideUp .4s ease}
+.speech-bubble::after{content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:12px solid #fff}
+.speech-bubble p{font-size:15px;line-height:1.55;color:var(--slate);font-weight:500}
+.speech-bubble .user-highlight{color:var(--teal);font-weight:700}
 
-.progress-wrap { margin-bottom: 14px; flex-shrink: 0; }
-.progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.mini-mascot { width: 36px; height: 36px; flex-shrink: 0; animation: miniBob 2.5s ease-in-out infinite; }
-.mini-mascot svg { width: 100%; height: 100%; }
-.progress-meta { flex: 1; display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); font-weight: 500; }
-.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, #3B9B9C, #2A7A7B); border-radius: 3px; transition: width .4s; }
-.question-card { flex: 1; display: flex; flex-direction: column; animation: qIn .35s cubic-bezier(.22,1,.36,1); min-height: 0; }
-.q-label { font-size: 12px; font-weight: 600; color: var(--sage); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
-.q-text { font-size: 18.5px; font-weight: 650; line-height: 1.35; margin-bottom: 6px; color: var(--slate); }
-.q-hint {
-  font-size: 13px; color: var(--muted); line-height: 1.45; margin-bottom: 14px; font-weight: 500;
-  background: var(--sage-light); border-radius: 12px; padding: 10px 12px;
-}
-.options { display: flex; flex-direction: column; gap: 9px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
-.option {
-  display: flex; align-items: flex-start; padding: 13px 15px; background: var(--glass);
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
-  box-shadow: 0 2px 10px rgba(44,51,51,.04); touch-action: manipulation; flex-shrink: 0;
-}
-.option:active { transform: scale(.985); }
-.option.selected {
-  border-color: var(--teal); background: linear-gradient(135deg, #E8F4F4, #F0F7F7);
-  box-shadow: 0 4px 16px rgba(74,124,125,.13);
-}
-.option-radio {
-  width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border);
-  margin-right: 14px; margin-top: 1px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-}
-.option.selected .option-radio { border-color: var(--teal); background: var(--teal); }
-.option.selected .option-radio::after { content: ""; width: 8px; height: 8px; background: #fff; border-radius: 50%; }
-.option-text { font-size: 14.5px; font-weight: 500; color: var(--slate); line-height: 1.35; }
-.option-hint { font-size: 12px; color: var(--muted); margin-top: 3px; font-weight: 400; line-height: 1.35; }
-.nav-row { display: flex; gap: 12px; margin-top: 14px; flex-shrink: 0; }
-.nav-row .btn { flex: 1; height: 48px; font-size: 15px; }
+.progress-wrap{margin-bottom:14px;flex-shrink:0}
+.progress-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.mini-mascot{width:36px;height:36px;flex-shrink:0;animation:miniBob 2.5s ease-in-out infinite}
+.mini-mascot svg{width:100%;height:100%}
+.progress-meta{flex:1;display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-weight:500}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#3B9B9C,#2A7A7B);border-radius:3px;transition:width .4s}
+.question-card{flex:1;display:flex;flex-direction:column;animation:qIn .35s cubic-bezier(.22,1,.36,1);min-height:0}
+.q-label{font-size:12px;font-weight:600;color:var(--sage);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.q-text{font-size:18.5px;font-weight:650;line-height:1.35;margin-bottom:6px;color:var(--slate)}
+.q-hint{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:14px;font-weight:500;
+  background:var(--sage-light);border-radius:12px;padding:10px 12px}
+.options{display:flex;flex-direction:column;gap:9px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.option{display:flex;align-items:flex-start;padding:13px 15px;background:var(--glass);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);cursor:pointer;box-shadow:0 2px 10px rgba(44,51,51,.04);touch-action:manipulation;flex-shrink:0}
+.option:active{transform:scale(.985)}
+.option.selected{border-color:var(--teal);background:linear-gradient(135deg,#E8F4F4,#F0F7F7);box-shadow:0 4px 16px rgba(74,124,125,.13)}
+.option-radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);margin-right:14px;margin-top:1px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.option.selected .option-radio{border-color:var(--teal);background:var(--teal)}
+.option.selected .option-radio::after{content:"";width:8px;height:8px;background:#fff;border-radius:50%}
+.option-text{font-size:14.5px;font-weight:500;color:var(--slate);line-height:1.35}
+.option-hint{font-size:12px;color:var(--muted);margin-top:3px;font-weight:400;line-height:1.35}
+.nav-row{display:flex;gap:12px;margin-top:14px;flex-shrink:0}
+.nav-row .btn{flex:1;height:48px;font-size:15px}
 
-.results { padding-bottom: 8px; }
-.results-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-.results-actions { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+.results{padding-bottom:8px}
+.results-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.results-actions{display:flex;flex-direction:column;gap:10px;flex-shrink:0}
 
-/* —— SKIN VEDA ROUTINE CARD —— */
-.routine-card {
-  background: #FFFEF9; border: 2px solid #C5DCDD; border-radius: 16px;
-  box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 14px; animation: slideUp .4s ease;
-  text-align: left;
-}
-.rc-top {
-  background: linear-gradient(145deg, #3B9B9C, #1E5A5C); color: #fff; padding: 16px 14px; text-align: center;
-}
-.rc-logo { font-size: 11px; letter-spacing: 1.5px; opacity: .9; margin-bottom: 4px; font-weight: 600; }
-.rc-title { font-size: 18px; font-weight: 800; letter-spacing: .5px; }
-.rc-bunny-mini { width: 36px; height: 36px; margin: 8px auto 0; }
-.rc-bunny-mini svg { width: 100%; height: 100%; }
-.rc-meta {
-  padding: 12px 14px; background: #F0F7F7; border-bottom: 1px solid var(--border);
-  font-size: 12.5px; line-height: 1.7; color: var(--slate);
-}
-.rc-meta strong { color: var(--teal-deep); font-weight: 700; margin-right: 4px; }
-.rc-section { padding: 14px; }
-.rc-section-title {
-  font-size: 11px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase;
-  color: var(--teal-deep); margin-bottom: 10px; border-bottom: 1.5px dashed rgba(74,124,125,.25); padding-bottom: 6px;
-}
-.rc-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.rc-table th {
-  text-align: left; padding: 6px 4px; background: var(--sage-light); color: var(--sage-dark);
-  font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: .3px;
-}
-.rc-table td { padding: 7px 4px; border-bottom: 1px solid #EEF3F3; color: var(--slate); vertical-align: top; }
-.rc-table .crit { font-weight: 600; width: 34%; }
-.rc-table .rate { width: 22%; color: var(--teal-deep); font-weight: 650; }
-.rc-table .notes { color: var(--muted); font-size: 11px; line-height: 1.35; }
-.rc-products { list-style: none; }
-.rc-products li {
-  background: var(--cream); border-left: 3px solid var(--sage); border-radius: 10px;
-  padding: 10px 12px; margin-bottom: 8px;
-}
-.rc-prod-cat { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
-.rc-prod-name { font-size: 13.5px; font-weight: 650; color: var(--slate); margin: 2px 0; }
-.rc-prod-meta { font-size: 11.5px; color: var(--slate-soft); }
-.rc-footer {
-  padding: 16px 14px 18px; border-top: 1px dashed rgba(74,124,125,.3); text-align: right;
-}
-.rc-footer .sig-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .3px; }
-.rc-footer .sig-name {
-  font-family: var(--hand); font-size: 22px; color: #2A7A7B; margin-top: 4px;
-}
-.rc-summary { font-size: 12.5px; color: var(--slate-soft); line-height: 1.45; margin-bottom: 8px; }
+.routine-card{background:#FFFEF9;border:2px solid #C5DCDD;border-radius:16px;box-shadow:var(--shadow-lg);
+  overflow:hidden;margin-bottom:14px;animation:slideUp .4s ease;text-align:left}
+.rc-top{background:linear-gradient(145deg,#3B9B9C,#1E5A5C);color:#fff;padding:16px 14px;text-align:center}
+.rc-logo{font-size:11px;letter-spacing:1.5px;opacity:.9;margin-bottom:4px;font-weight:600}
+.rc-title{font-size:18px;font-weight:800;letter-spacing:.5px}
+.rc-bunny-mini{width:36px;height:36px;margin:8px auto 0}
+.rc-bunny-mini svg{width:100%;height:100%}
+.rc-meta{padding:12px 14px;background:#F0F7F7;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.7;color:var(--slate)}
+.rc-meta strong{color:var(--teal-deep);font-weight:700;margin-right:4px}
+.rc-section{padding:14px}
+.rc-section-title{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--teal-deep);
+  margin-bottom:10px;border-bottom:1.5px dashed rgba(74,124,125,.25);padding-bottom:6px}
+.rc-table{width:100%;border-collapse:collapse;font-size:12px}
+.rc-table th{text-align:left;padding:6px 4px;background:var(--sage-light);color:var(--sage-dark);font-weight:700;
+  font-size:10px;text-transform:uppercase;letter-spacing:.3px}
+.rc-table td{padding:7px 4px;border-bottom:1px solid #EEF3F3;color:var(--slate);vertical-align:top}
+.rc-table .crit{font-weight:600;width:34%}
+.rc-table .rate{width:22%;color:var(--teal-deep);font-weight:650}
+.rc-table .notes{color:var(--muted);font-size:11px;line-height:1.35}
+.rc-products{list-style:none}
+.rc-products li{background:var(--cream);border-left:3px solid var(--sage);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.rc-prod-cat{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.rc-prod-name{font-size:13.5px;font-weight:650;color:var(--slate);margin:2px 0}
+.rc-prod-meta{font-size:11.5px;color:var(--slate-soft)}
+.rc-footer{padding:16px 14px 18px;border-top:1px dashed rgba(74,124,125,.3);text-align:right}
+.rc-footer .sig-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.3px}
+.rc-footer .sig-name{font-family:var(--hand);font-size:22px;color:#2A7A7B;margin-top:4px}
+.rc-summary{font-size:12.5px;color:var(--slate-soft);line-height:1.45;margin-bottom:8px}
 
-.history-list { display: flex; flex-direction: column; gap: 14px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-.empty-state {
-  flex: 1; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; text-align: center; padding: 40px 20px;
-}
-.empty-icon {
-  width: 64px; height: 64px; background: var(--sage-light); border-radius: 18px;
-  display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
-}
-.empty-icon svg { width: 28px; height: 28px; fill: var(--sage); }
-.empty-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
-.empty-text { font-size: 14px; color: var(--muted); max-width: 260px; }
+.history-list{display:flex;flex-direction:column;gap:14px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+.empty-icon{width:64px;height:64px;background:var(--sage-light);border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.empty-icon svg{width:28px;height:28px;fill:var(--sage)}
+.empty-title{font-size:18px;font-weight:600;margin-bottom:6px}
+.empty-text{font-size:14px;color:var(--muted);max-width:260px}
 
-.checkin-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-.checkin-intro { font-size: 13px; color: var(--muted); margin-bottom: 12px; text-align: left; line-height: 1.4; }
-.checkin-lock-panel {
-  display: none; text-align: center; padding: 32px 20px; background: #fff;
-  border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-lg);
-  margin: 8px 0 12px; animation: slideUp .35s ease;
-}
-.checkin-lock-panel.show { display: block; }
-.checkin-lock-panel .lock-icon { font-size: 36px; margin-bottom: 10px; }
-.checkin-lock-panel .lock-title { font-size: 17px; font-weight: 700; color: var(--slate); margin-bottom: 8px; }
-.checkin-lock-panel .lock-msg {
-  font-size: 14px; color: var(--slate-soft); line-height: 1.5; margin-bottom: 18px; max-width: 300px; margin-left: auto; margin-right: auto;
-}
-.checkin-lock-panel .lock-timer {
-  font-size: 36px; font-weight: 800; color: var(--teal-deep); font-variant-numeric: tabular-nums;
-  letter-spacing: 1px; margin-bottom: 8px;
-}
-.checkin-lock-panel .lock-sub { font-size: 12px; color: var(--muted); font-weight: 500; line-height: 1.4; }
-.checkin-lock-panel .lock-score {
-  display: inline-block; margin-top: 16px; padding: 8px 14px; border-radius: 12px;
-  background: var(--sage-light); font-size: 13px; font-weight: 700; color: var(--teal-deep);
-}
-.metric-block { margin-bottom: 18px; text-align: left; }
-.metric-title { font-size: 14px; font-weight: 650; color: var(--slate); margin-bottom: 4px; }
-.metric-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.4; }
-.metric-opts { display: flex; flex-wrap: wrap; gap: 6px; }
-.metric-opt {
-  flex: 1 1 30%; min-width: 64px; height: auto; min-height: 42px; padding: 8px 6px;
-  border: 1.5px solid var(--border); border-radius: 12px;
-  background: #fff; font-size: 12px; font-weight: 600; color: var(--slate-soft);
-  cursor: pointer; font-family: var(--font); line-height: 1.25;
-}
-.metric-opt.selected {
-  border-color: var(--teal); background: linear-gradient(135deg, #E8F4F4, #F0F7F7); color: var(--teal-deep);
-}
+.chat-screen{padding-bottom:8px}
+.chat-log{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px;padding:4px 0 12px;min-height:0}
+.chat-msg{max-width:88%;padding:12px 14px;border-radius:16px;font-size:14px;line-height:1.5;
+  animation:slideUp .25s ease;white-space:pre-wrap;word-break:break-word}
+.chat-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+.chat-msg.user{align-self:flex-end;background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff;border-bottom-right-radius:4px}
+.chat-msg .bot-label{font-size:11px;font-weight:700;color:var(--teal-deep);margin-bottom:4px}
+.chat-msg.typing{display:flex;gap:5px;align-items:center;padding:14px 18px}
+.chat-msg.typing span{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:typing 1.2s ease-in-out infinite}
+.chat-msg.typing span:nth-child(2){animation-delay:.15s}
+.chat-msg.typing span:nth-child(3){animation-delay:.3s}
+.chat-input-row{display:flex;gap:8px;flex-shrink:0;align-items:flex-end}
+.chat-input{flex:1;min-height:48px;max-height:120px;border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;
+  font-size:15px;font-family:var(--font);outline:none;background:#fff;resize:none;line-height:1.4}
+.chat-input:focus{border-color:var(--teal)}
+.chat-send{width:48px;height:48px;border:none;border-radius:14px;background:linear-gradient(145deg,#3B9B9C,#2A7A7B);
+  color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
+.chat-send:disabled{opacity:.5;cursor:default}
 
-.toast {
-  position: fixed; bottom: calc(var(--nav-h) + 16px + var(--safe-bottom)); left: 50%;
-  transform: translateX(-50%) translateY(80px); background: var(--slate); color: #fff;
-  padding: 12px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; z-index: 700;
-  opacity: 0; transition: all .35s; max-width: 90vw; text-align: center;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast{position:fixed;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));left:50%;
+  transform:translateX(-50%) translateY(80px);background:var(--slate);color:#fff;padding:12px 22px;border-radius:14px;
+  font-size:14px;font-weight:500;z-index:700;opacity:0;transition:all .35s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -400,7 +263,7 @@ body {
     <p class="landing-tag">Dr. Bunny · Virtual Dermatologist</p>
     <p class="welcome-name" id="welcome-name"></p>
 
-    <div class="streak-card" id="streak-card">
+    <div class="streak-card">
       <div class="streak-lock-overlay" id="streak-lock">
         <div class="streak-lock-icon">🔒</div>
         <div class="streak-lock-text">Complete your first checkup to unlock the Daily Streak Tracker</div>
@@ -425,10 +288,9 @@ body {
       <div class="tip-body" id="daily-tip-text">Loading today's tip…</div>
     </div>
 
-    <div class="analytics-card" id="analytics-card" style="display:none">
-      <h3>Skin Health Analytics</h3>
-      <div class="score-row" id="analytics-scores"></div>
-      <div class="insight-text" id="analytics-insight"></div>
+    <div class="chat-promo" id="btn-open-chat-home">
+      <h3>💬 Chat with Dr. Bunny</h3>
+      <p>Ask about breakouts, products, or your routine — personalized clinical guidance.</p>
     </div>
   </div>
 
@@ -487,31 +349,18 @@ body {
     </div>
   </div>
 
-  <div class="screen" id="screen-checkin">
+  <div class="screen chat-screen" id="screen-chat">
     <div class="header">
-      <button class="back-btn" id="btn-checkin-back" type="button" aria-label="Back">
+      <button class="back-btn" id="btn-chat-back" type="button" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <span class="header-title">Daily Progress</span>
+      <span class="header-title">Dr. Bunny Chat</span>
       <div style="width:42px"></div>
     </div>
-    <div class="checkin-scroll">
-      <div class="checkin-lock-panel" id="checkin-lock-panel">
-        <div class="lock-icon">✓</div>
-        <div class="lock-title">Check-in saved</div>
-        <div class="lock-msg">Your check-in is saved. The next progress check unlocks in 2 days (48 hours).</div>
-        <div class="lock-timer" id="checkin-lock-timer">00:00:00</div>
-        <div class="lock-sub">Live countdown — come back when it reaches 00:00:00</div>
-        <div class="lock-score" id="checkin-lock-score" style="display:none"></div>
-      </div>
-      <div id="checkin-form-wrap">
-        <p class="checkin-intro" id="checkin-intro">Quick self-check. After you save, the next check-in unlocks in 48 hours.</p>
-        <div id="checkin-metrics"></div>
-      </div>
-    </div>
-    <div class="nav-row" style="flex-shrink:0">
-      <button class="btn btn-primary" id="btn-checkin-save" type="button">Save check-in</button>
-      <button class="btn btn-secondary" id="btn-checkin-done" type="button" style="display:none">Back to Home</button>
+    <div class="chat-log" id="chat-log"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chat-input" placeholder="Ask about your skin…" rows="1" maxlength="2000"></textarea>
+      <button class="chat-send" id="chat-send" type="button">↑</button>
     </div>
   </div>
 
@@ -565,13 +414,14 @@ body {
 (function () {
   "use strict";
 
+  var GEMINI_API_KEY = "AQ.Ab8RN6KijkLx_joIYeo2dabd2HiJQDdXQFCRXtH4B2DLXftqZg";
+
   try {
     if (screen.orientation && screen.orientation.lock) {
       screen.orientation.lock("portrait").catch(function () {});
     }
   } catch (e) {}
 
-  var COOLDOWN_MS = 48 * 60 * 60 * 1000;
   var pendingFirstLaunch = false;
 
   window.addEventListener("load", function () {
@@ -605,49 +455,18 @@ body {
     "Don't pick at breakouts; it increases dark mark risk."
   ];
 
-  var METRIC_BANKS = {
-    oil: [
-      { title: "Oil balance right now", hint: "How greasy or dry your face feels — especially the T-zone.", opts: [{ v: 1, t: "Very oily" }, { v: 2, t: "Oily T-zone" }, { v: 3, t: "Balanced" }, { v: 4, t: "Slightly dry" }, { v: 5, t: "Very dry" }] },
-      { title: "Mid-day shine?", hint: "Shiny by afternoon often means extra oil.", opts: [{ v: 1, t: "Greasy" }, { v: 2, t: "Shiny" }, { v: 3, t: "Normal" }, { v: 4, t: "Matte / dry" }, { v: 5, t: "Tight & dry" }] },
-      { title: "Oil vs last check", hint: "Compare to your previous progress check.", opts: [{ v: 1, t: "Much oilier" }, { v: 2, t: "A bit oilier" }, { v: 3, t: "Same" }, { v: 4, t: "Less oil" }, { v: 5, t: "Much drier" }] }
-    ],
-    acne: [
-      { title: "Breakouts / acne today", hint: "Pimples, whiteheads, or red bumps compared to usual.", opts: [{ v: 1, t: "Worse flare" }, { v: 2, t: "Same" }, { v: 3, t: "Slightly better" }, { v: 4, t: "Better" }, { v: 5, t: "Clear" }] },
-      { title: "New inflamed spots?", hint: "Red or tender new spots since last check.", opts: [{ v: 1, t: "Several new" }, { v: 2, t: "A few" }, { v: 3, t: "One maybe" }, { v: 4, t: "None new" }, { v: 5, t: "Clearing up" }] },
-      { title: "How calm is acne zone?", hint: "Where you usually break out — less red is better.", opts: [{ v: 1, t: "Angry / painful" }, { v: 2, t: "Active" }, { v: 3, t: "Mild" }, { v: 4, t: "Settling" }, { v: 5, t: "Calm" }] }
-    ],
-    texture: [
-      { title: "Texture smoothness", hint: "How smooth skin feels when you touch it.", opts: [{ v: 1, t: "Rough" }, { v: 2, t: "Uneven" }, { v: 3, t: "OK" }, { v: 4, t: "Smoother" }, { v: 5, t: "Glowing" }] },
-      { title: "Makeup / touch feel?", hint: "If makeup catches, texture may be uneven.", opts: [{ v: 1, t: "Catches / rough" }, { v: 2, t: "Slight grit" }, { v: 3, t: "Fine" }, { v: 4, t: "Soft" }, { v: 5, t: "Silky" }] },
-      { title: "Small bumps / congestion?", hint: "Tiny clogged bumps, not always red.", opts: [{ v: 1, t: "Many bumps" }, { v: 2, t: "Some" }, { v: 3, t: "Few" }, { v: 4, t: "Improving" }, { v: 5, t: "Smooth" }] }
-    ],
-    hydration: [
-      { title: "Hydration / comfort", hint: "Tight or flaky usually means low moisture.", opts: [{ v: 1, t: "Tight" }, { v: 2, t: "Dry" }, { v: 3, t: "OK" }, { v: 4, t: "Comfortable" }, { v: 5, t: "Plump" }] },
-      { title: "After moisturizer?", hint: "Still tight within an hour? May need richer cream.", opts: [{ v: 1, t: "Still tight" }, { v: 2, t: "Somewhat dry" }, { v: 3, t: "OK" }, { v: 4, t: "Yes, good" }, { v: 5, t: "Very plump" }] },
-      { title: "Flaking or tightness?", hint: "Classic signs you need more moisture.", opts: [{ v: 1, t: "Lots" }, { v: 2, t: "Some" }, { v: 3, t: "Mild" }, { v: 4, t: "Rare" }, { v: 5, t: "None" }] }
-    ]
-  };
-
-  var BONUS_BANK = [
-    { id: "redness", title: "Unexpected redness?", hint: "New or stronger than usual redness.", opts: [{ v: 1, t: "Severe" }, { v: 2, t: "Moderate" }, { v: 3, t: "Mild" }, { v: 4, t: "Barely" }, { v: 5, t: "None" }] },
-    { id: "barrier", title: "Stinging / sensitivity?", hint: "If products sting, the barrier may be stressed.", opts: [{ v: 1, t: "Very reactive" }, { v: 2, t: "Reactive" }, { v: 3, t: "Mild" }, { v: 4, t: "Stable" }, { v: 5, t: "Very calm" }] },
-    { id: "sleep", title: "Last night's sleep?", hint: "Poor sleep can show as dullness or breakouts.", opts: [{ v: 1, t: "Poor" }, { v: 2, t: "Fair" }, { v: 3, t: "OK" }, { v: 4, t: "Good" }, { v: 5, t: "Great" }] },
-    { id: "spf", title: "Wear sunscreen today?", hint: "SPF is the last morning step for face.", opts: [{ v: 1, t: "No" }, { v: 2, t: "Forgot mostly" }, { v: 3, t: "Once" }, { v: 4, t: "Yes" }, { v: 5, t: "Yes + reapplied" }] }
-  ];
-
   var state = {
     screen: "landing",
     userName: "",
     currentQ: 0,
     answers: {},
-    lastRx: null,
-    checkin: {},
-    countdownTimer: null,
-    forceOnboarding: false
+    chatHistory: [],
+    chatBusy: false,
+    chatIntroShown: false
   };
 
   var questions = [
-    { id: "skinType", label: "Skin Fundamentals", text: "How would you describe your skin type most days?", hint: "Pick what fits most days — oily, dry, mixed, sensitive, or balanced.", options: [
+    { id: "skinType", label: "Skin Fundamentals", text: "How would you describe your skin type most days?", hint: "Pick what fits most days.", options: [
       { value: "dry", label: "Dry — tight, flaky, or rough", hint: "Often tight after washing." },
       { value: "oily", label: "Oily — shiny, especially T-zone", hint: "Shiny by midday." },
       { value: "combination", label: "Combination — oily T-zone, dry cheeks", hint: "Mixed zones." },
@@ -655,11 +474,11 @@ body {
       { value: "normal", label: "Normal — balanced, rarely troubled", hint: "Comfortable most days." }
     ]},
     { id: "primaryConcern", label: "Primary Concern", text: "What is your main skin concern right now?", hint: "Choose the issue that bothers you most.", options: [
-      { value: "acne", label: "Acne / breakouts", hint: "Pimples or frequent bumps." },
-      { value: "hyperpigmentation", label: "Hyperpigmentation / dark spots", hint: "Marks after pimples or sun." },
-      { value: "aging", label: "Aging / fine lines", hint: "Lines or loss of firmness." },
-      { value: "rosacea", label: "Rosacea / persistent redness", hint: "Ongoing redness." },
-      { value: "dehydration", label: "Dehydration / dullness", hint: "Looks tired or thirsty." }
+      { value: "acne", label: "Acne / breakouts", hint: "" },
+      { value: "hyperpigmentation", label: "Hyperpigmentation / dark spots", hint: "" },
+      { value: "aging", label: "Aging / fine lines", hint: "" },
+      { value: "rosacea", label: "Rosacea / persistent redness", hint: "" },
+      { value: "dehydration", label: "Dehydration / dullness", hint: "" }
     ]},
     { id: "secondaryConcern", label: "Secondary Concern", text: "What is your secondary skin concern?", hint: "Optional second focus.", options: [
       { value: "pores", label: "Visible pores", hint: "" },
@@ -765,7 +584,7 @@ body {
       { value: "fineLines", label: "Fine lines", hint: "" },
       { value: "multiple", label: "Multiple", hint: "" }
     ]},
-    { id: "postAcneScars", label: "Scars", text: "Post-acne scars?", hint: "Texture dents after acne — not just temporary dark marks.", options: [
+    { id: "postAcneScars", label: "Scars", text: "Post-acne scars?", hint: "Texture dents after acne.", options: [
       { value: "none", label: "None", hint: "" },
       { value: "mild", label: "Mild", hint: "" },
       { value: "moderate", label: "Moderate", hint: "" },
@@ -815,23 +634,22 @@ body {
 
   var BUDGET_ORDER = { ultra: 0, value: 1, mid: 2, high: 3 };
 
-  function $(sel) { return document.querySelector(sel); }
-  function $$(sel) { return document.querySelectorAll(sel); }
+  function $(id) { return document.getElementById(id); }
 
   var screens = {
-    landing: $("#screen-landing"),
-    name: $("#screen-name"),
-    mascot: $("#screen-mascot"),
-    questions: $("#screen-questions"),
-    checkin: $("#screen-checkin"),
-    results: $("#screen-results"),
-    history: $("#screen-history")
+    landing: $("screen-landing"),
+    name: $("screen-name"),
+    mascot: $("screen-mascot"),
+    questions: $("screen-questions"),
+    chat: $("screen-chat"),
+    results: $("screen-results"),
+    history: $("screen-history")
   };
 
-  $("#hero-bunny").innerHTML = bunnySVG("full");
-  $("#tip-avatar").innerHTML = bunnySVG("tip");
-  $("#mascot-dialog-svg").innerHTML = bunnySVG("full");
-  $("#mini-mascot").innerHTML = bunnySVG("mini");
+  $("hero-bunny").innerHTML = bunnySVG("full");
+  $("tip-avatar").innerHTML = bunnySVG("tip");
+  $("mascot-dialog-svg").innerHTML = bunnySVG("full");
+  $("mini-mascot").innerHTML = bunnySVG("mini");
 
   function showScreen(name) {
     Object.keys(screens).forEach(function (k) {
@@ -840,12 +658,12 @@ body {
     if (screens[name]) screens[name].classList.add("active");
     state.screen = name;
     window.scrollTo(0, 0);
-    $("#nav-home").classList.toggle("active", name === "landing");
-    $("#nav-history").classList.toggle("active", name === "history");
+    $("nav-home").classList.toggle("active", name === "landing");
+    $("nav-history").classList.toggle("active", name === "history");
   }
 
   function showToast(msg) {
-    var t = $("#toast");
+    var t = $("toast");
     t.textContent = msg;
     t.classList.add("show");
     setTimeout(function () { t.classList.remove("show"); }, 2600);
@@ -858,192 +676,29 @@ body {
   function saveProfile(name) {
     localStorage.setItem("skinveda_profile", JSON.stringify({ name: name, onboarded: true }));
   }
-  function hasCompletedInitial() { return getHistory().length > 0; }
   function getSavedName() {
     var p = getProfile();
     return p && p.name ? p.name : "";
   }
-
-  function getProgressLog() {
-    try { return JSON.parse(localStorage.getItem("skinveda_progress") || "[]"); }
+  function getHistory() {
+    try { return JSON.parse(localStorage.getItem("skinveda_history") || "[]"); }
     catch (e) { return []; }
   }
-  function saveProgressLog(arr) { localStorage.setItem("skinveda_progress", JSON.stringify(arr)); }
-
-  function getCooldownState() {
-    try { return JSON.parse(localStorage.getItem("skinveda_cooldown") || "null"); }
-    catch (e) { return null; }
+  function saveHistory(list) { localStorage.setItem("skinveda_history", JSON.stringify(list)); }
+  function addPrescription(rx) {
+    var list = getHistory();
+    list.unshift(rx);
+    saveHistory(list);
   }
-  function saveCooldownState(obj) { localStorage.setItem("skinveda_cooldown", JSON.stringify(obj)); }
+  function hasCompletedInitial() { return getHistory().length > 0; }
+  function getLatestRx() {
+    var h = getHistory();
+    return h.length ? h[0] : null;
+  }
 
   function todayKey() {
     var d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-  }
-
-  function computeDailyScore(m) {
-    var oilScore = 5 - Math.abs((m.oil || 3) - 3);
-    var raw = (oilScore + (m.acne || 3) + (m.texture || 3) + (m.hydration || 3) + ((m.bonus != null ? m.bonus : 3) * 0.5)) / 4.5;
-    return Math.max(0, Math.min(100, Math.round(raw * 20)));
-  }
-
-  function isCheckinLocked() {
-    var cd = getCooldownState();
-    if (!cd || !cd.nextAllowedAt) return false;
-    return Date.now() < cd.nextAllowedAt;
-  }
-  function msRemaining() {
-    var cd = getCooldownState();
-    if (!cd || !cd.nextAllowedAt) return 0;
-    return Math.max(0, cd.nextAllowedAt - Date.now());
-  }
-  function formatCountdown(ms) {
-    var s = Math.floor(ms / 1000);
-    var h = Math.floor(s / 3600);
-    var m = Math.floor((s % 3600) / 60);
-    var sec = s % 60;
-    return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(sec).padStart(2, "0");
-  }
-  function stopCountdown() {
-    if (state.countdownTimer) { clearInterval(state.countdownTimer); state.countdownTimer = null; }
-  }
-
-  function showLockedCheckinUI() {
-    var cd = getCooldownState();
-    $("#checkin-form-wrap").style.display = "none";
-    $("#checkin-lock-panel").classList.add("show");
-    $("#checkin-lock-timer").textContent = formatCountdown(msRemaining());
-    if (cd && cd.lastScore != null) {
-      var sc = $("#checkin-lock-score");
-      sc.style.display = "inline-block";
-      sc.textContent = "Last score: " + cd.lastScore;
-    }
-    $("#btn-checkin-save").style.display = "none";
-    $("#btn-checkin-done").style.display = "flex";
-  }
-  function showOpenCheckinUI() {
-    $("#checkin-form-wrap").style.display = "block";
-    $("#checkin-lock-panel").classList.remove("show");
-    $("#btn-checkin-save").style.display = "flex";
-    $("#btn-checkin-save").disabled = false;
-    $("#btn-checkin-done").style.display = "none";
-    $("#checkin-lock-score").style.display = "none";
-  }
-  function tickCountdownUI() {
-    if (state.screen !== "checkin") return;
-    if (!isCheckinLocked()) {
-      if ($("#checkin-lock-panel").classList.contains("show")) {
-        showOpenCheckinUI();
-        buildDynamicQuestions();
-      }
-      return;
-    }
-    $("#checkin-lock-timer").textContent = formatCountdown(msRemaining());
-  }
-  function startCountdownLoop() {
-    stopCountdown();
-    tickCountdownUI();
-    state.countdownTimer = setInterval(tickCountdownUI, 1000);
-  }
-
-  function pickVariant(bank, seed) { return bank[Math.abs(seed) % bank.length]; }
-
-  function buildDynamicQuestions() {
-    var daySeed = Math.floor(Date.now() / 86400000);
-    var log = getProgressLog();
-    var sessionSeed = daySeed + (log.length || 0);
-    var cores = ["oil", "acne", "texture", "hydration"];
-    state.checkin = {};
-    var html = "";
-    cores.forEach(function (key, idx) {
-      var variant = pickVariant(METRIC_BANKS[key], sessionSeed + idx * 7);
-      html += '<div class="metric-block" data-metric="' + key + '"><div class="metric-title">' + variant.title + "</div>";
-      if (variant.hint) html += '<div class="metric-hint">' + variant.hint + "</div>";
-      html += '<div class="metric-opts">';
-      variant.opts.forEach(function (o) {
-        html += '<button type="button" class="metric-opt" data-v="' + o.v + '">' + o.t + "</button>";
-      });
-      html += "</div></div>";
-    });
-    var bonusIdx = sessionSeed % BONUS_BANK.length;
-    var last = log[0];
-    if (last && (last.acne || 3) <= 2) bonusIdx = 0;
-    else if (last && (last.hydration || 3) <= 2) bonusIdx = 1;
-    var bonus = BONUS_BANK[bonusIdx];
-    html += '<div class="metric-block" data-metric="bonus"><div class="metric-title">' + bonus.title + "</div>";
-    if (bonus.hint) html += '<div class="metric-hint">' + bonus.hint + "</div>";
-    html += '<div class="metric-opts">';
-    bonus.opts.forEach(function (o) {
-      html += '<button type="button" class="metric-opt" data-v="' + o.v + '">' + o.t + "</button>";
-    });
-    html += "</div></div>";
-    $("#checkin-metrics").innerHTML = html;
-    $$("#checkin-metrics .metric-block").forEach(function (block) {
-      var metric = block.getAttribute("data-metric");
-      block.querySelectorAll(".metric-opt").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          block.querySelectorAll(".metric-opt").forEach(function (b) { b.classList.remove("selected"); });
-          btn.classList.add("selected");
-          state.checkin[metric] = parseInt(btn.getAttribute("data-v"), 10);
-        });
-      });
-    });
-  }
-
-  function analyzeProgress() {
-    var log = getProgressLog();
-    if (!log.length) return null;
-    var recent = log.slice(0, 14);
-    var avg = recent.reduce(function (s, e) { return s + e.score; }, 0) / recent.length;
-    var latest = recent[0].score;
-    var oldest = recent[recent.length - 1].score;
-    var delta = latest - oldest;
-    var insight = delta > 5 ? "Your skin score is trending up." : delta < -5 ? "Score dipped — focus on SPF and barrier care." : "Stable progress. Keep the routine consistent.";
-    return { latest: Math.round(latest), avg: Math.round(avg), delta: Math.round(delta), days: recent.length, insight: insight };
-  }
-
-  function renderAnalytics() {
-    var card = $("#analytics-card");
-    var a = analyzeProgress();
-    if (!a || !hasCompletedInitial()) { card.style.display = "none"; return; }
-    card.style.display = "block";
-    $("#analytics-scores").innerHTML =
-      '<div class="score-box"><div class="num">' + a.latest + '</div><div class="lbl">Latest</div></div>' +
-      '<div class="score-box"><div class="num">' + a.avg + '</div><div class="lbl">Avg</div></div>' +
-      '<div class="score-box"><div class="num">' + (a.delta > 0 ? "+" : "") + a.delta + '</div><div class="lbl">Trend</div></div>' +
-      '<div class="score-box"><div class="num">' + a.days + '</div><div class="lbl">Logs</div></div>';
-    $("#analytics-insight").textContent = a.insight;
-  }
-
-  function openCheckin() {
-    showScreen("checkin");
-    if (isCheckinLocked()) { showLockedCheckinUI(); startCountdownLoop(); }
-    else { showOpenCheckinUI(); buildDynamicQuestions(); stopCountdown(); }
-  }
-
-  $("#btn-checkin-save").addEventListener("click", function () {
-    if (isCheckinLocked()) { showLockedCheckinUI(); startCountdownLoop(); return; }
-    var m = state.checkin;
-    if (m.oil == null || m.acne == null || m.texture == null || m.hydration == null || m.bonus == null) {
-      showToast("Please answer every question");
-      return;
-    }
-    var score = computeDailyScore(m);
-    var nextAllowedAt = Date.now() + COOLDOWN_MS;
-    var log = getProgressLog();
-    log.unshift({ date: todayKey(), oil: m.oil, acne: m.acne, texture: m.texture, hydration: m.hydration, bonus: m.bonus, score: score, cooldownHours: 48, ts: Date.now() });
-    saveProgressLog(log.slice(0, 90));
-    saveCooldownState({ nextAllowedAt: nextAllowedAt, hours: 48, lastScore: score, setAt: Date.now() });
-    showLockedCheckinUI();
-    startCountdownLoop();
-    renderAnalytics();
-    showToast("Saved · Next check-in in 48 hours");
-  });
-  $("#btn-checkin-done").addEventListener("click", function () { goHome(); });
-  $("#btn-checkin-back").addEventListener("click", function () { goHome(); });
-
-  function renderDailyTip() {
-    $("#daily-tip-text").textContent = DAILY_TIPS[Math.floor(Date.now() / 86400000) % DAILY_TIPS.length];
   }
 
   function getStreakData() {
@@ -1055,14 +710,14 @@ body {
 
   function renderStreak() {
     var unlocked = isStreakUnlocked();
-    if (unlocked) $("#streak-lock").classList.add("hide");
-    else $("#streak-lock").classList.remove("hide");
+    if (unlocked) $("streak-lock").classList.add("hide");
+    else $("streak-lock").classList.remove("hide");
     var data = getStreakData();
     var today = todayKey();
     var checked = data.last === today;
-    $("#streak-count").innerHTML = (data.count || 0) + "<span>days</span>";
-    var btn = $("#btn-streak-checkin");
-    var msg = $("#streak-msg");
+    $("streak-count").innerHTML = (data.count || 0) + "<span>days</span>";
+    var btn = $("btn-streak-checkin");
+    var msg = $("streak-msg");
     if (!unlocked) { btn.disabled = true; btn.textContent = "Locked"; msg.textContent = "Unlock by completing your first checkup"; }
     else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Great job! See you tomorrow."; }
     else { btn.disabled = false; btn.textContent = "Check in today"; msg.textContent = "Log that you completed your routine today"; }
@@ -1075,10 +730,10 @@ body {
       var done = (data.days || []).indexOf(key) !== -1;
       html += '<div class="streak-day"><div class="streak-dot' + (done ? " done" : "") + (key === today ? " today" : "") + '">' + (done ? "✓" : labels[d.getDay()]) + '</div><div class="streak-label">' + labels[d.getDay()] + "</div></div>";
     }
-    $("#streak-days").innerHTML = html;
+    $("streak-days").innerHTML = html;
   }
 
-  $("#btn-streak-checkin").addEventListener("click", function () {
+  $("btn-streak-checkin").addEventListener("click", function () {
     if (!isStreakUnlocked()) { showToast("Complete a checkup first to unlock streaks"); return; }
     var data = getStreakData();
     var today = todayKey();
@@ -1095,15 +750,8 @@ body {
     showToast("Streak " + data.count + " day" + (data.count > 1 ? "s" : "") + "!");
   });
 
-  function getHistory() {
-    try { return JSON.parse(localStorage.getItem("skinveda_history") || "[]"); }
-    catch (e) { return []; }
-  }
-  function saveHistory(list) { localStorage.setItem("skinveda_history", JSON.stringify(list)); }
-  function addPrescription(rx) {
-    var list = getHistory();
-    list.unshift(rx);
-    saveHistory(list);
+  function renderDailyTip() {
+    $("daily-tip-text").textContent = DAILY_TIPS[Math.floor(Date.now() / 86400000) % DAILY_TIPS.length];
   }
 
   function filterByBudget(list, b) {
@@ -1147,39 +795,29 @@ body {
     if (a.primaryConcern === "rosacea" || a.sensitivity === "veryReactive") spfTags = ["sensitive"];
     else if (a.primaryConcern === "acne") spfTags = ["acne", "oily"];
     var sunscreen = pickBest(filterByBudget(products.sunscreens, budget), spfTags, ["all"]);
-    var tips = [];
-    if (a.waterIntake === "low") tips.push("Increase water toward 2+ liters daily.");
-    if (a.sunscreenHabit === "never" || a.sunscreenHabit === "sometimes") tips.push("Daily SPF is non-negotiable.");
-    if (a.sensitivity === "reactive" || a.sensitivity === "veryReactive") tips.push("Introduce actives slowly.");
     return {
       profileSummary: parts.join(" · ") + ".",
       cleanser: cleanser || products.cleansers[0],
       serum: serum || products.serums[0],
       moisturizer: moisturizer || products.moisturizers[0],
-      sunscreen: sunscreen || products.sunscreens[0],
-      tips: tips
+      sunscreen: sunscreen || products.sunscreens[0]
     };
   }
 
-  /** Build dermal evaluation ratings from answers */
   function buildEvaluation(a) {
-    function rate(map, key, fallback) {
-      return map[key] || fallback || "Fair";
-    }
+    function rate(map, key, fallback) { return map[key] || fallback || "Fair"; }
     var healthMap = { normal: "Excellent", combination: "Good", dry: "Fair", oily: "Fair", sensitive: "Fair" };
     var hydMap = { good: "Excellent", high: "Excellent", moderate: "Good", low: "Poor" };
     var poreMap = { fine: "Excellent", moderate: "Good", enlarged: "Fair", clogged: "Poor" };
     var texMap = { none: "Excellent", excessSebum: "Fair", roughness: "Fair", flakiness: "Poor" };
     var ageMap = { under25: "Excellent", "25to35": "Good", "36to45": "Good", "46plus": "Fair" };
-    var glowMap = { dehydration: "Poor", aging: "Fair", acne: "Fair", rosacea: "Fair", hyperpigmentation: "Fair" };
-
     return [
       { crit: "Skin Health Rating", rate: rate(healthMap, a.skinType, "Good"), notes: "Based on reported skin type & balance" },
-      { crit: "Hydration Level", rate: rate(hydMap, a.waterIntake, "Fair"), notes: a.primaryConcern === "dehydration" ? "Dehydration flagged as primary concern" : "From lifestyle & comfort signals" },
+      { crit: "Hydration Level", rate: rate(hydMap, a.waterIntake, "Fair"), notes: a.primaryConcern === "dehydration" ? "Dehydration flagged as primary concern" : "From lifestyle signals" },
       { crit: "Pore Condition", rate: rate(poreMap, a.poreSize, "Good"), notes: "From pore visibility answers" },
       { crit: "Texture Smoothness", rate: rate(texMap, a.textureIssues, "Good"), notes: "Touch / surface feel profile" },
       { crit: "Elasticity", rate: rate(ageMap, a.ageRange, "Good"), notes: "Age-related firmness estimate" },
-      { crit: "Overall Glow", rate: a.primaryConcern === "dehydration" || a.secondaryConcern === "dullness" ? "Fair" : rate(glowMap, a.primaryConcern, "Good"), notes: "Composite of concerns & recovery habits" }
+      { crit: "Overall Glow", rate: a.primaryConcern === "dehydration" || a.secondaryConcern === "dullness" ? "Fair" : "Good", notes: "Composite of concerns & recovery habits" }
     ];
   }
 
@@ -1219,28 +857,35 @@ body {
       '<div class="rc-footer"><div class="sig-label">DOCTOR\'S SIGNATURE:</div><div class="sig-name">Dr. Bunny</div></div></div>';
   }
 
-  function renderResults(rx) {
-    state.lastRx = rx;
-    $("#rx-content").innerHTML = buildRoutineCardHtml(rx);
+  function renderResults(rx) { $("rx-content").innerHTML = buildRoutineCardHtml(rx); }
+
+  function renderHistory() {
+    var list = getHistory();
+    var c = $("history-list");
+    if (!list.length) {
+      c.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No routine cards yet</div><div class="empty-text">Complete your first assessment. Cards are saved permanently.</div></div>';
+      return;
+    }
+    c.innerHTML = list.map(function (item) { return buildRoutineCardHtml(item); }).join("");
   }
 
   function renderQuestion() {
     var q = questions[state.currentQ];
     var total = questions.length;
     var pct = ((state.currentQ + 1) / total * 100).toFixed(0);
-    $("#progress-text").textContent = "Question " + (state.currentQ + 1) + " of " + total;
-    $("#progress-pct").textContent = pct + "%";
-    $("#progress-fill").style.width = pct + "%";
-    $("#q-label").textContent = q.label;
-    $("#q-text").textContent = q.text;
-    var hintEl = $("#q-hint");
+    $("progress-text").textContent = "Question " + (state.currentQ + 1) + " of " + total;
+    $("progress-pct").textContent = pct + "%";
+    $("progress-fill").style.width = pct + "%";
+    $("q-label").textContent = q.label;
+    $("q-text").textContent = q.text;
+    var hintEl = $("q-hint");
     if (q.hint) { hintEl.style.display = "block"; hintEl.textContent = q.hint; }
     else { hintEl.style.display = "none"; }
-    var card = $("#question-card");
+    var card = $("question-card");
     card.style.animation = "none";
     void card.offsetHeight;
     card.style.animation = "qIn 0.35s cubic-bezier(0.22, 1, 0.36, 1)";
-    var opts = $("#q-options");
+    var opts = $("q-options");
     opts.innerHTML = "";
     q.options.forEach(function (opt) {
       var div = document.createElement("div");
@@ -1249,46 +894,247 @@ body {
       div.innerHTML = '<div class="option-radio"></div><div><div class="option-text">' + escapeHtml(opt.label) + "</div>" + hintHtml + "</div>";
       div.addEventListener("click", function () {
         state.answers[q.id] = opt.value;
-        opts.querySelectorAll(".option").forEach(function (o) { o.classList.remove("selected"); });
+        var all = opts.querySelectorAll(".option");
+        for (var i = 0; i < all.length; i++) all[i].classList.remove("selected");
         div.classList.add("selected");
-        $("#btn-q-next").disabled = false;
+        $("btn-q-next").disabled = false;
       });
       opts.appendChild(div);
     });
-    $("#btn-q-next").disabled = !state.answers[q.id];
-    $("#btn-q-prev").style.visibility = state.currentQ === 0 ? "hidden" : "visible";
-    $("#btn-q-next").textContent = state.currentQ === total - 1 ? "See Results" : "Next";
+    $("btn-q-next").disabled = !state.answers[q.id];
+    $("btn-q-prev").style.visibility = state.currentQ === 0 ? "hidden" : "visible";
+    $("btn-q-next").textContent = state.currentQ === total - 1 ? "See Results" : "Next";
   }
 
-  function renderHistory() {
-    var list = getHistory();
-    var c = $("#history-list");
-    if (!list.length) {
-      c.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No routine cards yet</div><div class="empty-text">Complete your first assessment. Cards are saved permanently.</div></div>';
-      return;
+  /* ===== Clinical persona + full Routine Card context from localStorage ===== */
+  function buildClinicalChart() {
+    var name = getSavedName() || "Patient";
+    var rx = getLatestRx();
+    var lines = [];
+    lines.push("=== PATIENT CHART (Skin Veda) ===");
+    lines.push("Patient name: " + name);
+
+    if (!rx) {
+      lines.push("Status: No SKIN VEDA ROUTINE CARD on file yet.");
+      lines.push("Guidance: Provide general evidence-based dermatology advice. Recommend completing the in-app assessment for a formal regimen.");
+      return lines.join("\n");
     }
-    c.innerHTML = list.map(function (item) { return buildRoutineCardHtml(item); }).join("");
+
+    var dateStr = "";
+    try {
+      dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    } catch (e) {
+      dateStr = String(rx.date || "");
+    }
+
+    lines.push("Card title: SKIN VEDA ROUTINE CARD");
+    lines.push("Clinic: DR. BUNNY'S DERMATOLOGY");
+    lines.push("Assessment date: " + dateStr);
+    lines.push("Skin profile summary: " + (rx.profileSummary || "N/A"));
+
+    if (rx.evaluation && rx.evaluation.length) {
+      lines.push("--- Dermal Evaluation ---");
+      for (var i = 0; i < rx.evaluation.length; i++) {
+        var ev = rx.evaluation[i];
+        lines.push(ev.crit + ": " + ev.rate + (ev.notes ? " (" + ev.notes + ")" : ""));
+      }
+    }
+
+    if (rx.answers) {
+      lines.push("--- Assessment answers (key fields) ---");
+      var keys = ["skinType", "primaryConcern", "secondaryConcern", "acneSeverity", "pih", "sensitivity", "poreSize", "sunscreenHabit", "budget", "ageRange", "textureIssues"];
+      for (var k = 0; k < keys.length; k++) {
+        if (rx.answers[keys[k]] != null) lines.push(keys[k] + ": " + rx.answers[keys[k]]);
+      }
+    }
+
+    function prodLine(label, p) {
+      if (!p) return label + ": not set";
+      return label + ": " + p.brand + " — " + p.name + " | Actives: " + p.actives + " | Use: " + p.usage;
+    }
+    lines.push("--- Prescribed regimen ---");
+    lines.push(prodLine("Cleanser", rx.cleanser));
+    lines.push(prodLine("Active serum", rx.serum));
+    lines.push(prodLine("Moisturizer", rx.moisturizer));
+    lines.push(prodLine("Sunscreen", rx.sunscreen));
+    lines.push("=== END CHART ===");
+    return lines.join("\n");
   }
+
+  function buildSystemInstructions() {
+    return [
+      "You are Dr. Bunny, a licensed-style clinical dermatologist practicing at Dr. Bunny's Dermatology within the Skin Veda application.",
+      "Identity rules (strict):",
+      "- Always speak as Dr. Bunny in the first person.",
+      "- Maintain a polished, medical, scientific, and professionally warm tone.",
+      "- Never describe yourself as an AI, language model, chatbot, cartoon, mascot, or fluffy assistant.",
+      "- Never break character or add meta disclaimers about being artificial.",
+      "- Do not use childish, cartoonish, or overly playful language.",
+      "Clinical standards:",
+      "- Base advice on established dermatological principles (barrier repair, photoprotection, evidence-based actives, appropriate risk counseling).",
+      "- Prefer the patient's prescribed Skin Veda regimen products when discussing routines, substitutions, or troubleshooting.",
+      "- Be clear, concise, and actionable. Use plain clinical language patients can follow.",
+      "- For severe, acute, or ambiguous conditions (e.g., rapidly spreading infection, severe cystic disease, suspected malignancy), advise in-person medical evaluation.",
+      "- You already have the patient's chart below; use it proactively when the user asks about their skin, routine, or products.",
+      "",
+      buildClinicalChart()
+    ].join("\n");
+  }
+
+  function appendChat(role, text) {
+    var log = $("chat-log");
+    var div = document.createElement("div");
+    div.className = "chat-msg " + role;
+    if (role === "bot") {
+      div.innerHTML = '<div class="bot-label">Dr. Bunny</div>' + escapeHtml(text);
+    } else {
+      div.textContent = text;
+    }
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function showTyping() {
+    var log = $("chat-log");
+    var div = document.createElement("div");
+    div.className = "chat-msg bot typing";
+    div.id = "typing-indicator";
+    div.innerHTML = "<span></span><span></span><span></span>";
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function hideTyping() {
+    var el = $("typing-indicator");
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+  }
+
+  async function callGemini(userMessage) {
+    var systemBlock = buildSystemInstructions();
+    var contents = [];
+
+    /* Fresh chart + persona on every request so Routine Card updates are always current */
+    for (var i = 0; i < state.chatHistory.length; i++) {
+      var turn = state.chatHistory[i];
+      contents.push({
+        role: turn.role === "user" ? "user" : "model",
+        parts: [{ text: turn.text }]
+      });
+    }
+
+    var composedUserMessage = systemBlock + "\n\nPatient message:\n" + userMessage;
+    contents.push({ role: "user", parts: [{ text: composedUserMessage }] });
+
+    var response = await fetch(
+      "https://generativelanguage.googleapis.com/v1/models/gemini-3.7-flash:generateContent?key=" + GEMINI_API_KEY,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: contents,
+          generationConfig: { temperature: 0.55, maxOutputTokens: 1024 }
+        })
+      }
+    );
+
+    var data = await response.json();
+    if (!response.ok) {
+      var errMsg = (data && data.error && data.error.message) ? data.error.message : ("HTTP " + response.status);
+      throw new Error(errMsg);
+    }
+
+    var out = "";
+    try {
+      var parts = data.candidates[0].content.parts;
+      for (var p = 0; p < parts.length; p++) {
+        if (parts[p].text) out += parts[p].text;
+      }
+    } catch (e) {
+      out = "";
+    }
+    if (!out) throw new Error("Empty response from Gemini");
+    return out.trim();
+  }
+
+  async function sendChat() {
+    if (state.chatBusy) return;
+    var input = $("chat-input");
+    var text = (input.value || "").trim();
+    if (!text) return;
+
+    input.value = "";
+    input.style.height = "auto";
+    appendChat("user", text);
+    state.chatHistory.push({ role: "user", text: text });
+    if (state.chatHistory.length > 20) {
+      state.chatHistory = state.chatHistory.slice(-20);
+    }
+
+    state.chatBusy = true;
+    $("chat-send").disabled = true;
+    showTyping();
+
+    try {
+      var reply = await callGemini(text);
+      hideTyping();
+      state.chatHistory.push({ role: "model", text: reply });
+      appendChat("bot", reply);
+    } catch (err) {
+      hideTyping();
+      appendChat("bot", "I am unable to reach the clinical service at the moment.\n\n" + (err.message || "Network error") +
+        "\n\nPlease verify your API key and try again.");
+    }
+
+    state.chatBusy = false;
+    $("chat-send").disabled = false;
+  }
+
+  function openChat() {
+    showScreen("chat");
+    if (!state.chatIntroShown) {
+      state.chatIntroShown = true;
+      var name = getSavedName() || "there";
+      var rx = getLatestRx();
+      var intro = rx
+        ? ("Hello, " + name + ". I am Dr. Bunny. I have reviewed your Skin Veda Routine Card and current regimen. What would you like to discuss today?")
+        : ("Hello, " + name + ". I am Dr. Bunny. Complete a Skin Veda assessment so I can review a formal regimen for you — or ask any dermatology question now.");
+      appendChat("bot", intro);
+    }
+  }
+
+  $("chat-send").addEventListener("click", function () { sendChat(); });
+  $("chat-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+  $("chat-input").addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 120) + "px";
+  });
+  $("btn-chat-back").addEventListener("click", function () { goHome(); });
+  $("btn-open-chat-home").addEventListener("click", function () {
+    if (!getSavedName()) { openNameOnboarding(true); return; }
+    openChat();
+  });
 
   function goHome() {
     if (!getSavedName()) {
       openNameOnboarding(true);
       return;
     }
-    stopCountdown();
     var name = getSavedName();
-    $("#welcome-name").textContent = name ? "Welcome back, " + name : "";
+    $("welcome-name").textContent = name ? "Welcome back, " + name : "";
     renderDailyTip();
     renderStreak();
-    renderAnalytics();
     showScreen("landing");
   }
 
   function openNameOnboarding(firstTime) {
-    state.forceOnboarding = !!firstTime;
-    $("#user-name").value = "";
-    $("#btn-name-next").disabled = true;
-    var back = $("#btn-name-back");
+    $("user-name").value = "";
+    $("btn-name-next").disabled = true;
+    var back = $("btn-name-back");
     if (firstTime) back.classList.add("hidden");
     else back.classList.remove("hidden");
     showScreen("name");
@@ -1298,57 +1144,53 @@ body {
     state.userName = name;
     state.currentQ = 0;
     state.answers = {};
-    $("#mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>! Let's set up your personalized skin routine.";
+    $("mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>! Let's set up your personalized skin routine.";
     showScreen("mascot");
   }
 
-  /** Center button: never asks name again if profile exists */
   function onMainButton() {
     var name = getSavedName();
     if (!name) {
       openNameOnboarding(true);
       return;
     }
-    if (hasCompletedInitial()) {
-      openCheckin();
-    } else {
-      startAssessmentWithName(name);
-    }
+    if (hasCompletedInitial()) openChat();
+    else startAssessmentWithName(name);
   }
 
-  $("#nav-home").addEventListener("click", goHome);
-  $("#nav-start").addEventListener("click", onMainButton);
-  $("#nav-history").addEventListener("click", function () {
+  $("nav-home").addEventListener("click", goHome);
+  $("nav-start").addEventListener("click", onMainButton);
+  $("nav-history").addEventListener("click", function () {
     if (!getSavedName()) { openNameOnboarding(true); return; }
     renderHistory();
     showScreen("history");
   });
 
-  $("#user-name").addEventListener("input", function (e) {
-    $("#btn-name-next").disabled = e.target.value.trim().length < 1;
+  $("user-name").addEventListener("input", function (e) {
+    $("btn-name-next").disabled = e.target.value.trim().length < 1;
   });
-  $("#btn-name-next").addEventListener("click", function () {
-    var name = $("#user-name").value.trim();
+  $("btn-name-next").addEventListener("click", function () {
+    var name = $("user-name").value.trim();
     if (!name) return;
     saveProfile(name);
     startAssessmentWithName(name);
   });
 
-  $("#btn-lets-begin").addEventListener("click", function () {
+  $("btn-lets-begin").addEventListener("click", function () {
     state.currentQ = 0;
     state.answers = {};
     renderQuestion();
     showScreen("questions");
   });
 
-  $("#btn-q-back").addEventListener("click", function () {
+  $("btn-q-back").addEventListener("click", function () {
     if (state.currentQ === 0) showScreen("mascot");
     else { state.currentQ--; renderQuestion(); }
   });
-  $("#btn-q-prev").addEventListener("click", function () {
+  $("btn-q-prev").addEventListener("click", function () {
     if (state.currentQ > 0) { state.currentQ--; renderQuestion(); }
   });
-  $("#btn-q-next").addEventListener("click", function () {
+  $("btn-q-next").addEventListener("click", function () {
     if (!state.answers[questions[state.currentQ].id]) return;
     if (state.currentQ < questions.length - 1) {
       state.currentQ++;
@@ -1358,7 +1200,7 @@ body {
       var name = state.userName || getSavedName() || "Friend";
       if (!getSavedName()) saveProfile(name);
       var rx = {
-        id: "rx_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+        id: "rx_" + Date.now(),
         userName: name,
         date: new Date().toISOString(),
         answers: Object.assign({}, state.answers),
@@ -1367,8 +1209,7 @@ body {
         cleanser: recs.cleanser,
         serum: recs.serum,
         moisturizer: recs.moisturizer,
-        sunscreen: recs.sunscreen,
-        tips: recs.tips
+        sunscreen: recs.sunscreen
       };
       addPrescription(rx);
       renderResults(rx);
@@ -1377,22 +1218,14 @@ body {
     }
   });
 
-  $("#btn-results-home").addEventListener("click", goHome);
-  $("#btn-results-back").addEventListener("click", goHome);
-  $("#btn-history-back").addEventListener("click", goHome);
+  $("btn-results-home").addEventListener("click", goHome);
+  $("btn-results-back").addEventListener("click", goHome);
+  $("btn-history-back").addEventListener("click", goHome);
 
-  var lastTouch = 0;
-  document.addEventListener("touchend", function (e) {
-    var now = Date.now();
-    if (now - lastTouch <= 300) e.preventDefault();
-    lastTouch = now;
-  }, { passive: false });
-
-  /* Boot: new users → name after splash, never home first */
   if (!getSavedName()) {
     pendingFirstLaunch = true;
     showScreen("name");
-    $("#btn-name-back").classList.add("hidden");
+    $("btn-name-back").classList.add("hidden");
   } else {
     goHome();
   }
