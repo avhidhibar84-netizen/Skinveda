@@ -414,7 +414,8 @@ body{
 (function () {
   "use strict";
 
-  const GEMINI_API_KEY = "AQ.Ab8RN6KPHr_hwN3cjSjpoJPcqYVYcjpcSbYofjcsTWuxXWAKlw";
+  const GEMINI_API_KEY = "AQ.Ab8RN6IYQ0-YSMaZj6VF25mYQlRW2dtPcbO0ZjzuzN0ZSPhEMw";
+  const GEMINI_MODEL = "gemini-3.6-flash";
 
   try {
     if (screen.orientation && screen.orientation.lock) {
@@ -907,7 +908,6 @@ body{
     $("btn-q-next").textContent = state.currentQ === total - 1 ? "See Results" : "Next";
   }
 
-  /* Dynamic patient context from onboarding / Routine Card (no hardcoded names) */
   function buildClinicalChart() {
     var name = getSavedName() || state.userName || "Patient";
     var rx = getLatestRx();
@@ -1029,20 +1029,31 @@ body{
       });
     }
 
-    var composedUserMessage = systemBlock + "\n\nPatient message from " + patientName + ":\n" + userMessage;
-    contents.push({ role: "user", parts: [{ text: composedUserMessage }] });
+    contents.push({
+      role: "user",
+      parts: [{ text: "Patient message from " + patientName + ":\n" + userMessage }]
+    });
 
-    var response = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-3.7-flash:generateContent?key=" + GEMINI_API_KEY,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: contents,
-          generationConfig: { temperature: 0.5, maxOutputTokens: 1024 }
-        })
-      }
-    );
+    var endpoint =
+      "https://generativelanguage.googleapis.com/v1beta/models/" +
+      GEMINI_MODEL +
+      ":generateContent?key=" +
+      encodeURIComponent(GEMINI_API_KEY);
+
+    var response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: {
+          parts: [{ text: systemBlock }]
+        },
+        contents: contents,
+        generationConfig: {
+          temperature: 0.5,
+          maxOutputTokens: 1024
+        }
+      })
+    });
 
     var data = await response.json();
     if (!response.ok) {
