@@ -260,7 +260,7 @@ body{
   <div class="screen landing" id="screen-landing">
     <div class="hero-bunny" id="hero-bunny"></div>
     <h1 class="landing-title">Skinveda</h1>
-    <p class="landing-tag">Dr. Bunny · Virtual Dermatologist</p>
+    <p class="landing-tag">Dr. Bunny · Clinical Dermatology</p>
     <p class="welcome-name" id="welcome-name"></p>
 
     <div class="streak-card">
@@ -289,8 +289,8 @@ body{
     </div>
 
     <div class="chat-promo" id="btn-open-chat-home">
-      <h3>💬 Chat with Dr. Bunny</h3>
-      <p>Ask about breakouts, products, or your routine — personalized clinical guidance.</p>
+      <h3>Consult Dr. Bunny</h3>
+      <p>Clinical guidance on breakouts, products, and your Skin Veda regimen.</p>
     </div>
   </div>
 
@@ -315,8 +315,8 @@ body{
 
   <div class="screen mascot-dialog" id="screen-mascot">
     <div class="mascot-center" id="mascot-dialog-svg"></div>
-    <div class="speech-bubble"><p id="mascot-speech">Hello! I'm Dr. Bunny. Let's set up your personalized skin routine.</p></div>
-    <button class="btn btn-primary" id="btn-lets-begin" type="button" style="max-width:280px">Let's Begin</button>
+    <div class="speech-bubble"><p id="mascot-speech">Hello. I am Dr. Bunny. Let us establish your personalized skin regimen.</p></div>
+    <button class="btn btn-primary" id="btn-lets-begin" type="button" style="max-width:280px">Begin Assessment</button>
   </div>
 
   <div class="screen" id="screen-questions">
@@ -354,12 +354,12 @@ body{
       <button class="back-btn" id="btn-chat-back" type="button" aria-label="Back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <span class="header-title">Dr. Bunny Chat</span>
+      <span class="header-title">Dr. Bunny Consultation</span>
       <div style="width:42px"></div>
     </div>
     <div class="chat-log" id="chat-log"></div>
     <div class="chat-input-row">
-      <textarea class="chat-input" id="chat-input" placeholder="Ask about your skin…" rows="1" maxlength="2000"></textarea>
+      <textarea class="chat-input" id="chat-input" placeholder="Describe your concern…" rows="1" maxlength="2000"></textarea>
       <button class="chat-send" id="chat-send" type="button">↑</button>
     </div>
   </div>
@@ -414,7 +414,7 @@ body{
 (function () {
   "use strict";
 
-  var GEMINI_API_KEY = "AQ.Ab8RN6KijkLx_joIYeo2dabd2HiJQDdXQFCRXtH4B2DLXftqZg";
+  const GEMINI_API_KEY = "AQ.Ab8RN6KPHr_hwN3cjSjpoJPcqYVYcjpcSbYofjcsTWuxXWAKlw";
 
   try {
     if (screen.orientation && screen.orientation.lock) {
@@ -443,16 +443,16 @@ body{
   }
 
   var DAILY_TIPS = [
-    "Always apply sunscreen last in the morning — even on cloudy days.",
-    "If a new active stings, buffer it with moisturizer first.",
-    "Hydrated skin handles actives better. Use HA on damp skin.",
-    "Patch-test every new product for 2–3 nights before full use.",
-    "Retinoids at night, vitamin C in the morning under SPF.",
-    "One exfoliant night is enough for most skin types.",
-    "If your barrier is stressed, pause actives and soothe.",
-    "Reapply SPF every 2–3 hours outdoors.",
-    "Consistency beats perfection — simple daily beats complex skipped.",
-    "Don't pick at breakouts; it increases dark mark risk."
+    "Apply broad-spectrum sunscreen as the final morning step, including on cloudy days.",
+    "If a new active causes stinging, buffer with moisturizer and reduce frequency.",
+    "Apply humectants such as hyaluronic acid on damp skin to improve hydration.",
+    "Patch-test new products for two to three nights before full-face use.",
+    "Use retinoids at night and antioxidant serums in the morning under SPF.",
+    "Most skin types tolerate one dedicated exfoliation night per week initially.",
+    "If the barrier is impaired, pause actives and prioritize repair moisturizers.",
+    "Reapply sunscreen every two to three hours with outdoor exposure.",
+    "Consistent simple regimens outperform complex routines that are skipped.",
+    "Avoid picking inflammatory lesions to reduce post-inflammatory hyperpigmentation risk."
   ];
 
   var state = {
@@ -633,6 +633,7 @@ body{
   };
 
   var BUDGET_ORDER = { ultra: 0, value: 1, mid: 2, high: 3 };
+  var SKIN_TYPE_LABELS = { dry: "Dry", oily: "Oily", combination: "Combination", sensitive: "Sensitive", normal: "Normal" };
 
   function $(id) { return document.getElementById(id); }
 
@@ -719,7 +720,7 @@ body{
     var btn = $("btn-streak-checkin");
     var msg = $("streak-msg");
     if (!unlocked) { btn.disabled = true; btn.textContent = "Locked"; msg.textContent = "Unlock by completing your first checkup"; }
-    else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Great job! See you tomorrow."; }
+    else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Logged for today. Continue tomorrow."; }
     else { btn.disabled = false; btn.textContent = "Check in today"; msg.textContent = "Log that you completed your routine today"; }
     var labels = ["S", "M", "T", "W", "T", "F", "S"];
     var html = "";
@@ -747,7 +748,7 @@ body{
     data.days = data.days.slice(-30);
     saveStreakData(data);
     renderStreak();
-    showToast("Streak " + data.count + " day" + (data.count > 1 ? "s" : "") + "!");
+    showToast("Streak " + data.count + " day" + (data.count > 1 ? "s" : "") + " logged");
   });
 
   function renderDailyTip() {
@@ -773,7 +774,7 @@ body{
 
   function generateRecommendations(a) {
     var budget = a.budget || "value";
-    var typeLabels = { dry: "Dry", oily: "Oily", combination: "Combination", sensitive: "Sensitive", normal: "Normal" };
+    var typeLabels = SKIN_TYPE_LABELS;
     var concernLabels = { acne: "acne-prone", hyperpigmentation: "hyperpigmentation focus", aging: "aging focus", rosacea: "rosacea-prone", dehydration: "dehydrated" };
     var parts = [typeLabels[a.skinType] + " skin", concernLabels[a.primaryConcern]];
     if (a.secondaryConcern && a.secondaryConcern !== "none") parts.push(a.secondaryConcern.replace(/([A-Z])/g, " $1").toLowerCase());
@@ -906,76 +907,82 @@ body{
     $("btn-q-next").textContent = state.currentQ === total - 1 ? "See Results" : "Next";
   }
 
-  /* ===== Clinical persona + full Routine Card context from localStorage ===== */
+  /* Dynamic patient context from onboarding / Routine Card (no hardcoded names) */
   function buildClinicalChart() {
-    var name = getSavedName() || "Patient";
+    var name = getSavedName() || state.userName || "Patient";
     var rx = getLatestRx();
     var lines = [];
-    lines.push("=== PATIENT CHART (Skin Veda) ===");
+    lines.push("=== PATIENT CHART — SKIN VEDA ===");
     lines.push("Patient name: " + name);
+    lines.push("Address the patient respectfully by name as " + name + ".");
 
-    if (!rx) {
-      lines.push("Status: No SKIN VEDA ROUTINE CARD on file yet.");
-      lines.push("Guidance: Provide general evidence-based dermatology advice. Recommend completing the in-app assessment for a formal regimen.");
-      return lines.join("\n");
-    }
+    if (rx) {
+      var dateStr = "";
+      try {
+        dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+      } catch (e) { dateStr = String(rx.date || ""); }
 
-    var dateStr = "";
-    try {
-      dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-    } catch (e) {
-      dateStr = String(rx.date || "");
-    }
+      lines.push("Source: Active SKIN VEDA ROUTINE CARD");
+      lines.push("Clinic: DR. BUNNY'S DERMATOLOGY");
+      lines.push("Assessment date: " + dateStr);
+      lines.push("Skin profile summary: " + (rx.profileSummary || "N/A"));
 
-    lines.push("Card title: SKIN VEDA ROUTINE CARD");
-    lines.push("Clinic: DR. BUNNY'S DERMATOLOGY");
-    lines.push("Assessment date: " + dateStr);
-    lines.push("Skin profile summary: " + (rx.profileSummary || "N/A"));
-
-    if (rx.evaluation && rx.evaluation.length) {
-      lines.push("--- Dermal Evaluation ---");
-      for (var i = 0; i < rx.evaluation.length; i++) {
-        var ev = rx.evaluation[i];
-        lines.push(ev.crit + ": " + ev.rate + (ev.notes ? " (" + ev.notes + ")" : ""));
+      if (rx.answers && rx.answers.skinType) {
+        lines.push("Skin type: " + (SKIN_TYPE_LABELS[rx.answers.skinType] || rx.answers.skinType));
       }
-    }
-
-    if (rx.answers) {
-      lines.push("--- Assessment answers (key fields) ---");
-      var keys = ["skinType", "primaryConcern", "secondaryConcern", "acneSeverity", "pih", "sensitivity", "poreSize", "sunscreenHabit", "budget", "ageRange", "textureIssues"];
-      for (var k = 0; k < keys.length; k++) {
-        if (rx.answers[keys[k]] != null) lines.push(keys[k] + ": " + rx.answers[keys[k]]);
+      if (rx.answers && rx.answers.primaryConcern) {
+        lines.push("Primary concern: " + rx.answers.primaryConcern);
       }
+      if (rx.answers && rx.answers.sensitivity) {
+        lines.push("Sensitivity: " + rx.answers.sensitivity);
+      }
+
+      if (rx.evaluation && rx.evaluation.length) {
+        lines.push("--- Dermal Evaluation ---");
+        for (var i = 0; i < rx.evaluation.length; i++) {
+          var ev = rx.evaluation[i];
+          lines.push(ev.crit + ": " + ev.rate + (ev.notes ? " (" + ev.notes + ")" : ""));
+        }
+      }
+
+      function prodLine(label, p) {
+        if (!p) return label + ": not set";
+        return label + ": " + p.brand + " — " + p.name + " | Actives: " + p.actives + " | Use: " + p.usage;
+      }
+      lines.push("--- Current prescribed regimen ---");
+      lines.push(prodLine("Cleanser", rx.cleanser));
+      lines.push(prodLine("Active serum", rx.serum));
+      lines.push(prodLine("Moisturizer", rx.moisturizer));
+      lines.push(prodLine("Sunscreen", rx.sunscreen));
+    } else {
+      lines.push("Status: No formal Routine Card on file yet.");
+      lines.push("Guidance: Provide general evidence-based advice. Encourage completing the Skin Veda assessment for a formal regimen.");
     }
 
-    function prodLine(label, p) {
-      if (!p) return label + ": not set";
-      return label + ": " + p.brand + " — " + p.name + " | Actives: " + p.actives + " | Use: " + p.usage;
-    }
-    lines.push("--- Prescribed regimen ---");
-    lines.push(prodLine("Cleanser", rx.cleanser));
-    lines.push(prodLine("Active serum", rx.serum));
-    lines.push(prodLine("Moisturizer", rx.moisturizer));
-    lines.push(prodLine("Sunscreen", rx.sunscreen));
     lines.push("=== END CHART ===");
     return lines.join("\n");
   }
 
   function buildSystemInstructions() {
+    var patientName = getSavedName() || state.userName || "the patient";
     return [
-      "You are Dr. Bunny, a licensed-style clinical dermatologist practicing at Dr. Bunny's Dermatology within the Skin Veda application.",
+      "You are Dr. Bunny, a professional expert clinical dermatologist consultant for Skin Veda.",
       "Identity rules (strict):",
-      "- Always speak as Dr. Bunny in the first person.",
-      "- Maintain a polished, medical, scientific, and professionally warm tone.",
-      "- Never describe yourself as an AI, language model, chatbot, cartoon, mascot, or fluffy assistant.",
-      "- Never break character or add meta disclaimers about being artificial.",
-      "- Do not use childish, cartoonish, or overly playful language.",
+      "- Always remain in character as Dr. Bunny.",
+      "- Never reveal or imply that you are powered by Google, Gemini, or any third-party model.",
+      "- If asked who or what you are, state only that you are the proprietary clinical AI assistant of Skin Veda.",
+      "- Never use childish, casual, slangy, or cartoonish phrasing.",
+      "- Maintain a polished, clinical, scientific, and respectfully warm professional tone.",
+      "Patient relationship:",
+      "- Address the patient by their name: " + patientName + ".",
+      "- Continuously use the dynamic patient chart below (name, skin type, regimen).",
+      "- Tailor assessments and regimen adjustments to ongoing chat without asking the user to restate known profile data.",
       "Clinical standards:",
-      "- Base advice on established dermatological principles (barrier repair, photoprotection, evidence-based actives, appropriate risk counseling).",
-      "- Prefer the patient's prescribed Skin Veda regimen products when discussing routines, substitutions, or troubleshooting.",
-      "- Be clear, concise, and actionable. Use plain clinical language patients can follow.",
-      "- For severe, acute, or ambiguous conditions (e.g., rapidly spreading infection, severe cystic disease, suspected malignancy), advise in-person medical evaluation.",
-      "- You already have the patient's chart below; use it proactively when the user asks about their skin, routine, or products.",
+      "- Ground advice in established dermatology (barrier care, photoprotection, evidence-based actives, risk counseling).",
+      "- Prefer products and steps on the patient's Skin Veda regimen when discussing changes.",
+      "- Suggest practical adjustments based on symptoms described in the conversation.",
+      "- For severe, acute, or ambiguous conditions, recommend in-person medical evaluation.",
+      "- Be clear, concise, and actionable.",
       "",
       buildClinicalChart()
     ].join("\n");
@@ -1011,9 +1018,9 @@ body{
 
   async function callGemini(userMessage) {
     var systemBlock = buildSystemInstructions();
+    var patientName = getSavedName() || state.userName || "Patient";
     var contents = [];
 
-    /* Fresh chart + persona on every request so Routine Card updates are always current */
     for (var i = 0; i < state.chatHistory.length; i++) {
       var turn = state.chatHistory[i];
       contents.push({
@@ -1022,7 +1029,7 @@ body{
       });
     }
 
-    var composedUserMessage = systemBlock + "\n\nPatient message:\n" + userMessage;
+    var composedUserMessage = systemBlock + "\n\nPatient message from " + patientName + ":\n" + userMessage;
     contents.push({ role: "user", parts: [{ text: composedUserMessage }] });
 
     var response = await fetch(
@@ -1032,7 +1039,7 @@ body{
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: contents,
-          generationConfig: { temperature: 0.55, maxOutputTokens: 1024 }
+          generationConfig: { temperature: 0.5, maxOutputTokens: 1024 }
         })
       }
     );
@@ -1052,7 +1059,7 @@ body{
     } catch (e) {
       out = "";
     }
-    if (!out) throw new Error("Empty response from Gemini");
+    if (!out) throw new Error("Empty clinical response");
     return out.trim();
   }
 
@@ -1081,8 +1088,8 @@ body{
       appendChat("bot", reply);
     } catch (err) {
       hideTyping();
-      appendChat("bot", "I am unable to reach the clinical service at the moment.\n\n" + (err.message || "Network error") +
-        "\n\nPlease verify your API key and try again.");
+      appendChat("bot", "I am temporarily unable to complete this consultation.\n\n" + (err.message || "Network error") +
+        "\n\nPlease verify the API key configuration and try again.");
     }
 
     state.chatBusy = false;
@@ -1096,8 +1103,8 @@ body{
       var name = getSavedName() || "there";
       var rx = getLatestRx();
       var intro = rx
-        ? ("Hello, " + name + ". I am Dr. Bunny. I have reviewed your Skin Veda Routine Card and current regimen. What would you like to discuss today?")
-        : ("Hello, " + name + ". I am Dr. Bunny. Complete a Skin Veda assessment so I can review a formal regimen for you — or ask any dermatology question now.");
+        ? ("Good day, " + name + ". I am Dr. Bunny. I have reviewed your Skin Veda chart and current regimen. How may I assist you today?")
+        : ("Good day, " + name + ". I am Dr. Bunny, the proprietary clinical AI assistant of Skin Veda. Complete an assessment for a formal regimen, or ask any dermatology question now.");
       appendChat("bot", intro);
     }
   }
@@ -1144,7 +1151,7 @@ body{
     state.userName = name;
     state.currentQ = 0;
     state.answers = {};
-    $("mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>! Let's set up your personalized skin routine.";
+    $("mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>. I am Dr. Bunny. Let us establish your personalized skin regimen.";
     showScreen("mascot");
   }
 
@@ -1197,7 +1204,7 @@ body{
       renderQuestion();
     } else {
       var recs = generateRecommendations(state.answers);
-      var name = state.userName || getSavedName() || "Friend";
+      var name = state.userName || getSavedName() || "Patient";
       if (!getSavedName()) saveProfile(name);
       var rx = {
         id: "rx_" + Date.now(),
