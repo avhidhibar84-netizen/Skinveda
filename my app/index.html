@@ -21,6 +21,7 @@
   --safe-left:env(safe-area-inset-left,0px); --safe-right:env(safe-area-inset-right,0px);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
   --hand:"Segoe Script","Brush Script MT","Apple Chancery",cursive;
+  --bunny-pink:#F8DCC8; --bunny-blush:#FFE8E0; --bunny-soft:#FDF6F3; --coin-gold:#E8B923;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{height:100%;height:-webkit-fill-available}
@@ -35,7 +36,9 @@ body{
     text-align:center;padding:24px;font-size:16px;font-weight:600}
 }
 .app{min-height:100dvh;max-width:430px;margin:0 auto;position:relative;background:var(--warm-white);
-  box-shadow:0 0 60px rgba(0,0,0,.05);padding-bottom:calc(var(--nav-h) + var(--safe-bottom))}
+  box-shadow:0 0 60px rgba(0,0,0,.05);padding-bottom:calc(var(--nav-h) + var(--safe-bottom));
+  transition:padding-bottom .3s ease}
+body.chat-immersive .app{padding-bottom:0}
 .splash{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;
   align-items:center;justify-content:center;transition:opacity .65s,visibility .65s}
 .splash.hide{opacity:0;visibility:hidden;pointer-events:none}
@@ -51,23 +54,40 @@ body{
 @keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes qIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(42,122,123,.25)}50%{box-shadow:0 0 0 10px rgba(42,122,123,0)}}
-@keyframes typing{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes hopDot{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes coinPop{0%{transform:scale(.8)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
 
 .screen{display:none;min-height:calc(100dvh - var(--nav-h) - var(--safe-bottom));flex-direction:column;
   padding:16px 20px;animation:screenIn .38s cubic-bezier(.22,1,.36,1);position:relative}
 .screen.active{display:flex}
+body.chat-immersive .screen{min-height:100dvh}
 
 .landing{justify-content:flex-start;align-items:stretch;text-align:center;
   background:radial-gradient(ellipse 110% 70% at 50% -5%,rgba(59,155,156,.2) 0%,transparent 55%),
     linear-gradient(165deg,#F7FBFC 0%,#F0F7F7 40%,#FAF9F7 100%);
-  padding-top:12px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.hero-bunny{width:130px;margin:4px auto;animation:floatBunny 3.2s ease-in-out infinite;
+  padding-top:8px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.home-top-bar{display:flex;justify-content:flex-end;align-items:center;width:100%;margin-bottom:4px;min-height:40px}
+.coin-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 8px;border-radius:999px;
+  background:linear-gradient(145deg,#FFF9E6,#FFF3CC);border:1.5px solid rgba(232,185,35,.35);
+  box-shadow:0 4px 14px rgba(232,185,35,.18);font-weight:700;font-size:14px;color:#8A6A10;
+  animation:coinPop .4s ease;
+}
+.coin-badge .coin-icon{
+  width:26px;height:26px;border-radius:50%;background:linear-gradient(145deg,#F5D76E,#E8B923);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 6px rgba(232,185,35,.3);
+}
+.coin-badge .coin-label{font-size:10px;font-weight:600;color:#B8941A;text-transform:uppercase;letter-spacing:.3px;margin-right:2px}
+
+.hero-bunny{width:120px;margin:0 auto 2px;animation:floatBunny 3.2s ease-in-out infinite;
   filter:drop-shadow(0 12px 24px rgba(42,122,123,.18))}
 .hero-bunny svg{width:100%;height:auto}
 .landing-title{font-size:28px;font-weight:750;letter-spacing:-.7px;
   background:linear-gradient(135deg,#3B9B9C,#2A7A7B 55%,#4A7C7D);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
-.landing-tag{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:12px}
+.landing-tag{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:10px}
 .welcome-name{font-size:14px;font-weight:600;color:var(--teal-deep);margin-bottom:12px}
 
 .streak-card{width:100%;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:20px;
@@ -109,6 +129,9 @@ body{
 .chat-promo:active{transform:scale(.98)}
 .chat-promo h3{font-size:15px;font-weight:700;color:var(--slate);margin-bottom:4px}
 .chat-promo p{font-size:12.5px;color:var(--muted);line-height:1.4}
+.chat-promo-meta{margin-top:8px;font-size:12px;font-weight:650;color:#8A6A10;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.chat-promo-meta .pill{background:rgba(232,185,35,.15);padding:3px 8px;border-radius:999px}
 
 .btn{display:flex;align-items:center;justify-content:center;width:100%;height:54px;border:none;border-radius:16px;
   font-size:16px;font-weight:600;font-family:var(--font);cursor:pointer;transition:transform .18s;
@@ -122,7 +145,9 @@ body{
   height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);
   background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;
-  z-index:500;box-shadow:0 -4px 24px rgba(44,51,51,.06)}
+  z-index:500;box-shadow:0 -4px 24px rgba(44,51,51,.06);
+  transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .3s ease}
+body.chat-immersive .bottom-nav{transform:translateX(-50%) translateY(110%);opacity:0;pointer-events:none}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   background:none;border:none;cursor:pointer;color:var(--muted);font-family:var(--font);font-size:11px;
   font-weight:600;padding:8px 4px;touch-action:manipulation}
@@ -225,28 +250,105 @@ body{
 .empty-title{font-size:18px;font-weight:600;margin-bottom:6px}
 .empty-text{font-size:14px;color:var(--muted);max-width:260px}
 
-.chat-screen{padding-bottom:8px}
-.chat-log{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px;padding:4px 0 12px;min-height:0}
-.chat-msg{max-width:88%;padding:12px 14px;border-radius:16px;font-size:14px;line-height:1.5;
-  animation:slideUp .25s ease;white-space:pre-wrap;word-break:break-word}
-.chat-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
-.chat-msg.user{align-self:flex-end;background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff;border-bottom-right-radius:4px}
-.chat-msg .bot-label{font-size:11px;font-weight:700;color:var(--teal-deep);margin-bottom:4px}
-.chat-msg.typing{display:flex;gap:5px;align-items:center;padding:14px 18px}
-.chat-msg.typing span{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:typing 1.2s ease-in-out infinite}
+.chat-screen{
+  padding:0;padding-bottom:var(--safe-bottom);
+  background:linear-gradient(180deg,#FDF8F5 0%,#F4F9F9 35%,var(--warm-white) 100%);
+  min-height:100dvh;
+}
+.chat-header{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;padding-top:calc(12px + var(--safe-top));
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(232,232,232,.9);flex-shrink:0;position:sticky;top:0;z-index:20;
+  box-shadow:0 2px 16px rgba(44,51,51,.04);
+}
+.chat-back{
+  width:40px;height:40px;border-radius:12px;border:none;background:#F5F3EF;color:var(--slate);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(44,51,51,.06);touch-action:manipulation;
+}
+.chat-back:active{transform:scale(.94);background:#EDE9E4}
+.chat-back svg{width:20px;height:20px}
+.chat-header-info{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+.chat-header-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(145deg,#FFF5F0,#F8DCC8);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 10px rgba(248,220,200,.5);animation:miniBob 2.8s ease-in-out infinite}
+.chat-header-avatar svg{width:32px;height:32px}
+.chat-header-text{min-width:0}
+.chat-header-name{font-size:16px;font-weight:700;color:var(--slate);line-height:1.2}
+.chat-header-status{font-size:12px;color:var(--teal-deep);font-weight:500;display:flex;align-items:center;gap:5px}
+.chat-header-status::before{content:"";width:7px;height:7px;border-radius:50%;background:#34D399;
+  box-shadow:0 0 0 3px rgba(52,211,153,.2)}
+.chat-log{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;
+  padding:16px 16px 12px;min-height:0;
+}
+.chat-msg{
+  max-width:86%;padding:12px 15px;border-radius:18px;font-size:14.5px;line-height:1.5;
+  animation:bubbleIn .32s cubic-bezier(.22,1,.36,1);white-space:pre-wrap;word-break:break-word;
+}
+.chat-msg.bot{
+  align-self:flex-start;background:#fff;border:1px solid rgba(232,232,232,.95);
+  border-bottom-left-radius:6px;box-shadow:0 2px 12px rgba(44,51,51,.05);
+}
+.chat-msg.user{
+  align-self:flex-end;background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff;
+  border-bottom-right-radius:6px;box-shadow:0 4px 14px rgba(42,122,123,.2);
+}
+.chat-msg .bot-label{
+  font-size:11px;font-weight:700;color:var(--teal-deep);margin-bottom:5px;
+  display:flex;align-items:center;gap:5px;
+}
+.chat-msg .bot-label::before{content:"🐰";font-size:12px}
+.chat-msg.typing{
+  display:flex;gap:6px;align-items:center;padding:16px 20px;background:var(--bunny-soft);
+  border:1px solid rgba(248,220,200,.6);
+}
+.chat-msg.typing span{
+  width:8px;height:8px;border-radius:50%;background:var(--teal);
+  animation:hopDot 1s ease-in-out infinite;
+}
+.chat-msg.typing span:nth-child(1){animation-delay:0s}
 .chat-msg.typing span:nth-child(2){animation-delay:.15s}
 .chat-msg.typing span:nth-child(3){animation-delay:.3s}
-.chat-input-row{display:flex;gap:8px;flex-shrink:0;align-items:flex-end}
-.chat-input{flex:1;min-height:48px;max-height:120px;border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;
-  font-size:15px;font-family:var(--font);outline:none;background:#fff;resize:none;line-height:1.4}
-.chat-input:focus{border-color:var(--teal)}
-.chat-send{width:48px;height:48px;border:none;border-radius:14px;background:linear-gradient(145deg,#3B9B9C,#2A7A7B);
-  color:#fff;font-size:18px;cursor:pointer;flex-shrink:0}
-.chat-send:disabled{opacity:.5;cursor:default}
+.chat-input-wrap{
+  flex-shrink:0;padding:10px 14px;padding-bottom:calc(10px + var(--safe-bottom));
+  background:rgba(255,255,255,.96);border-top:1px solid var(--border);
+  box-shadow:0 -4px 20px rgba(44,51,51,.04);
+}
+.chat-input-row{display:flex;gap:8px;align-items:flex-end}
+.chat-input{
+  flex:1;min-height:46px;max-height:120px;border:1.5px solid var(--border);border-radius:16px;
+  padding:12px 16px;font-size:15px;font-family:var(--font);outline:none;background:#FAF9F7;
+  resize:none;line-height:1.4;transition:border-color .2s,box-shadow .2s;
+}
+.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(74,124,125,.1);background:#fff}
+.chat-send{
+  width:46px;height:46px;border:none;border-radius:14px;
+  background:linear-gradient(145deg,#3B9B9C,#2A7A7B);color:#fff;font-size:18px;
+  cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(42,122,123,.25);
+}
+.chat-send:active{transform:scale(.94)}
+.chat-send:disabled{opacity:.45;cursor:default;box-shadow:none}
+
+.modal-overlay{
+  position:fixed;inset:0;z-index:800;background:rgba(44,51,51,.45);display:none;
+  align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);
+}
+.modal-overlay.show{display:flex}
+.modal-card{
+  width:100%;max-width:340px;background:#fff;border-radius:22px;padding:22px 20px;
+  box-shadow:var(--shadow-lg);text-align:center;animation:slideUp .3s ease;
+}
+.modal-card h3{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--slate)}
+.modal-card p{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+.modal-card .coin-cost{font-size:15px;font-weight:700;color:#8A6A10;margin-bottom:16px}
+.modal-actions{display:flex;flex-direction:column;gap:10px}
+.modal-actions .btn{height:48px;font-size:15px}
 
 .toast{position:fixed;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));left:50%;
   transform:translateX(-50%) translateY(80px);background:var(--slate);color:#fff;padding:12px 22px;border-radius:14px;
   font-size:14px;font-weight:500;z-index:700;opacity:0;transition:all .35s;max-width:90vw;text-align:center}
+body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -258,6 +360,13 @@ body{
 
 <div class="app" id="app">
   <div class="screen landing" id="screen-landing">
+    <div class="home-top-bar">
+      <div class="coin-badge" id="coin-badge" title="Bunny Coins">
+        <span class="coin-icon">🐰</span>
+        <span class="coin-label">Coins</span>
+        <span id="coin-balance">0</span>
+      </div>
+    </div>
     <div class="hero-bunny" id="hero-bunny"></div>
     <h1 class="landing-title">Skinveda</h1>
     <p class="landing-tag">Dr. Bunny · Clinical Dermatology</p>
@@ -274,7 +383,7 @@ body{
       </div>
       <div class="streak-days" id="streak-days"></div>
       <button class="streak-btn" id="btn-streak-checkin" type="button">Check in today</button>
-      <p class="streak-msg" id="streak-msg">Build a healthy routine with Dr. Bunny</p>
+      <p class="streak-msg" id="streak-msg">Check in daily to earn Bunny Coins</p>
     </div>
 
     <div class="tip-card">
@@ -291,6 +400,9 @@ body{
     <div class="chat-promo" id="btn-open-chat-home">
       <h3>Consult Dr. Bunny</h3>
       <p>Clinical guidance on breakouts, products, and your Skin Veda regimen.</p>
+      <div class="chat-promo-meta" id="chat-access-meta">
+        <span class="pill">100 🐰 · 24h access</span>
+      </div>
     </div>
   </div>
 
@@ -350,17 +462,24 @@ body{
   </div>
 
   <div class="screen chat-screen" id="screen-chat">
-    <div class="header">
-      <button class="back-btn" id="btn-chat-back" type="button" aria-label="Back">
+    <div class="chat-header">
+      <button class="chat-back" id="btn-chat-back" type="button" aria-label="Back to home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <span class="header-title">Dr. Bunny Consultation</span>
-      <div style="width:42px"></div>
+      <div class="chat-header-info">
+        <div class="chat-header-avatar" id="chat-header-avatar"></div>
+        <div class="chat-header-text">
+          <div class="chat-header-name">Dr. Bunny</div>
+          <div class="chat-header-status" id="chat-header-status">Clinical consultation</div>
+        </div>
+      </div>
     </div>
     <div class="chat-log" id="chat-log"></div>
-    <div class="chat-input-row">
-      <textarea class="chat-input" id="chat-input" placeholder="Describe your concern…" rows="1" maxlength="2000"></textarea>
-      <button class="chat-send" id="chat-send" type="button">↑</button>
+    <div class="chat-input-wrap">
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input" placeholder="Describe your skin concern in English…" rows="1" maxlength="2000"></textarea>
+        <button class="chat-send" id="chat-send" type="button">↑</button>
+      </div>
     </div>
   </div>
 
@@ -390,7 +509,7 @@ body{
   </div>
 </div>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" id="bottom-nav">
   <button class="nav-item active" id="nav-home" type="button">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z"/></svg>
     Home
@@ -408,6 +527,18 @@ body{
   </button>
 </nav>
 
+<div class="modal-overlay" id="unlock-modal">
+  <div class="modal-card">
+    <h3>Unlock Dr. Bunny Chat</h3>
+    <p>Full clinical consultation access for 24 hours requires Bunny Coins.</p>
+    <div class="coin-cost">Cost: 100 🐰 · Balance: <span id="modal-balance">0</span></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btn-unlock-chat" type="button">Unlock for 100 Coins</button>
+      <button class="btn btn-secondary" id="btn-unlock-cancel" type="button">Not now</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -419,8 +550,13 @@ body{
   const GROQ_MODEL_QUEUE = [
     "openai/gpt-oss-120b",
     "openai/gpt-oss-20b",
-    "llama-3.1-8b-instant"
+    "llama-3.3-70b-versatile",
+    "llama-3.1-8b-instant",
+    "qwen/qwen3.6-27b",
+    "qwen/qwen3.8-27b"
   ];
+  const CHAT_COST = 100;
+  const CHAT_UNLOCK_MS = 24 * 60 * 60 * 1000;
 
   try {
     if (screen.orientation && screen.orientation.lock) {
@@ -468,7 +604,8 @@ body{
     answers: {},
     chatHistory: [],
     chatBusy: false,
-    chatIntroShown: false
+    chatIntroShown: false,
+    immersiveChat: false
   };
 
   var questions = [
@@ -657,6 +794,75 @@ body{
   $("tip-avatar").innerHTML = bunnySVG("tip");
   $("mascot-dialog-svg").innerHTML = bunnySVG("full");
   $("mini-mascot").innerHTML = bunnySVG("mini");
+  $("chat-header-avatar").innerHTML = bunnySVG("mini");
+
+  /* ——— Bunny Coins ——— */
+  function getCoins() {
+    try {
+      var n = parseInt(localStorage.getItem("skinveda_coins") || "0", 10);
+      return isNaN(n) || n < 0 ? 0 : n;
+    } catch (e) { return 0; }
+  }
+  function setCoins(n) {
+    n = Math.max(0, Math.floor(n));
+    localStorage.setItem("skinveda_coins", String(n));
+    renderCoins();
+  }
+  function addCoins(amount) {
+    setCoins(getCoins() + amount);
+  }
+  function renderCoins() {
+    var el = $("coin-balance");
+    if (el) el.textContent = String(getCoins());
+    var mb = $("modal-balance");
+    if (mb) mb.textContent = String(getCoins());
+    updateChatAccessMeta();
+  }
+
+  function getChatUnlockUntil() {
+    try {
+      var t = parseInt(localStorage.getItem("skinveda_chat_unlock_until") || "0", 10);
+      return isNaN(t) ? 0 : t;
+    } catch (e) { return 0; }
+  }
+  function setChatUnlockUntil(ts) {
+    localStorage.setItem("skinveda_chat_unlock_until", String(ts));
+  }
+  function isChatUnlocked() {
+    return Date.now() < getChatUnlockUntil();
+  }
+  function remainingChatHours() {
+    var left = getChatUnlockUntil() - Date.now();
+    if (left <= 0) return 0;
+    return Math.ceil(left / (60 * 60 * 1000));
+  }
+  function updateChatAccessMeta() {
+    var meta = $("chat-access-meta");
+    if (!meta) return;
+    if (isChatUnlocked()) {
+      meta.innerHTML = '<span class="pill">Active · ~' + remainingChatHours() + 'h left</span>';
+    } else {
+      meta.innerHTML = '<span class="pill">100 🐰 · 24h access</span>';
+    }
+  }
+  function formatUnlockStatus() {
+    if (isChatUnlocked()) return "Access · ~" + remainingChatHours() + "h left";
+    return "Clinical consultation";
+  }
+
+  function rollDailyCoinReward() {
+    var r = Math.random();
+    if (r < 0.08) return 0;
+    if (r < 0.18) return 10 + Math.floor(Math.random() * 6);
+    if (r < 0.55) return 16 + Math.floor(Math.random() * 15);
+    if (r < 0.85) return 30 + Math.floor(Math.random() * 21);
+    return 50 + Math.floor(Math.random() * 31);
+  }
+
+  function setImmersiveChat(on) {
+    state.immersiveChat = !!on;
+    document.body.classList.toggle("chat-immersive", !!on);
+  }
 
   function showScreen(name) {
     Object.keys(screens).forEach(function (k) {
@@ -667,13 +873,14 @@ body{
     window.scrollTo(0, 0);
     $("nav-home").classList.toggle("active", name === "landing");
     $("nav-history").classList.toggle("active", name === "history");
+    if (name !== "chat") setImmersiveChat(false);
   }
 
   function showToast(msg) {
     var t = $("toast");
     t.textContent = msg;
     t.classList.add("show");
-    setTimeout(function () { t.classList.remove("show"); }, 2600);
+    setTimeout(function () { t.classList.remove("show"); }, 2800);
   }
 
   function getProfile() {
@@ -726,8 +933,8 @@ body{
     var btn = $("btn-streak-checkin");
     var msg = $("streak-msg");
     if (!unlocked) { btn.disabled = true; btn.textContent = "Locked"; msg.textContent = "Unlock by completing your first checkup"; }
-    else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Logged for today. Continue tomorrow."; }
-    else { btn.disabled = false; btn.textContent = "Check in today"; msg.textContent = "Log that you completed your routine today"; }
+    else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Logged for today. Come back tomorrow for more coins."; }
+    else { btn.disabled = false; btn.textContent = "Check in today"; msg.textContent = "Check in daily to earn Bunny Coins"; }
     var labels = ["S", "M", "T", "W", "T", "F", "S"];
     var html = "";
     for (var i = 6; i >= 0; i--) {
@@ -753,8 +960,15 @@ body{
     if (data.days.indexOf(today) === -1) data.days.push(today);
     data.days = data.days.slice(-30);
     saveStreakData(data);
+
+    var reward = rollDailyCoinReward();
+    if (reward > 0) {
+      addCoins(reward);
+      showToast("+" + reward + " Bunny Coins · Streak " + data.count + " day" + (data.count > 1 ? "s" : ""));
+    } else {
+      showToast("Streak " + data.count + " logged · No coins today — try tomorrow!");
+    }
     renderStreak();
-    showToast("Streak " + data.count + " day" + (data.count > 1 ? "s" : "") + " logged");
   });
 
   function renderDailyTip() {
@@ -978,6 +1192,10 @@ body{
       "- If asked who or what you are, state only that you are the proprietary clinical AI assistant of Skin Veda.",
       "- Never use childish, casual, slangy, or cartoonish phrasing.",
       "- Maintain a polished, clinical, scientific, and respectfully warm professional tone.",
+      "LANGUAGE RULE (MANDATORY):",
+      "- You MUST respond ONLY in professional clinical English.",
+      "- If the patient's message is primarily in any language other than English (including Hindi, Hinglish, Spanish, etc.), reply with EXACTLY this sentence and nothing else: I can only assist you in professional English.",
+      "- Do not translate, do not mix languages, and do not continue clinical advice in another language.",
       "Patient relationship:",
       "- Address the patient by their name: " + patientName + ".",
       "- Continuously use the dynamic patient chart below (name, skin type, regimen).",
@@ -1104,6 +1322,13 @@ body{
 
   async function sendChat() {
     if (state.chatBusy) return;
+    if (!isChatUnlocked()) {
+      showToast("Chat access expired. Unlock again with 100 Bunny Coins.");
+      exitChat();
+      setTimeout(function () { requestChatAccess(); }, 200);
+      return;
+    }
+
     var input = $("chat-input");
     var text = (input.value || "").trim();
     if (!text) return;
@@ -1133,10 +1358,15 @@ body{
 
     state.chatBusy = false;
     $("chat-send").disabled = false;
+    var status = $("chat-header-status");
+    if (status) status.textContent = formatUnlockStatus();
   }
 
-  function openChat() {
+  function enterChatUI() {
+    setImmersiveChat(true);
     showScreen("chat");
+    var status = $("chat-header-status");
+    if (status) status.textContent = formatUnlockStatus();
     if (!state.chatIntroShown) {
       state.chatIntroShown = true;
       var name = getSavedName() || "there";
@@ -1146,7 +1376,66 @@ body{
         : ("Good day, " + name + ". I am Dr. Bunny, the proprietary clinical AI assistant of Skin Veda. Complete an assessment for a formal regimen, or ask any dermatology question now.");
       appendChat("bot", intro);
     }
+    setTimeout(function () {
+      var log = $("chat-log");
+      if (log) log.scrollTop = log.scrollHeight;
+      var input = $("chat-input");
+      if (input) input.focus();
+    }, 120);
   }
+
+  function showUnlockModal() {
+    $("modal-balance").textContent = String(getCoins());
+    $("unlock-modal").classList.add("show");
+    var btn = $("btn-unlock-chat");
+    if (getCoins() < CHAT_COST) {
+      btn.disabled = true;
+      btn.textContent = "Need " + CHAT_COST + " Coins";
+    } else {
+      btn.disabled = false;
+      btn.textContent = "Unlock for 100 Coins";
+    }
+  }
+  function hideUnlockModal() {
+    $("unlock-modal").classList.remove("show");
+  }
+
+  function requestChatAccess() {
+    if (isChatUnlocked()) {
+      enterChatUI();
+      return;
+    }
+    showUnlockModal();
+  }
+
+  function purchaseChatUnlock() {
+    if (isChatUnlocked()) {
+      hideUnlockModal();
+      enterChatUI();
+      return;
+    }
+    var bal = getCoins();
+    if (bal < CHAT_COST) {
+      showToast("Not enough Bunny Coins. Check in daily to earn more.");
+      return;
+    }
+    setCoins(bal - CHAT_COST);
+    setChatUnlockUntil(Date.now() + CHAT_UNLOCK_MS);
+    hideUnlockModal();
+    showToast("Chat unlocked for 24 hours");
+    enterChatUI();
+  }
+
+  function exitChat() {
+    setImmersiveChat(false);
+    goHome();
+  }
+
+  $("btn-unlock-chat").addEventListener("click", purchaseChatUnlock);
+  $("btn-unlock-cancel").addEventListener("click", hideUnlockModal);
+  $("unlock-modal").addEventListener("click", function (e) {
+    if (e.target === $("unlock-modal")) hideUnlockModal();
+  });
 
   $("chat-send").addEventListener("click", function () { sendChat(); });
   $("chat-input").addEventListener("keydown", function (e) {
@@ -1159,13 +1448,14 @@ body{
     this.style.height = "auto";
     this.style.height = Math.min(this.scrollHeight, 120) + "px";
   });
-  $("btn-chat-back").addEventListener("click", function () { goHome(); });
+  $("btn-chat-back").addEventListener("click", function () { exitChat(); });
   $("btn-open-chat-home").addEventListener("click", function () {
     if (!getSavedName()) { openNameOnboarding(true); return; }
-    openChat();
+    requestChatAccess();
   });
 
   function goHome() {
+    setImmersiveChat(false);
     if (!getSavedName()) {
       openNameOnboarding(true);
       return;
@@ -1174,10 +1464,12 @@ body{
     $("welcome-name").textContent = name ? "Welcome back, " + name : "";
     renderDailyTip();
     renderStreak();
+    renderCoins();
     showScreen("landing");
   }
 
   function openNameOnboarding(firstTime) {
+    setImmersiveChat(false);
     $("user-name").value = "";
     $("btn-name-next").disabled = true;
     var back = $("btn-name-back");
@@ -1187,6 +1479,7 @@ body{
   }
 
   function startAssessmentWithName(name) {
+    setImmersiveChat(false);
     state.userName = name;
     state.currentQ = 0;
     state.answers = {};
@@ -1200,13 +1493,14 @@ body{
       openNameOnboarding(true);
       return;
     }
-    if (hasCompletedInitial()) openChat();
+    if (hasCompletedInitial()) requestChatAccess();
     else startAssessmentWithName(name);
   }
 
   $("nav-home").addEventListener("click", goHome);
   $("nav-start").addEventListener("click", onMainButton);
   $("nav-history").addEventListener("click", function () {
+    setImmersiveChat(false);
     if (!getSavedName()) { openNameOnboarding(true); return; }
     renderHistory();
     showScreen("history");
@@ -1267,6 +1561,8 @@ body{
   $("btn-results-home").addEventListener("click", goHome);
   $("btn-results-back").addEventListener("click", goHome);
   $("btn-history-back").addEventListener("click", goHome);
+
+  renderCoins();
 
   if (!getSavedName()) {
     pendingFirstLaunch = true;
