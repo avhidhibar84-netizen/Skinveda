@@ -209,7 +209,8 @@ body.chat-immersive .bottom-nav{transform:translateX(-50%) translateY(110%);opac
 .progress-meta{flex:1;display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-weight:500}
 .progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#3B9B9C,#2A7A7B);border-radius:3px;transition:width .4s}
-.question-card{flex:1;display:flex;flex-direction:column;animation:qIn .35s cubic-bezier(.22,1,.36,1);min-height:0}
+.question-card{flex:1;display:flex;flex-direction:column;min-height:0}
+.question-card.q-anim{animation:qIn .35s cubic-bezier(.22,1,.36,1)}
 .q-label{font-size:12px;font-weight:600;color:var(--sage);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
 .q-text{font-size:18.5px;font-weight:650;line-height:1.35;margin-bottom:6px;color:var(--slate)}
 .q-hint{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:14px;font-weight:500;
@@ -564,7 +565,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 <div class="modal-overlay" id="gift-modal">
   <div class="modal-card">
     <h3>Redeem Gift Code</h3>
-    <p>Enter your Bunny Coins gift code below.</p>
+    <p>Enter your Bunny Coins gift code below. Codes are verified globally and can be used only once.</p>
     <div class="modal-error" id="gift-error"></div>
     <input type="text" class="code-input" id="gift-code-input" placeholder="ENTER CODE" maxlength="20" autocomplete="off" autocapitalize="characters">
     <div class="modal-actions">
@@ -575,6 +576,66 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+import {
+  getFirestore,
+  doc,
+  runTransaction,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCbYGIUywFtTRUMfKgpR9JDs6_OQt7zrHg",
+  authDomain: "sinveda-app.firebaseapp.com",
+  projectId: "sinveda-app",
+  storageBucket: "sinveda-app.firebasestorage.app",
+  messagingSenderId: "613166922983",
+  appId: "1:613166922983:web:b9defe13fd1d61577df642",
+  measurementId: "G-Z4R785PG43"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+try { getAnalytics(firebaseApp); } catch (e) {}
+const db = getFirestore(firebaseApp);
+
+/**
+ * Globally redeem a gift code once via Firestore collection "redeemed_codes".
+ * Document ID = uppercase code. Uses a transaction to reduce double-redeem races.
+ */
+async function redeemCodeGlobal(code, meta) {
+  const codeId = String(code || "").toUpperCase().trim();
+  if (!codeId) throw new Error("invalid");
+
+  const ref = doc(db, "redeemed_codes", codeId);
+
+  await runTransaction(db, async (transaction) => {
+    const snap = await transaction.get(ref);
+    if (snap.exists()) {
+      const err = new Error("already");
+      err.code = "already";
+      throw err;
+    }
+    transaction.set(ref, {
+      code: codeId,
+      amount: meta && meta.amount != null ? meta.amount : 0,
+      userName: (meta && meta.userName) ? String(meta.userName) : "",
+      redeemedAt: serverTimestamp(),
+      clientTs: Date.now()
+    });
+  });
+
+  return true;
+}
+
+window.SkinVedaFirebase = {
+  ready: true,
+  redeemCode: redeemCodeGlobal
+};
+window.dispatchEvent(new Event("skinveda-firebase-ready"));
+</script>
 
 <script>
 (function () {
@@ -656,7 +717,8 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     chatBusy: false,
     chatIntroShown: false,
     immersiveChat: false,
-    renderingQuestion: false
+    renderingQuestion: false,
+    redeemBusy: false
   };
 
   var questions = [
@@ -865,24 +927,6 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     var mb = $("modal-balance");
     if (mb) mb.textContent = String(getCoins());
     updateChatAccessMeta();
-  }
-
-  function getRedeemedCodes() {
-    try {
-      var arr = JSON.parse(localStorage.getItem("skinveda_redeemed_codes") || "[]");
-      return Array.isArray(arr) ? arr : [];
-    } catch (e) { return []; }
-  }
-  function markCodeRedeemed(code) {
-    var list = getRedeemedCodes();
-    var key = String(code).toUpperCase().trim();
-    if (list.indexOf(key) === -1) {
-      list.push(key);
-      try { localStorage.setItem("skinveda_redeemed_codes", JSON.stringify(list)); } catch (e) {}
-    }
-  }
-  function isCodeRedeemed(code) {
-    return getRedeemedCodes().indexOf(String(code).toUpperCase().trim()) !== -1;
   }
 
   function getChatUnlockUntil() {
@@ -1193,9 +1237,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       return;
     }
     var html = "";
-    for (var i = 0; i < list.length; i++) {
-      html += buildRoutineCardHtml(list[i]);
-    }
+    for (var i = 0; i < list.length; i++) html += buildRoutineCardHtml(list[i]);
     c.innerHTML = html;
   }
 
@@ -1218,9 +1260,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 
       var card = $("question-card");
       card.classList.remove("q-anim");
-      requestAnimationFrame(function () {
-        card.classList.add("q-anim");
-      });
+      requestAnimationFrame(function () { card.classList.add("q-anim"); });
 
       var opts = $("q-options");
       opts.innerHTML = "";
@@ -1265,15 +1305,9 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       lines.push("Clinic: DR. BUNNY'S DERMATOLOGY");
       lines.push("Assessment date: " + dateStr);
       lines.push("Skin profile summary: " + (rx.profileSummary || "N/A"));
-      if (rx.answers && rx.answers.skinType) {
-        lines.push("Skin type: " + (SKIN_TYPE_LABELS[rx.answers.skinType] || rx.answers.skinType));
-      }
-      if (rx.answers && rx.answers.primaryConcern) {
-        lines.push("Primary concern: " + rx.answers.primaryConcern);
-      }
-      if (rx.answers && rx.answers.sensitivity) {
-        lines.push("Sensitivity: " + rx.answers.sensitivity);
-      }
+      if (rx.answers && rx.answers.skinType) lines.push("Skin type: " + (SKIN_TYPE_LABELS[rx.answers.skinType] || rx.answers.skinType));
+      if (rx.answers && rx.answers.primaryConcern) lines.push("Primary concern: " + rx.answers.primaryConcern);
+      if (rx.answers && rx.answers.sensitivity) lines.push("Sensitivity: " + rx.answers.sensitivity);
       if (rx.evaluation && rx.evaluation.length) {
         lines.push("--- Dermal Evaluation ---");
         for (var i = 0; i < rx.evaluation.length; i++) {
@@ -1521,7 +1555,30 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     if (modal) modal.classList.remove("show");
   }
 
-  function redeemGiftCode() {
+  function waitForFirebase(timeoutMs) {
+    return new Promise(function (resolve, reject) {
+      if (window.SkinVedaFirebase && window.SkinVedaFirebase.ready) {
+        resolve(window.SkinVedaFirebase);
+        return;
+      }
+      var done = false;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        reject(new Error("timeout"));
+      }, timeoutMs || 8000);
+      window.addEventListener("skinveda-firebase-ready", function onReady() {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        window.removeEventListener("skinveda-firebase-ready", onReady);
+        resolve(window.SkinVedaFirebase);
+      });
+    });
+  }
+
+  async function redeemGiftCode() {
+    if (state.redeemBusy) return;
     var inp = $("gift-code-input");
     var raw = ((inp && inp.value) || "").trim().toUpperCase();
     var err = $("gift-error");
@@ -1530,15 +1587,42 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       if (err) err.textContent = "Please enter a gift code.";
       return;
     }
-    if (!Object.prototype.hasOwnProperty.call(GIFT_CODES, raw) || isCodeRedeemed(raw)) {
+    if (!Object.prototype.hasOwnProperty.call(GIFT_CODES, raw)) {
       if (err) err.textContent = "Invalid or already redeemed gift code.";
       return;
     }
+
     var amount = GIFT_CODES[raw];
-    markCodeRedeemed(raw);
-    addCoins(amount);
-    hideGiftModal();
-    showToast("+" + amount + " Bunny Coins redeemed!");
+    var btn = $("btn-redeem-code");
+    state.redeemBusy = true;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Verifying…";
+    }
+
+    try {
+      var fb = await waitForFirebase(10000);
+      await fb.redeemCode(raw, {
+        amount: amount,
+        userName: getSavedName() || state.userName || ""
+      });
+      addCoins(amount);
+      hideGiftModal();
+      showToast("+" + amount + " Bunny Coins redeemed!");
+    } catch (e) {
+      var msg = (e && (e.code === "already" || e.message === "already"))
+        ? "Invalid or already redeemed gift code."
+        : (e && e.message === "timeout")
+          ? "Security service is still loading. Please try again."
+          : "Invalid or already redeemed gift code.";
+      if (err) err.textContent = msg;
+    } finally {
+      state.redeemBusy = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Redeem";
+      }
+    }
   }
 
   function requestChatAccess() {
@@ -1573,7 +1657,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   }
 
   $("btn-gift").addEventListener("click", showGiftModal);
-  $("btn-redeem-code").addEventListener("click", redeemGiftCode);
+  $("btn-redeem-code").addEventListener("click", function () { redeemGiftCode(); });
   $("btn-gift-cancel").addEventListener("click", hideGiftModal);
   $("gift-code-input").addEventListener("keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); redeemGiftCode(); }
@@ -1733,8 +1817,5 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   }
 })();
 </script>
-<style>
-.question-card.q-anim{animation:qIn .35s cubic-bezier(.22,1,.36,1)}
-</style>
 </body>
 </html>
