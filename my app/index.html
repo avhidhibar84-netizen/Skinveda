@@ -57,6 +57,11 @@ body.chat-immersive .app{padding-bottom:0}
 @keyframes bubbleIn{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes hopDot{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes coinPop{0%{transform:scale(.8)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes giftPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(232,185,35,.35)}
+  50%{transform:scale(1.08);box-shadow:0 0 0 10px rgba(232,185,35,0)}
+}
+@keyframes giftShine{0%{filter:brightness(1)}50%{filter:brightness(1.15)}100%{filter:brightness(1)}}
 
 .screen{display:none;min-height:calc(100dvh - var(--nav-h) - var(--safe-bottom));flex-direction:column;
   padding:16px 20px;animation:screenIn .38s cubic-bezier(.22,1,.36,1);position:relative}
@@ -67,7 +72,7 @@ body.chat-immersive .screen{min-height:100dvh}
   background:radial-gradient(ellipse 110% 70% at 50% -5%,rgba(59,155,156,.2) 0%,transparent 55%),
     linear-gradient(165deg,#F7FBFC 0%,#F0F7F7 40%,#FAF9F7 100%);
   padding-top:8px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.home-top-bar{display:flex;justify-content:flex-end;align-items:center;width:100%;margin-bottom:4px;min-height:40px}
+.home-top-bar{display:flex;justify-content:flex-end;align-items:center;width:100%;margin-bottom:4px;min-height:40px;gap:8px}
 .coin-badge{
   display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 8px;border-radius:999px;
   background:linear-gradient(145deg,#FFF9E6,#FFF3CC);border:1.5px solid rgba(232,185,35,.35);
@@ -80,6 +85,15 @@ body.chat-immersive .screen{min-height:100dvh}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 6px rgba(232,185,35,.3);
 }
 .coin-badge .coin-label{font-size:10px;font-weight:600;color:#B8941A;text-transform:uppercase;letter-spacing:.3px;margin-right:2px}
+.gift-btn{
+  width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(145deg,#FFE08A,#E8B923);color:#5C4A0A;
+  display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;
+  box-shadow:0 4px 14px rgba(232,185,35,.35);animation:giftPulse 2.2s ease-in-out infinite;
+  touch-action:manipulation;flex-shrink:0;
+}
+.gift-btn:active{transform:scale(.92);animation:none}
+.gift-btn span{line-height:1;display:block;animation:giftShine 2.2s ease-in-out infinite}
 
 .hero-bunny{width:120px;margin:0 auto 2px;animation:floatBunny 3.2s ease-in-out infinite;
   filter:drop-shadow(0 12px 24px rgba(42,122,123,.18))}
@@ -172,6 +186,10 @@ body.chat-immersive .bottom-nav{transform:translateX(-50%) translateY(110%);opac
 .name-input{width:100%;height:56px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:0 18px;
   font-size:17px;font-family:var(--font);background:#fff;color:var(--slate);outline:none;-webkit-appearance:none;margin-top:8px}
 .name-input:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(74,124,125,.12)}
+.code-input{width:100%;height:52px;border:1.5px solid var(--border);border-radius:14px;padding:0 16px;
+  font-size:16px;font-family:var(--font);background:#FAF9F7;color:var(--slate);outline:none;
+  letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+.code-input:focus{border-color:var(--coin-gold);box-shadow:0 0 0 3px rgba(232,185,35,.2);background:#fff}
 
 .mascot-dialog{justify-content:center;align-items:center;text-align:center;
   background:linear-gradient(180deg,#F4F9F9 0%,var(--warm-white) 50%,#F0F6F6 100%);padding:20px}
@@ -340,10 +358,11 @@ body.chat-immersive .bottom-nav{transform:translateX(-50%) translateY(110%);opac
   box-shadow:var(--shadow-lg);text-align:center;animation:slideUp .3s ease;
 }
 .modal-card h3{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--slate)}
-.modal-card p{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+.modal-card p{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:14px}
 .modal-card .coin-cost{font-size:15px;font-weight:700;color:#8A6A10;margin-bottom:16px}
 .modal-actions{display:flex;flex-direction:column;gap:10px}
 .modal-actions .btn{height:48px;font-size:15px}
+.modal-error{font-size:13px;color:#C0392B;font-weight:600;margin-bottom:10px;min-height:18px}
 
 .toast{position:fixed;bottom:calc(var(--nav-h) + 16px + var(--safe-bottom));left:50%;
   transform:translateX(-50%) translateY(80px);background:var(--slate);color:#fff;padding:12px 22px;border-radius:14px;
@@ -366,6 +385,9 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
         <span class="coin-label">Coins</span>
         <span id="coin-balance">0</span>
       </div>
+      <button class="gift-btn" id="btn-gift" type="button" aria-label="Redeem gift code" title="Redeem gift code">
+        <span>🎁</span>
+      </button>
     </div>
     <div class="hero-bunny" id="hero-bunny"></div>
     <h1 class="landing-title">Skinveda</h1>
@@ -477,7 +499,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     <div class="chat-log" id="chat-log"></div>
     <div class="chat-input-wrap">
       <div class="chat-input-row">
-        <textarea class="chat-input" id="chat-input" placeholder="Describe your skin concern in English…" rows="1" maxlength="2000"></textarea>
+        <textarea class="chat-input" id="chat-input" placeholder="Describe your skin concern…" rows="1" maxlength="2000"></textarea>
         <button class="chat-send" id="chat-send" type="button">↑</button>
       </div>
     </div>
@@ -539,11 +561,27 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   </div>
 </div>
 
+<div class="modal-overlay" id="gift-modal">
+  <div class="modal-card">
+    <h3>Redeem Gift Code</h3>
+    <p>Enter your Bunny Coins gift code below.</p>
+    <div class="modal-error" id="gift-error"></div>
+    <input type="text" class="code-input" id="gift-code-input" placeholder="ENTER CODE" maxlength="20" autocomplete="off" autocapitalize="characters">
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btn-redeem-code" type="button">Redeem</button>
+      <button class="btn btn-secondary" id="btn-gift-cancel" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 (function () {
   "use strict";
+
+  if (window.__SKINVEDA_BOOTED__) return;
+  window.__SKINVEDA_BOOTED__ = true;
 
   const GROQ_API_KEY = "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";
   const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -557,6 +595,13 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   ];
   const CHAT_COST = 100;
   const CHAT_UNLOCK_MS = 24 * 60 * 60 * 1000;
+  const MAX_CHAT_HISTORY = 20;
+  const MAX_MODEL_ATTEMPTS = GROQ_MODEL_QUEUE.length;
+
+  const GIFT_CODES = {
+    "X7K9M2P4Q8": 100, "B3R5T8Y2W1": 100, "H4N6L9K3J7": 100, "D2F8G5H1V9": 100, "M6C1X4Z8L2": 100,
+    "P9W2Q5R7T3": 500, "K1J4H8G2F6": 500, "L5Z8X3C9V4": 500, "B7N2M1K6J5": 500, "T3Y6W9R2Q8": 500
+  };
 
   try {
     if (screen.orientation && screen.orientation.lock) {
@@ -565,16 +610,21 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   } catch (e) {}
 
   var pendingFirstLaunch = false;
+  var splashDone = false;
+
+  function hideSplashOnce() {
+    if (splashDone) return;
+    splashDone = true;
+    var s = document.getElementById("splash");
+    if (s) s.classList.add("hide");
+    if (pendingFirstLaunch) {
+      pendingFirstLaunch = false;
+      openNameOnboarding(true);
+    }
+  }
 
   window.addEventListener("load", function () {
-    setTimeout(function () {
-      var s = document.getElementById("splash");
-      if (s) s.classList.add("hide");
-      if (pendingFirstLaunch) {
-        pendingFirstLaunch = false;
-        openNameOnboarding(true);
-      }
-    }, 2500);
+    setTimeout(hideSplashOnce, 2500);
   });
 
   function bunnySVG(size) {
@@ -605,7 +655,8 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     chatHistory: [],
     chatBusy: false,
     chatIntroShown: false,
-    immersiveChat: false
+    immersiveChat: false,
+    renderingQuestion: false
   };
 
   var questions = [
@@ -796,7 +847,6 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   $("mini-mascot").innerHTML = bunnySVG("mini");
   $("chat-header-avatar").innerHTML = bunnySVG("mini");
 
-  /* ——— Bunny Coins ——— */
   function getCoins() {
     try {
       var n = parseInt(localStorage.getItem("skinveda_coins") || "0", 10);
@@ -805,18 +855,34 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   }
   function setCoins(n) {
     n = Math.max(0, Math.floor(n));
-    localStorage.setItem("skinveda_coins", String(n));
+    try { localStorage.setItem("skinveda_coins", String(n)); } catch (e) {}
     renderCoins();
   }
-  function addCoins(amount) {
-    setCoins(getCoins() + amount);
-  }
+  function addCoins(amount) { setCoins(getCoins() + amount); }
   function renderCoins() {
     var el = $("coin-balance");
     if (el) el.textContent = String(getCoins());
     var mb = $("modal-balance");
     if (mb) mb.textContent = String(getCoins());
     updateChatAccessMeta();
+  }
+
+  function getRedeemedCodes() {
+    try {
+      var arr = JSON.parse(localStorage.getItem("skinveda_redeemed_codes") || "[]");
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function markCodeRedeemed(code) {
+    var list = getRedeemedCodes();
+    var key = String(code).toUpperCase().trim();
+    if (list.indexOf(key) === -1) {
+      list.push(key);
+      try { localStorage.setItem("skinveda_redeemed_codes", JSON.stringify(list)); } catch (e) {}
+    }
+  }
+  function isCodeRedeemed(code) {
+    return getRedeemedCodes().indexOf(String(code).toUpperCase().trim()) !== -1;
   }
 
   function getChatUnlockUntil() {
@@ -826,11 +892,9 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     } catch (e) { return 0; }
   }
   function setChatUnlockUntil(ts) {
-    localStorage.setItem("skinveda_chat_unlock_until", String(ts));
+    try { localStorage.setItem("skinveda_chat_unlock_until", String(ts)); } catch (e) {}
   }
-  function isChatUnlocked() {
-    return Date.now() < getChatUnlockUntil();
-  }
+  function isChatUnlocked() { return Date.now() < getChatUnlockUntil(); }
   function remainingChatHours() {
     var left = getChatUnlockUntil() - Date.now();
     if (left <= 0) return 0;
@@ -865,22 +929,32 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   }
 
   function showScreen(name) {
-    Object.keys(screens).forEach(function (k) {
+    var keys = Object.keys(screens);
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
       if (screens[k]) screens[k].classList.remove("active");
-    });
+    }
     if (screens[name]) screens[name].classList.add("active");
     state.screen = name;
     window.scrollTo(0, 0);
-    $("nav-home").classList.toggle("active", name === "landing");
-    $("nav-history").classList.toggle("active", name === "history");
+    var navHome = $("nav-home");
+    var navHist = $("nav-history");
+    if (navHome) navHome.classList.toggle("active", name === "landing");
+    if (navHist) navHist.classList.toggle("active", name === "history");
     if (name !== "chat") setImmersiveChat(false);
   }
 
+  var toastTimer = null;
   function showToast(msg) {
     var t = $("toast");
+    if (!t) return;
     t.textContent = msg;
     t.classList.add("show");
-    setTimeout(function () { t.classList.remove("show"); }, 2800);
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      t.classList.remove("show");
+      toastTimer = null;
+    }, 2800);
   }
 
   function getProfile() {
@@ -888,7 +962,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     catch (e) { return null; }
   }
   function saveProfile(name) {
-    localStorage.setItem("skinveda_profile", JSON.stringify({ name: name, onboarded: true }));
+    try { localStorage.setItem("skinveda_profile", JSON.stringify({ name: name, onboarded: true })); } catch (e) {}
   }
   function getSavedName() {
     var p = getProfile();
@@ -898,7 +972,9 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     try { return JSON.parse(localStorage.getItem("skinveda_history") || "[]"); }
     catch (e) { return []; }
   }
-  function saveHistory(list) { localStorage.setItem("skinveda_history", JSON.stringify(list)); }
+  function saveHistory(list) {
+    try { localStorage.setItem("skinveda_history", JSON.stringify(list)); } catch (e) {}
+  }
   function addPrescription(rx) {
     var list = getHistory();
     list.unshift(rx);
@@ -919,22 +995,30 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     try { return JSON.parse(localStorage.getItem("skinveda_streak") || '{"count":0,"last":"","days":[]}'); }
     catch (e) { return { count: 0, last: "", days: [] }; }
   }
-  function saveStreakData(d) { localStorage.setItem("skinveda_streak", JSON.stringify(d)); }
+  function saveStreakData(d) {
+    try { localStorage.setItem("skinveda_streak", JSON.stringify(d)); } catch (e) {}
+  }
   function isStreakUnlocked() { return hasCompletedInitial(); }
 
   function renderStreak() {
     var unlocked = isStreakUnlocked();
-    if (unlocked) $("streak-lock").classList.add("hide");
-    else $("streak-lock").classList.remove("hide");
+    var lock = $("streak-lock");
+    if (lock) {
+      if (unlocked) lock.classList.add("hide");
+      else lock.classList.remove("hide");
+    }
     var data = getStreakData();
     var today = todayKey();
     var checked = data.last === today;
-    $("streak-count").innerHTML = (data.count || 0) + "<span>days</span>";
+    var countEl = $("streak-count");
+    if (countEl) countEl.innerHTML = (data.count || 0) + "<span>days</span>";
     var btn = $("btn-streak-checkin");
     var msg = $("streak-msg");
-    if (!unlocked) { btn.disabled = true; btn.textContent = "Locked"; msg.textContent = "Unlock by completing your first checkup"; }
-    else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Logged for today. Come back tomorrow for more coins."; }
-    else { btn.disabled = false; btn.textContent = "Check in today"; msg.textContent = "Check in daily to earn Bunny Coins"; }
+    if (btn && msg) {
+      if (!unlocked) { btn.disabled = true; btn.textContent = "Locked"; msg.textContent = "Unlock by completing your first checkup"; }
+      else if (checked) { btn.disabled = true; btn.textContent = "Checked in today"; msg.textContent = "Logged for today. Come back tomorrow for more coins."; }
+      else { btn.disabled = false; btn.textContent = "Check in today"; msg.textContent = "Check in daily to earn Bunny Coins"; }
+    }
     var labels = ["S", "M", "T", "W", "T", "F", "S"];
     var html = "";
     for (var i = 6; i >= 0; i--) {
@@ -944,7 +1028,8 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       var done = (data.days || []).indexOf(key) !== -1;
       html += '<div class="streak-day"><div class="streak-dot' + (done ? " done" : "") + (key === today ? " today" : "") + '">' + (done ? "✓" : labels[d.getDay()]) + '</div><div class="streak-label">' + labels[d.getDay()] + "</div></div>";
     }
-    $("streak-days").innerHTML = html;
+    var daysEl = $("streak-days");
+    if (daysEl) daysEl.innerHTML = html;
   }
 
   $("btn-streak-checkin").addEventListener("click", function () {
@@ -958,9 +1043,8 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     data.last = today;
     if (!data.days) data.days = [];
     if (data.days.indexOf(today) === -1) data.days.push(today);
-    data.days = data.days.slice(-30);
+    if (data.days.length > 30) data.days = data.days.slice(-30);
     saveStreakData(data);
-
     var reward = rollDailyCoinReward();
     if (reward > 0) {
       addCoins(reward);
@@ -972,23 +1056,38 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   });
 
   function renderDailyTip() {
-    $("daily-tip-text").textContent = DAILY_TIPS[Math.floor(Date.now() / 86400000) % DAILY_TIPS.length];
+    var el = $("daily-tip-text");
+    if (el) el.textContent = DAILY_TIPS[Math.floor(Date.now() / 86400000) % DAILY_TIPS.length];
   }
 
   function filterByBudget(list, b) {
     var max = BUDGET_ORDER[b] != null ? BUDGET_ORDER[b] : 1;
-    return list.filter(function (p) { return BUDGET_ORDER[p.budget] <= max; });
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      if (BUDGET_ORDER[list[i].budget] <= max) out.push(list[i]);
+    }
+    return out;
   }
   function pickBest(cands, pref, fall) {
-    if (!cands.length) return null;
+    if (!cands || !cands.length) return null;
     var best = null, bs = -1;
-    cands.forEach(function (p) {
+    for (var i = 0; i < cands.length; i++) {
+      var p = cands[i];
       var s = 0;
-      (pref || []).forEach(function (t) { if (p.tags.indexOf(t) !== -1) s += 3; });
-      (fall || []).forEach(function (t) { if (p.tags.indexOf(t) !== -1) s += 1; });
+      var j;
+      if (pref) {
+        for (j = 0; j < pref.length; j++) {
+          if (p.tags.indexOf(pref[j]) !== -1) s += 3;
+        }
+      }
+      if (fall) {
+        for (j = 0; j < fall.length; j++) {
+          if (p.tags.indexOf(fall[j]) !== -1) s += 1;
+        }
+      }
       if (p.tags.indexOf("all") !== -1) s += 0.5;
       if (s > bs) { bs = s; best = p; }
-    });
+    }
     return best || cands[0];
   }
 
@@ -1051,9 +1150,11 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   function buildRoutineCardHtml(rx) {
     var dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     var evalRows = rx.evaluation || [];
-    var tableRows = evalRows.map(function (r) {
-      return "<tr><td class=\"crit\">" + escapeHtml(r.crit) + "</td><td class=\"rate\">" + escapeHtml(r.rate) + "</td><td class=\"notes\">" + escapeHtml(r.notes) + "</td></tr>";
-    }).join("");
+    var tableRows = "";
+    for (var i = 0; i < evalRows.length; i++) {
+      var r = evalRows[i];
+      tableRows += "<tr><td class=\"crit\">" + escapeHtml(r.crit) + "</td><td class=\"rate\">" + escapeHtml(r.rate) + "</td><td class=\"notes\">" + escapeHtml(r.notes) + "</td></tr>";
+    }
     function prod(cat, p) {
       return "<li><div class=\"rc-prod-cat\">" + cat + "</div><div class=\"rc-prod-name\">" + escapeHtml(p.brand) + " — " + escapeHtml(p.name) +
         "</div><div class=\"rc-prod-meta\">Actives: " + escapeHtml(p.actives) + " · Use: " + escapeHtml(p.usage) + "</div></li>";
@@ -1078,53 +1179,74 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       '<div class="rc-footer"><div class="sig-label">DOCTOR\'S SIGNATURE:</div><div class="sig-name">Dr. Bunny</div></div></div>';
   }
 
-  function renderResults(rx) { $("rx-content").innerHTML = buildRoutineCardHtml(rx); }
+  function renderResults(rx) {
+    var el = $("rx-content");
+    if (el) el.innerHTML = buildRoutineCardHtml(rx);
+  }
 
   function renderHistory() {
     var list = getHistory();
     var c = $("history-list");
+    if (!c) return;
     if (!list.length) {
       c.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="empty-title">No routine cards yet</div><div class="empty-text">Complete your first assessment. Cards are saved permanently.</div></div>';
       return;
     }
-    c.innerHTML = list.map(function (item) { return buildRoutineCardHtml(item); }).join("");
+    var html = "";
+    for (var i = 0; i < list.length; i++) {
+      html += buildRoutineCardHtml(list[i]);
+    }
+    c.innerHTML = html;
   }
 
   function renderQuestion() {
-    var q = questions[state.currentQ];
-    var total = questions.length;
-    var pct = ((state.currentQ + 1) / total * 100).toFixed(0);
-    $("progress-text").textContent = "Question " + (state.currentQ + 1) + " of " + total;
-    $("progress-pct").textContent = pct + "%";
-    $("progress-fill").style.width = pct + "%";
-    $("q-label").textContent = q.label;
-    $("q-text").textContent = q.text;
-    var hintEl = $("q-hint");
-    if (q.hint) { hintEl.style.display = "block"; hintEl.textContent = q.hint; }
-    else { hintEl.style.display = "none"; }
-    var card = $("question-card");
-    card.style.animation = "none";
-    void card.offsetHeight;
-    card.style.animation = "qIn 0.35s cubic-bezier(0.22, 1, 0.36, 1)";
-    var opts = $("q-options");
-    opts.innerHTML = "";
-    q.options.forEach(function (opt) {
-      var div = document.createElement("div");
-      div.className = "option" + (state.answers[q.id] === opt.value ? " selected" : "");
-      var hintHtml = opt.hint ? '<div class="option-hint">' + escapeHtml(opt.hint) + "</div>" : "";
-      div.innerHTML = '<div class="option-radio"></div><div><div class="option-text">' + escapeHtml(opt.label) + "</div>" + hintHtml + "</div>";
-      div.addEventListener("click", function () {
-        state.answers[q.id] = opt.value;
-        var all = opts.querySelectorAll(".option");
-        for (var i = 0; i < all.length; i++) all[i].classList.remove("selected");
-        div.classList.add("selected");
-        $("btn-q-next").disabled = false;
+    if (state.renderingQuestion) return;
+    state.renderingQuestion = true;
+    try {
+      var q = questions[state.currentQ];
+      if (!q) return;
+      var total = questions.length;
+      var pct = ((state.currentQ + 1) / total * 100).toFixed(0);
+      $("progress-text").textContent = "Question " + (state.currentQ + 1) + " of " + total;
+      $("progress-pct").textContent = pct + "%";
+      $("progress-fill").style.width = pct + "%";
+      $("q-label").textContent = q.label;
+      $("q-text").textContent = q.text;
+      var hintEl = $("q-hint");
+      if (q.hint) { hintEl.style.display = "block"; hintEl.textContent = q.hint; }
+      else { hintEl.style.display = "none"; }
+
+      var card = $("question-card");
+      card.classList.remove("q-anim");
+      requestAnimationFrame(function () {
+        card.classList.add("q-anim");
       });
-      opts.appendChild(div);
-    });
-    $("btn-q-next").disabled = !state.answers[q.id];
-    $("btn-q-prev").style.visibility = state.currentQ === 0 ? "hidden" : "visible";
-    $("btn-q-next").textContent = state.currentQ === total - 1 ? "See Results" : "Next";
+
+      var opts = $("q-options");
+      opts.innerHTML = "";
+      var optList = q.options || [];
+      for (var oi = 0; oi < optList.length; oi++) {
+        (function (opt) {
+          var div = document.createElement("div");
+          div.className = "option" + (state.answers[q.id] === opt.value ? " selected" : "");
+          var hintHtml = opt.hint ? '<div class="option-hint">' + escapeHtml(opt.hint) + "</div>" : "";
+          div.innerHTML = '<div class="option-radio"></div><div><div class="option-text">' + escapeHtml(opt.label) + "</div>" + hintHtml + "</div>";
+          div.addEventListener("click", function () {
+            state.answers[q.id] = opt.value;
+            var all = opts.querySelectorAll(".option");
+            for (var i = 0; i < all.length; i++) all[i].classList.remove("selected");
+            div.classList.add("selected");
+            $("btn-q-next").disabled = false;
+          });
+          opts.appendChild(div);
+        })(optList[oi]);
+      }
+      $("btn-q-next").disabled = !state.answers[q.id];
+      $("btn-q-prev").style.visibility = state.currentQ === 0 ? "hidden" : "visible";
+      $("btn-q-next").textContent = state.currentQ === total - 1 ? "See Results" : "Next";
+    } finally {
+      state.renderingQuestion = false;
+    }
   }
 
   function buildClinicalChart() {
@@ -1134,18 +1256,15 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     lines.push("=== PATIENT CHART — SKIN VEDA ===");
     lines.push("Patient name: " + name);
     lines.push("Address the patient respectfully by name as " + name + ".");
-
     if (rx) {
       var dateStr = "";
       try {
         dateStr = new Date(rx.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
       } catch (e) { dateStr = String(rx.date || ""); }
-
       lines.push("Source: Active SKIN VEDA ROUTINE CARD");
       lines.push("Clinic: DR. BUNNY'S DERMATOLOGY");
       lines.push("Assessment date: " + dateStr);
       lines.push("Skin profile summary: " + (rx.profileSummary || "N/A"));
-
       if (rx.answers && rx.answers.skinType) {
         lines.push("Skin type: " + (SKIN_TYPE_LABELS[rx.answers.skinType] || rx.answers.skinType));
       }
@@ -1155,7 +1274,6 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       if (rx.answers && rx.answers.sensitivity) {
         lines.push("Sensitivity: " + rx.answers.sensitivity);
       }
-
       if (rx.evaluation && rx.evaluation.length) {
         lines.push("--- Dermal Evaluation ---");
         for (var i = 0; i < rx.evaluation.length; i++) {
@@ -1163,7 +1281,6 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
           lines.push(ev.crit + ": " + ev.rate + (ev.notes ? " (" + ev.notes + ")" : ""));
         }
       }
-
       function prodLine(label, p) {
         if (!p) return label + ": not set";
         return label + ": " + p.brand + " — " + p.name + " | Actives: " + p.actives + " | Use: " + p.usage;
@@ -1177,7 +1294,6 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       lines.push("Status: No formal Routine Card on file yet.");
       lines.push("Guidance: Provide general evidence-based advice. Encourage completing the Skin Veda assessment for a formal regimen.");
     }
-
     lines.push("=== END CHART ===");
     return lines.join("\n");
   }
@@ -1185,17 +1301,20 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   function buildSystemInstructions() {
     var patientName = getSavedName() || state.userName || "the patient";
     return [
-      "You are Dr. Bunny, a professional expert clinical dermatologist consultant for Skin Veda.",
+      "You are Dr. Bunny, a friendly, empathetic, and professional clinical dermatologist consultant for Skin Veda.",
       "Identity rules (strict):",
       "- Always remain in character as Dr. Bunny.",
       "- Never reveal or imply that you are powered by Groq, Llama, OpenAI, Google, Gemini, or any third-party model.",
       "- If asked who or what you are, state only that you are the proprietary clinical AI assistant of Skin Veda.",
-      "- Never use childish, casual, slangy, or cartoonish phrasing.",
-      "- Maintain a polished, clinical, scientific, and respectfully warm professional tone.",
-      "LANGUAGE RULE (MANDATORY):",
-      "- You MUST respond ONLY in professional clinical English.",
-      "- If the patient's message is primarily in any language other than English (including Hindi, Hinglish, Spanish, etc.), reply with EXACTLY this sentence and nothing else: I can only assist you in professional English.",
-      "- Do not translate, do not mix languages, and do not continue clinical advice in another language.",
+      "- Be warm, approachable, and supportive while remaining clinically accurate and professional.",
+      "- Avoid childish, cartoonish, or overly casual slang — but DO warmly welcome normal English greetings and conversation.",
+      "LANGUAGE RULES (IMPORTANT — READ CAREFULLY):",
+      "- Your default response language is professional clinical English.",
+      "- ALWAYS respond helpfully in English when the patient writes in English — including casual greetings such as Hello, Hi, Hey, Good morning, Good afternoon, Good evening, How are you, Thanks, Thank you, and similar everyday English phrases.",
+      "- Never refuse or lecture the patient for using simple English greetings. Reply warmly and continue the consultation.",
+      "- Only if the patient's message is clearly written almost entirely in a non-English language (for example pure Spanish, German, Russian, French, Arabic, Chinese, Japanese, Korean, or similar — not English words), reply with EXACTLY this single sentence and nothing else: I can only assist you in professional English.",
+      "- Do not treat short English greetings, mixed medical terms, or English with minor typos as non-English.",
+      "- Always write your own answers in English.",
       "Patient relationship:",
       "- Address the patient by their name: " + patientName + ".",
       "- Continuously use the dynamic patient chart below (name, skin type, regimen).",
@@ -1205,7 +1324,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       "- Prefer products and steps on the patient's Skin Veda regimen when discussing changes.",
       "- Suggest practical adjustments based on symptoms described in the conversation.",
       "- For severe, acute, or ambiguous conditions, recommend in-person medical evaluation.",
-      "- Be clear, concise, and actionable.",
+      "- Be clear, concise, actionable, and kind.",
       "",
       buildClinicalChart()
     ].join("\n");
@@ -1213,6 +1332,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 
   function appendChat(role, text) {
     var log = $("chat-log");
+    if (!log) return;
     var div = document.createElement("div");
     div.className = "chat-msg " + role;
     if (role === "bot") {
@@ -1226,6 +1346,8 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 
   function showTyping() {
     var log = $("chat-log");
+    if (!log) return;
+    hideTyping();
     var div = document.createElement("div");
     div.className = "chat-msg bot typing";
     div.id = "typing-indicator";
@@ -1241,25 +1363,21 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 
   function buildMessagesPayload(userMessage) {
     var messages = [];
-    messages.push({
-      role: "system",
-      content: buildSystemInstructions()
-    });
-
-    for (var i = 0; i < state.chatHistory.length; i++) {
-      var turn = state.chatHistory[i];
+    messages.push({ role: "system", content: buildSystemInstructions() });
+    var hist = state.chatHistory;
+    var start = Math.max(0, hist.length - MAX_CHAT_HISTORY);
+    for (var i = start; i < hist.length; i++) {
+      var turn = hist[i];
       messages.push({
         role: turn.role === "user" ? "user" : "assistant",
         content: turn.text
       });
     }
-
     var patientName = getSavedName() || state.userName || "Patient";
     messages.push({
       role: "user",
       content: "Patient message from " + patientName + ":\n" + userMessage
     });
-
     return messages;
   }
 
@@ -1277,25 +1395,15 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
         max_tokens: 1024
       })
     });
-
     var data = null;
-    try {
-      data = await response.json();
-    } catch (parseErr) {
-      throw new Error("Invalid JSON from model " + modelId);
-    }
-
+    try { data = await response.json(); }
+    catch (parseErr) { throw new Error("Invalid JSON from model " + modelId); }
     if (!response.ok) {
       var errMsg = (data && data.error && data.error.message) ? data.error.message : ("HTTP " + response.status);
       throw new Error(errMsg);
     }
-
     var out = "";
-    try {
-      out = data.choices[0].message.content || "";
-    } catch (e) {
-      out = "";
-    }
+    try { out = data.choices[0].message.content || ""; } catch (e) { out = ""; }
     if (!out) throw new Error("Empty clinical response from " + modelId);
     return out.trim();
   }
@@ -1303,20 +1411,15 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   async function callGroq(userMessage) {
     var messages = buildMessagesPayload(userMessage);
     var lastError = null;
-
-    for (var i = 0; i < GROQ_MODEL_QUEUE.length; i++) {
+    var limit = Math.min(MAX_MODEL_ATTEMPTS, GROQ_MODEL_QUEUE.length);
+    for (var i = 0; i < limit; i++) {
       var modelId = GROQ_MODEL_QUEUE[i];
       try {
-        var reply = await fetchWithModel(modelId, messages);
-        return reply;
+        return await fetchWithModel(modelId, messages);
       } catch (err) {
         lastError = err;
-        try {
-          console.warn("[Skinveda] Model failed, switching:", modelId, err && err.message ? err.message : err);
-        } catch (logErr) {}
       }
     }
-
     throw lastError || new Error("All models unavailable");
   }
 
@@ -1328,23 +1431,21 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       setTimeout(function () { requestChatAccess(); }, 200);
       return;
     }
-
     var input = $("chat-input");
+    if (!input) return;
     var text = (input.value || "").trim();
     if (!text) return;
-
     input.value = "";
     input.style.height = "auto";
     appendChat("user", text);
     state.chatHistory.push({ role: "user", text: text });
-    if (state.chatHistory.length > 20) {
-      state.chatHistory = state.chatHistory.slice(-20);
+    if (state.chatHistory.length > MAX_CHAT_HISTORY) {
+      state.chatHistory = state.chatHistory.slice(-MAX_CHAT_HISTORY);
     }
-
     state.chatBusy = true;
-    $("chat-send").disabled = true;
+    var sendBtn = $("chat-send");
+    if (sendBtn) sendBtn.disabled = true;
     showTyping();
-
     try {
       var reply = await callGroq(text);
       hideTyping();
@@ -1352,14 +1453,14 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       appendChat("bot", reply);
     } catch (err) {
       hideTyping();
-      appendChat("bot", "I am temporarily unable to complete this consultation.\n\n" + (err.message || "Network error") +
+      appendChat("bot", "I am temporarily unable to complete this consultation.\n\n" + (err && err.message ? err.message : "Network error") +
         "\n\nPlease try again in a moment.");
+    } finally {
+      state.chatBusy = false;
+      if (sendBtn) sendBtn.disabled = false;
+      var status = $("chat-header-status");
+      if (status) status.textContent = formatUnlockStatus();
     }
-
-    state.chatBusy = false;
-    $("chat-send").disabled = false;
-    var status = $("chat-header-status");
-    if (status) status.textContent = formatUnlockStatus();
   }
 
   function enterChatUI() {
@@ -1372,8 +1473,8 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       var name = getSavedName() || "there";
       var rx = getLatestRx();
       var intro = rx
-        ? ("Good day, " + name + ". I am Dr. Bunny. I have reviewed your Skin Veda chart and current regimen. How may I assist you today?")
-        : ("Good day, " + name + ". I am Dr. Bunny, the proprietary clinical AI assistant of Skin Veda. Complete an assessment for a formal regimen, or ask any dermatology question now.");
+        ? ("Hello, " + name + "! I am Dr. Bunny. I have reviewed your Skin Veda chart and current regimen. How may I help you today?")
+        : ("Hello, " + name + "! I am Dr. Bunny, your Skin Veda clinical dermatology assistant. Complete an assessment for a formal regimen, or ask me any skin-care question.");
       appendChat("bot", intro);
     }
     setTimeout(function () {
@@ -1385,9 +1486,12 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   }
 
   function showUnlockModal() {
-    $("modal-balance").textContent = String(getCoins());
-    $("unlock-modal").classList.add("show");
+    var mb = $("modal-balance");
+    if (mb) mb.textContent = String(getCoins());
+    var modal = $("unlock-modal");
+    if (modal) modal.classList.add("show");
     var btn = $("btn-unlock-chat");
+    if (!btn) return;
     if (getCoins() < CHAT_COST) {
       btn.disabled = true;
       btn.textContent = "Need " + CHAT_COST + " Coins";
@@ -1397,7 +1501,44 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     }
   }
   function hideUnlockModal() {
-    $("unlock-modal").classList.remove("show");
+    var modal = $("unlock-modal");
+    if (modal) modal.classList.remove("show");
+  }
+
+  function showGiftModal() {
+    var err = $("gift-error");
+    if (err) err.textContent = "";
+    var inp = $("gift-code-input");
+    if (inp) inp.value = "";
+    var modal = $("gift-modal");
+    if (modal) modal.classList.add("show");
+    setTimeout(function () {
+      if (inp) inp.focus();
+    }, 100);
+  }
+  function hideGiftModal() {
+    var modal = $("gift-modal");
+    if (modal) modal.classList.remove("show");
+  }
+
+  function redeemGiftCode() {
+    var inp = $("gift-code-input");
+    var raw = ((inp && inp.value) || "").trim().toUpperCase();
+    var err = $("gift-error");
+    if (err) err.textContent = "";
+    if (!raw) {
+      if (err) err.textContent = "Please enter a gift code.";
+      return;
+    }
+    if (!Object.prototype.hasOwnProperty.call(GIFT_CODES, raw) || isCodeRedeemed(raw)) {
+      if (err) err.textContent = "Invalid or already redeemed gift code.";
+      return;
+    }
+    var amount = GIFT_CODES[raw];
+    markCodeRedeemed(raw);
+    addCoins(amount);
+    hideGiftModal();
+    showToast("+" + amount + " Bunny Coins redeemed!");
   }
 
   function requestChatAccess() {
@@ -1416,7 +1557,7 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     }
     var bal = getCoins();
     if (bal < CHAT_COST) {
-      showToast("Not enough Bunny Coins. Check in daily to earn more.");
+      showToast("Not enough Bunny Coins. Check in daily or redeem a gift code.");
       return;
     }
     setCoins(bal - CHAT_COST);
@@ -1430,6 +1571,16 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     setImmersiveChat(false);
     goHome();
   }
+
+  $("btn-gift").addEventListener("click", showGiftModal);
+  $("btn-redeem-code").addEventListener("click", redeemGiftCode);
+  $("btn-gift-cancel").addEventListener("click", hideGiftModal);
+  $("gift-code-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); redeemGiftCode(); }
+  });
+  $("gift-modal").addEventListener("click", function (e) {
+    if (e.target === $("gift-modal")) hideGiftModal();
+  });
 
   $("btn-unlock-chat").addEventListener("click", purchaseChatUnlock);
   $("btn-unlock-cancel").addEventListener("click", hideUnlockModal);
@@ -1461,7 +1612,8 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
       return;
     }
     var name = getSavedName();
-    $("welcome-name").textContent = name ? "Welcome back, " + name : "";
+    var wn = $("welcome-name");
+    if (wn) wn.textContent = name ? "Welcome back, " + name : "";
     renderDailyTip();
     renderStreak();
     renderCoins();
@@ -1470,11 +1622,15 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
 
   function openNameOnboarding(firstTime) {
     setImmersiveChat(false);
-    $("user-name").value = "";
-    $("btn-name-next").disabled = true;
+    var un = $("user-name");
+    if (un) un.value = "";
+    var bn = $("btn-name-next");
+    if (bn) bn.disabled = true;
     var back = $("btn-name-back");
-    if (firstTime) back.classList.add("hidden");
-    else back.classList.remove("hidden");
+    if (back) {
+      if (firstTime) back.classList.add("hidden");
+      else back.classList.remove("hidden");
+    }
     showScreen("name");
   }
 
@@ -1483,7 +1639,10 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
     state.userName = name;
     state.currentQ = 0;
     state.answers = {};
-    $("mascot-speech").innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>. I am Dr. Bunny. Let us establish your personalized skin regimen.";
+    var speech = $("mascot-speech");
+    if (speech) {
+      speech.innerHTML = 'Hello, <span class="user-highlight">' + escapeHtml(name) + "</span>. I am Dr. Bunny. Let us establish your personalized skin regimen.";
+    }
     showScreen("mascot");
   }
 
@@ -1567,11 +1726,15 @@ body.chat-immersive .toast{bottom:calc(24px + var(--safe-bottom))}
   if (!getSavedName()) {
     pendingFirstLaunch = true;
     showScreen("name");
-    $("btn-name-back").classList.add("hidden");
+    var backBtn = $("btn-name-back");
+    if (backBtn) backBtn.classList.add("hidden");
   } else {
     goHome();
   }
 })();
 </script>
+<style>
+.question-card.q-anim{animation:qIn .35s cubic-bezier(.22,1,.36,1)}
+</style>
 </body>
 </html>
